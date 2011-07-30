@@ -1,0 +1,1 @@
+<?php echo form::button("assets_button", $language["assets_button"], array("id" => "assets_button")) ?>
