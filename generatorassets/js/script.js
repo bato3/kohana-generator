@@ -2,9 +2,9 @@ $(document).ready(function() {
     var i = 0;
     // global-------------------------------------------------------------------
     $("#clear_button").click(function(){
-        $("#result").fadeOut("slow");
-        $("#post_result").fadeOut("slow");
-        $("#methods_holder > div").html("");
+        $("#result").fadeOut("slow").html("");
+        $("#post_result").fadeOut("slow").html("");
+        $("#methods_holder").html("");
         $("#controllername").val("");
         return false;
     });
