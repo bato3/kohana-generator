@@ -9,13 +9,10 @@ $(document).ready(function() {
         return false;
     });
     
-    //end global----------------------------------------------------------------
-    
-    
     //form generator------------------------------------------------------------
-    $("#form_table_button").click(function(){
+    $("#table_list").change(function(){
         var selected = $("#table_list :selected").val()
-        
+        $("#post_result").fadeOut("slow");
         $.get("/generatorajax/formfieldslist/"+selected, function(data){
             $("#result").html(data).fadeIn("slow");
             postForm("#generate_form", "/generatorajax/form");
@@ -25,7 +22,9 @@ $(document).ready(function() {
     
     //assets generator----------------------------------------------------------
     $("#assets_button").click(function(){
+        show_ajax_loader("#result");
         $.get("/generatorajax/assets", function(data){
+            remove_ajax_loader("#result");
             $("#result").html(data).fadeIn("slow");
         });
     });
@@ -33,8 +32,12 @@ $(document).ready(function() {
     //controller generator------------------------------------------------------
     $("#add_action_button").click(function(){
         var input_id = "action_"+i;
-        var item = "<div class=\"action_div\"><label for=\""+input_id+"\">action_</label><input type=\"text\" name=\"actions[]\" id=\""+input_id+"\" /></div>";
+        var item = "<div class=\"action_div\" id=\"action_div_"+i+"\"><label for=\""+input_id+"\">action_</label><input type=\"text\" name=\"actions[]\" id=\""+input_id+"\" /><span class=\"delete\" id=\""+i+"\"><img src=\"/generatorassets/img/delete.png\"></span></div>";
         $("#methods_holder").append(item);
+        $("#"+i).click(function(){
+            var id = $(this).attr("id").valueOf();
+            $("#action_div_"+id).remove();
+        });
         i++;
         return false;
     });

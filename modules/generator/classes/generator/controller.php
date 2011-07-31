@@ -1,4 +1,5 @@
 <?php
+
 defined('SYSPATH') or die('No direct access allowed.');
 /*
  * To change this template, choose Tools | Templates
@@ -11,65 +12,70 @@ defined('SYSPATH') or die('No direct access allowed.');
  * @author burningface
  */
 class Generator_Controller {
-    
-    public static $EXTENDS_FROM = array(
-        "Controller", 
-        "Controller_Template", 
-        "Controller_Template_Twig",
-        "Controller_Template_Smarty"
-        );
-    
-    private static function getExtends($extends){
-        $html = " extends ";
-        switch ($extends){
-            case 1: 
-                $html .= self::$EXTENDS_FROM[1];
-                break;
-            case 2: 
-                $html .= self::$EXTENDS_FROM[2];
-                break;
-            case 3: 
-                $html .= self::$EXTENDS_FROM[3]; 
-                break;
-            default :
-                $html .= self::$EXTENDS_FROM[0]; 
-        }
-        return $html." {\n";
+
+    private static $default_action = array("index");
+    private static $default_controller = "default";
+
+    public static function getControllers() {
+        $config = Generator_Util::loadConfig();
+        return $config->get("controllers");
     }
-    
-    private static function getAction($actions_array){
-        $actions = array();
-        foreach ($actions_array as $action){
-            if(!empty ($action)){
+
+    private static function getExtends($extends) {
+        $html = " extends ";
+        $controllers = self::getControllers();
+        if (array_key_exists($extends, $controllers)) {
+            $html .= $controllers[$extends];
+        }
+        return $html . " {\n";
+    }
+
+    private static function getActions($actions_array) {
+        $actions = "";
+        foreach ($actions_array as $action) {
+            if (!empty($action)) {
                 $name = strtolower($action);
-                $actions[] = "\tpublic function action_$name() {}\n";
+                $actions .= Generator_Util::methodInfoHead();
+                $actions .= "\n\tpublic function action_$name() {}\n\n";
             }
         }
         return $actions;
     }
-    
-    public static function generateController($post){
-        $extends = $post["extends"];
-        $controllername = $post["controllername"];
-        $actions = $post["actions"];
-        $writer = new Generator_Filewriter($controllername);
-        
-        $controllername = "Controller_".ucfirst(strtolower($controllername));
-        
-        $writer->addRow(Generator_Util::$pagehead);
-        $writer->addRow("<?php\n");
-        $writer->addRow(Generator_Util::classInfoHead($controllername));
-        $writer->addRow("class ". $controllername.self::getExtends($extends));
-        $actions_array = self::getAction($actions);
-        foreach($actions_array as $action){
-            $writer->addRow(Generator_Util::methodInfoHead());
-            $writer->addRow($action);
+
+    private static function getActionPaths($controller, $actions_array) {
+        $paths = "";
+        $controller = strtolower($controller);
+        foreach ($actions_array as $action) {
+            if (!empty($action)) {
+                $name = strtolower($action);
+                $paths .= "\tprivate \$" . $name . "_url = \"$controller/$name\";\n";
+            }
         }
-        $writer->addRow("}\n");
-        $writer->addRow("?>");
+        return $paths;
+    }
+
+    public static function generate($post) {
+        $extends = $post["extends"];
+
+        $controller = !empty($post["controllername"]) ? $post["controllername"] : self::$default_controller;
+        $actions = isset($post["actions"]) ? $post["actions"] : self::$default_action;
+
+        $writer = new Generator_Filewriter($controller);
+
+        $controllername = "Controller_" . Generator_Util::upperFirst($controller);
+
+        $writer->addRow(Generator_Util::$OPEN_CLASS_FILE);
+        $writer->addRow(Generator_Util::classInfoHead($controllername));
+        $writer->addRow("class " . $controllername . self::getExtends($extends));
+
+        $writer->addRow(self::getActionPaths($controller, $actions));
+        $writer->addRow(self::getActions($actions));
+
+        $writer->addRow(Generator_Util::$CLOSE_CLASS_FILE);
         $writer->write(Generator_Filewriter::$CONTROLLER);
         return $writer;
     }
+
 }
 
 ?>

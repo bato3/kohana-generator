@@ -15,7 +15,16 @@ defined('SYSPATH') or die('No direct access allowed.');
 class Generator_Form {
 
     public static $WRAPPERS = array("table", "div", "p");
-    public static $INPUTS = array("disable", "input", "password", "hidden", "textarea", "select", "radio", "checkbox");
+    public static $INPUTS = array(
+        "disable",
+        "input",
+        "password",
+        "hidden",
+        "textarea",
+        "select",
+        "radio",
+        "checkbox"
+    );
 
     private static function label($key) {
         $label = "\$labels[\"" . $key . "\"].\": \"";
@@ -23,8 +32,8 @@ class Generator_Form {
     }
 
     private static function radio($key) {
-        $yeslabel = "\$labels[\"".$key."_yes\"].\": \"";
-        $nolabel = "\$labels[\"".$key."_no\"].\": \"";
+        $yeslabel = "\$labels[\"" . $key . "_yes\"].\": \"";
+        $nolabel = "\$labels[\"" . $key . "_no\"].\": \"";
         return "<?php echo form::label(\"$key\", $yeslabel) ?><?php echo form::radio(\"$key\", 1, isset(\$values[\"$key\"]) ? \$values[\"$key\"] ?  true : false : false) ?>&nbsp;&nbsp;<?php echo form::label(\"$key\", $nolabel) ?><?php echo form::radio(\"$key\", 0, isset(\$values[\"$key\"]) ? !\$values[\"$key\"] ? true : false : true) ?>";
     }
 
@@ -62,7 +71,7 @@ class Generator_Form {
     }
 
     private static function csrfToken() {
-        $config = Kohana::$config->load("generator");
+        $config = Generator_Util::loadConfig();
         $name = $config->get("csrf_token_name");
         return "<?php echo form::hidden(\"$name\", Security::token()) ?>";
     }
@@ -102,10 +111,10 @@ class Generator_Form {
     private static function wrappTR($item, $attributes=array()) {
         return empty($attributes) ? "<tr>$item</tr>" : "<tr" . html::attributes($attributes) . ">$item</tr>";
     }
-    
+
     public static function listTables($with_login=false) {
         $tables = Database::instance()->list_tables();
-        
+
         $names = $with_login ? array("logins" => "logins") : array();
         foreach ($tables as $name) {
             $names[$name] = $name;
@@ -218,14 +227,14 @@ class Generator_Form {
 
         $rev = array();
         foreach ($places as $name => $place) {
-            if(!array_key_exists($place, $rev)){
+            if (!array_key_exists($place, $rev)) {
                 $rev[$place] = $name;
-            }else{
+            } else {
                 $ok = false;
-                while(!$ok){
-                    if(!array_key_exists($place, $rev)){
+                while (!$ok) {
+                    if (!array_key_exists($place, $rev)) {
                         $rev[$place] = $name;
-                        $ok=true;
+                        $ok = true;
                     }
                     $place++;
                 }
@@ -246,13 +255,13 @@ class Generator_Form {
         return $array;
     }
 
-    public static function generateForm($post_array) {
+    public static function generate($post_array) {
         $wrapper = self::$WRAPPERS[$post_array["wrapper"]];
         $filename = Generator_Util::name($post_array["generate_form_name"]);
 
         $writer = new Generator_Filewriter($filename);
 
-        $writer->addRow(Generator_Util::$pagehead);
+        $writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
 
         if (isset($post_array["flashmessage"])) {
             if ($post_array["flashmessage"] == 1) {
@@ -265,7 +274,7 @@ class Generator_Form {
         if ($wrapper == "table") {
             $writer->addRow(self::tableOpen());
         }
-        
+
         $post_array = self::orderPost($post_array);
         foreach ($post_array as $key => $val) {
             if (is_numeric($val) && !empty($key) && $key != "wrapper") {

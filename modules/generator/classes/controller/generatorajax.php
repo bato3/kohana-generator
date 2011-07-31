@@ -42,7 +42,7 @@ class Controller_Generatorajax extends Controller {
     public function action_form() {
         if ($this->request->is_ajax()) {
             $post = $_POST;
-            $writer = Generator_Form::generateForm($post);
+            $writer = Generator_Form::generate($post);
             $view = View::factory("forms/generatorshowgeneratedform");
             $view->rows = $writer->getRows();
             $view->savepath = $writer->getPath();
@@ -56,8 +56,7 @@ class Controller_Generatorajax extends Controller {
 
     public function action_controller() {
         if ($this->request->is_ajax()) {
-            $post = $_POST;
-            $writer = Generator_Controller::generateController($post);
+            $writer = Generator_Controller::generate($_POST);
             $view = View::factory("forms/generatorshowgeneratedcontroller");
             $view->rows = $writer->getRows();
             $view->savepath = $writer->getPath();
@@ -71,7 +70,7 @@ class Controller_Generatorajax extends Controller {
     public function action_model() {
         if ($this->request->is_ajax()) {
             Generator_Model::setDateFormat($_POST["date_format"]);
-            $html = Generator_Model::generateModel();
+            $html = Generator_Model::generate();
 
             $view = View::factory("forms/generatorshowgeneratedmodel");
             $view->write_ok = in_array(false, Generator_Model::getIsOkArray()) ? false : true;
@@ -84,7 +83,7 @@ class Controller_Generatorajax extends Controller {
 
     public function action_assets() {
         if ($this->request->is_ajax()) {
-            $this->sendHtml(Generator_Assets::generateAssets());
+            $this->sendHtml(Generator_Assets::generate());
         } else {
             throw new HTTP_Exception_404();
         }

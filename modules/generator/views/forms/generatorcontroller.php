@@ -11,8 +11,9 @@ echo form::button("clear_button", $language["clear_button"], array("id" => "clea
 ?>
 <div class="extends_div">
     <?php
-    foreach (Generator_Controller::$EXTENDS_FROM as $num => $extends) {
-        if ($extends == Generator_Controller::$EXTENDS_FROM[0]) {
+    $controllers = Generator_Controller::getControllers();
+    foreach ($controllers as $num => $extends) {
+        if ($extends == $controllers[0]) {
             $checked = true;
         } else {
             $checked = false;

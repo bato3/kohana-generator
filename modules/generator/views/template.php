@@ -3,7 +3,7 @@
     <head>
         <title>Kohana generator</title>
         <meta name="author" content="burningface"/>
-        <?php 
+        <?php
         echo html::style("generatorassets/css/style.css");
         echo html::script("generatorassets/js/jquery.min.js");
         echo html::script("generatorassets/js/script.js");
@@ -14,25 +14,29 @@
             <div id="menu">
                 <ul>
                     <li><?php echo html::anchor("generator/", "index", array("id" => "index", "class" => "menu_link")) ?></li>
-                    <?php 
-                        foreach($links as $link){
-                            ?>
-                            <li><?php echo html::anchor("generator/$link", $link, array("id" => $link, "class" => "menu_link")) ?></li>
-                            <?php
-                        }
+                    <?php
+                    foreach ($links as $link) {
+                        ?>
+                        <li><?php echo html::anchor("generator/$link", $link, array("id" => $link, "class" => "menu_link")) ?></li>
+                        <?php
+                    }
                     ?>
                 </ul>
             </div>
             <div id="content">
                 <fieldset>
-                <legend><?php echo $legend ?></legend>
-                <?php if(isset ($flash)){ echo "<div class=\"flash\">".$flash."</div>"; } ?>
-                <?php echo $content; ?>
-                <div id="result"></div>
-                <div id="post_result"></div>
+                    <legend><?php echo $legend ?></legend>
+                    <?php
+                    if (isset($flash)) {
+                        echo "<div class=\"flash\">" . $flash . "</div>";
+                    }
+                    echo $content;
+                    ?>
+                    <div id="result"></div>
+                    <div id="post_result"></div>
                 </fieldset>
             </div>
         </div>
-        
+
     </body>
 </html>

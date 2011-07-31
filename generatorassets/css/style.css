@@ -69,11 +69,19 @@ a:hover{
     color: #FCF0E4;
 }
 input[type=text]{
-    background-color: #F3EED2;
-    border: 1px solid #413038;
+    background-color: #F8F6EF;
+    border: 1px solid #8CCBD0
 }
 input[type=text]:focus{
-    background-color: #F9F3B5;
+    background-color: #F4EDD9;
+}
+
+input[type=password]{
+    background-color: #F8F6EF;
+    border: 1px solid #8CCBD0
+}
+input[type=password]:focus{
+    background-color: #F4EDD9;
 }
 
 .errors{
@@ -131,9 +139,22 @@ input[type=text]:focus{
     margin-bottom: 10px;
     padding-top: 5px;
 }
+.fields_div table th{
+    border-bottom: 4px solid #8CCBD0;
+}
+.fields_div table td{
+    text-align: center;
+    border-bottom: 1px solid #8CCBD0;
+}
 
 .action_div{
     margin-bottom: 5px;
+}
+
+.delete{
+    position: relative;
+    top: 5px;
+    cursor: pointer;
 }
 
 .details{
@@ -159,6 +180,14 @@ input[type=text]:focus{
 
 .error{
     color: red;
+}
+
+.a{
+    background-color: #ECEDE8;
+}
+
+.b{
+    background-color: #FBF4CA;
 }
 
 #result{display: none;}

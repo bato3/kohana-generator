@@ -13,36 +13,35 @@ defined('SYSPATH') or die('No direct access allowed.');
  * @author burningface
  */
 class Generator_Model {
-    
+
     private static $date_format = "Y-m-d";
     private static $disabled_tables = array("roles", "roles_users", "user_tokens");
     private static $generated_files;
     private static $is_ok = array();
-    
-    public static function getIsOkArray(){
+
+    public static function getIsOkArray() {
         return self::$is_ok;
     }
 
     public static function setDateFormat($date_format) {
-        if(!empty ($date_format)){
+        if (!empty($date_format)) {
             self::$date_format = $date_format;
         }
     }
 
     private static function getCsrf() {
-        $config = Kohana::$config->load("generator");
-        return "\tpublic function csrf(\$values){\n\t\treturn Validation::factory(array(\"csrf\" => \$values[\"" . $config->get("csrf_token_name") ."\"]))->rule(\"csrf\", \"Security::check\");\n\t}\n";
+        $config = Generator_Util::loadConfig();
+        return "\tpublic function csrf(\$values){\n\t\treturn Validation::factory(array(\"csrf\" => \$values[\"" . $config->get("csrf_token_name") . "\"]))->rule(\"csrf\", \"Security::check\");\n\t}\n";
     }
-    
+
     private static function getFormErrors() {
-        $config = Kohana::$config->load("generator");
         return "\tpublic function formErrors(){\n\t\treturn \$this->validation()->errors(\"form_errors\"); \n\t}\n";
     }
 
     private static function getRules($type, $min, $max) {
         $validation = "\n\t\t\t\tarray(\"not_empty\"),\n";
         switch ($type) {
-            case "date" : $validation .= "\t\t\t\tarray(\"date\",array(\":value\", \"".self::$date_format."\")),\n";
+            case "date" : $validation .= "\t\t\t\tarray(\"date\",array(\":value\", \"" . self::$date_format . "\")),\n";
                 break;
             case "year" : $validation .= "\t\t\t\tarray(\"date\",array(\":value\", \"Y\")),\n";
                 break;
@@ -81,20 +80,20 @@ class Generator_Model {
         }
         return $validation;
     }
-    
+
     private static function getFilters($type) {
         $validation = "\n\t\t\t\tarray(\"trim\"),\n";
         switch ($type) {
             case "varchar" : $validation .= "\t\t\t\tarray(\"strtolower\"),\n\t\t\t\tarray(\"ucwords\"),\n";
                 break;
         }
-        return $validation."";
+        return $validation . "";
     }
 
     private static function genORM($filename) {
         return "class Model_" . $filename . " extends ORM {\n";
     }
-    
+
     private static function getTableRelationShips($table) {
         $has_many = array("\tprotected \$_has_many = array(");
         $belongs_to = array("\tprotected \$_belongs_to = array(");
@@ -118,92 +117,96 @@ class Generator_Model {
         $belongs_to[] = "\t);\n";
         return array_merge($belongs_to, $has_many);
     }
-    
-    private static function labels($array){
+
+    private static function labels($array) {
         $html = "\tpublic function labels(){\n\t\treturn array(\n";
-        foreach ($array as $key => $value){
+        foreach ($array as $key => $value) {
             $html .= "\t\t\t\"$key\" => \"$value\",\n";
         }
         $html .= "\t\t\t\"submit\" => \"submit\",\n";
-        return $html."\n\t\t);\n\t}\n";
+        return $html . "\n\t\t);\n\t}\n";
     }
-    
-    private static function rules($array){
-        $html = "\tpublic function rules(){\n\t\treturn array(\n";
-        foreach ($array as $key => $value){
-            $html .= "\t\t\t\"$key\" => array(".$value."\t\t\t),\n";
-        }
-        return $html."\n\t\t);\n\t}\n";
-    }
-    
-    private static function filters($array){
-        $html = "\tpublic function filters(){\n\t\treturn array(\n";
-        foreach ($array as $key => $value){
-            $html .= "\t\t\t\"$key\" => array(".$value."\t\t\t),\n";
-        }
-        return $html."\n\t\t);\n\t}\n";
-    }
-        
-    public static function generateModel(){
-        $tables =  Database::instance()->list_tables();
-        foreach($tables as $key => $table){
-            if(!in_array($table, self::$disabled_tables)){
-                $table_simple_name = Generator_Util::name($table);
-                $model_name = ucfirst(strtolower($table_simple_name));
-                
-                $writer = new Generator_Filewriter($table_simple_name);
-                $writer->addRow(Generator_Util::$pagehead);
-                $writer->addRow("<?php\n");
-                $writer->addRow(Generator_Util::classInfoHead("Model_".$model_name));
-                $writer->addRow(self::genORM($model_name));
-                
-                $relations = self::getTableRelationShips($table);
-                foreach ($relations as $relation){
-                    $writer->addRow($relation);
-                }
-                
-                $fields = Generator_Util::listTableFields($table);
-                $rules = array();
-                $filters = array();
-                $labels = array();
-                foreach($fields as $array){
-                    $field = Generator_Field::factory($array);
-                    
-                    if(!$field->isPrimaryKey()){
-                        if(!array_key_exists($field->getName(), $rules)){
-                            $rules[$field->getName()] = self::getRules($field->getType(), $field->getMin(), $field->getMax());
-                        }
 
-                        if(!array_key_exists($field->getName(), $filters)){
-                            $filters[$field->getName()] = self::getFilters($field->getType());
-                        }
-                        if(!array_key_exists($field->getName(), $labels)){
-                            $labels[$field->getName()] = $field->getName();
+    private static function rules($array) {
+        $html = "\tpublic function rules(){\n\t\treturn array(\n";
+        foreach ($array as $key => $value) {
+            $html .= "\t\t\t\"$key\" => array(" . $value . "\t\t\t),\n";
+        }
+        return $html . "\n\t\t);\n\t}\n";
+    }
+
+    private static function filters($array) {
+        $html = "\tpublic function filters(){\n\t\treturn array(\n";
+        foreach ($array as $key => $value) {
+            $html .= "\t\t\t\"$key\" => array(" . $value . "\t\t\t),\n";
+        }
+        return $html . "\n\t\t);\n\t}\n";
+    }
+
+    public static function generate() {
+        $tables = Database::instance()->list_tables();
+        foreach ($tables as $key => $table) {
+            if (!in_array($table, self::$disabled_tables)) {
+
+                $table_simple_name = Generator_Util::name($table);
+                $model_name = Generator_Util::upperFirst($table_simple_name);
+
+                $writer = new Generator_Filewriter($table_simple_name);
+
+                if (!$writer->fileExists($table_simple_name . ".php", Generator_Filewriter::$MODEL)) {
+
+                    $writer->addRow(Generator_Util::$OPEN_CLASS_FILE);
+                    $writer->addRow(Generator_Util::classInfoHead("Model_" . $model_name));
+                    $writer->addRow(self::genORM($model_name));
+
+                    $relations = self::getTableRelationShips($table);
+                    foreach ($relations as $relation) {
+                        $writer->addRow($relation);
+                    }
+
+                    $fields = Generator_Util::listTableFields($table);
+                    $rules = array();
+                    $filters = array();
+                    $labels = array();
+                    foreach ($fields as $array) {
+                        $field = Generator_Field::factory($array);
+
+                        if (!$field->isPrimaryKey()) {
+                            if (!array_key_exists($field->getName(), $rules)) {
+                                $rules[$field->getName()] = self::getRules($field->getType(), $field->getMin(), $field->getMax());
+                            }
+
+                            if (!array_key_exists($field->getName(), $filters)) {
+                                $filters[$field->getName()] = self::getFilters($field->getType());
+                            }
+                            if (!array_key_exists($field->getName(), $labels)) {
+                                $labels[$field->getName()] = $field->getName();
+                            }
                         }
                     }
+                    $writer->addRow(Generator_Util::methodInfoHead("array"));
+                    $writer->addRow(self::rules($rules));
+                    $writer->addRow(Generator_Util::methodInfoHead("array"));
+                    $writer->addRow(self::filters($filters));
+                    $writer->addRow(Generator_Util::methodInfoHead("array"));
+                    $writer->addRow(self::labels($labels));
+
+                    $writer->addRow(Generator_Util::methodInfoHead("array"));
+                    $writer->addRow(self::getFormErrors());
+
+                    $writer->addRow(Generator_Util::methodInfoHead("Validation"));
+                    $writer->addRow(self::getCsrf());
+
+                    $writer->addRow(Generator_Util::$CLOSE_CLASS_FILE);
                 }
-                $writer->addRow(Generator_Util::methodInfoHead("array"));
-                $writer->addRow(self::rules($rules));
-                $writer->addRow(Generator_Util::methodInfoHead("array"));
-                $writer->addRow(self::filters($filters));
-                $writer->addRow(Generator_Util::methodInfoHead("array"));
-                $writer->addRow(self::labels($labels));
-                
-                $writer->addRow(Generator_Util::methodInfoHead("array"));
-                $writer->addRow(self::getFormErrors());
-                
-                $writer->addRow(Generator_Util::methodInfoHead("Validation"));
-                $writer->addRow(self::getCsrf());
-                
-                $writer->addRow("}\n");
-                $writer->addRow("?>");
                 $writer->write(Generator_Filewriter::$MODEL);
                 self::$is_ok[] = $writer->writeIsOk();
-                self::$generated_files .= $writer->getPath()."<br />"; 
+                self::$generated_files .= $writer->getPath() . "<br />";
             }
         }
         return self::$generated_files;
     }
+
 }
 
 ?>

@@ -2,18 +2,37 @@
 echo form::open($action, array("id" => "generate_form"));
 ?>
 <div class="fields_div">
-    <?php
-    $i = 1;
-    foreach ($fields as $array) {
-        $field = Generator_Field::factory($array);
-        echo "<div>";
-        echo form::label($field->getName(), $field->getName() . ": ");
-        echo Generator_Form::suggestInput($field->getName(), $field->getType(), $field->getKey());
-        echo form::input("place[" . $field->getName() . "]", $i, array("class" => "place"));
-        echo "</div>";
-        ++$i;
-    }
-    ?>
+    <table>
+        <thead>
+            <tr>
+                <th>Field name</th>
+                <th>Suggested input</th>
+                <th>Position</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $i = 1;
+            foreach ($fields as $array) {
+                $field = Generator_Field::factory($array);
+                ?>
+                <?php 
+                if($i % 2 == 0){
+                    echo "<tr class=\"a\">";
+                }else{
+                    echo "<tr class=\"b\">";
+                }
+                    echo "<td>" . form::label($field->getName(), $field->getName() . ": ") . "</td>";
+                    echo "<td>" . Generator_Form::suggestInput($field->getName(), $field->getType(), $field->getKey()) . "</td>";
+                    echo "<td>" . form::input("place[" . $field->getName() . "]", $i, array("class" => "place")) . "</td>";
+                    ?>
+                </tr>
+                <?php
+                ++$i;
+            }
+            ?>
+        </tbody>
+    </table>
 </div>
 <?php
 echo form::hidden("generate_form_name", $name);
