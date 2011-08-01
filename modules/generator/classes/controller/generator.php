@@ -107,12 +107,7 @@ class Controller_Generator extends Kohana_Controller_Template {
             $this->template->flash = $flash;
         }
     }
-    
-    public function action_teszt(){
-        $view = View::factory("teszt");
-        
-        $this->template->content = $view;
-    }
+
 
 }
 
