@@ -2,9 +2,9 @@ $(document).ready(function() {
     var i = 0;
     // global-------------------------------------------------------------------
     $("#clear_button").click(function(){
-        $("#result").fadeOut("slow").html("");
-        $("#post_result").fadeOut("slow").html("");
-        $("#methods_holder").html("");
+        $("#result").fadeOut("slow", function(){ $(this).html("") });
+        $("#post_result").fadeOut("slow", function(){ $(this).html("") });
+        $("#methods_holder > div").fadeOut("slow", function(){ $(this).html("") });
         $("#controllername").val("");
         return false;
     });
@@ -15,11 +15,22 @@ $(document).ready(function() {
         $("#post_result").fadeOut("slow");
         $.get("/generatorajax/formfieldslist/"+selected, function(data){
             $("#result").html(data).fadeIn("slow");
+            $(".inputsuggest").change(function(){
+                var val = $(this).attr("id").valueOf();
+                var selected = $("#"+val+" option:selected").val();
+                if(parseInt(selected) == 0){
+                    $("#pozition_"+val).attr("disabled","disabled").fadeOut("slow");
+                }else if($("#pozition_"+val).attr("disabled") == "disabled"){
+                    $("#pozition_"+val).removeAttr("disabled").fadeIn("slow");
+                }
+            });
+            
             postForm("#generate_form", "/generatorajax/form");
                         
         });
     });
     
+        
     //assets generator----------------------------------------------------------
     $("#assets_button").click(function(){
         show_ajax_loader("#result");
@@ -44,7 +55,13 @@ $(document).ready(function() {
     postForm("#generate_controller", "/generatorajax/controller");
     
     //model generator-----------------------------------------------------------
-    postForm("#generate_model", "/generatorajax/model");
+    $("#model_button").click(function(){
+        show_ajax_loader("#result");
+        $.get("/generatorajax/model", function(data){
+            remove_ajax_loader("#result");
+            $("#result").html(data).fadeIn("slow");
+        });
+    });
 
 });
 

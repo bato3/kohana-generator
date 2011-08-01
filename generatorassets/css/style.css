@@ -145,6 +145,10 @@ input[type=password]:focus{
 .fields_div table td{
     text-align: center;
     border-bottom: 1px solid #8CCBD0;
+    min-width: 100px;
+}
+.fields_div table td select{
+    min-width: 50px;
 }
 
 .action_div{
@@ -183,11 +187,11 @@ input[type=password]:focus{
 }
 
 .a{
-    background-color: #ECEDE8;
+    background-color: #FEFAEE;
 }
 
 .b{
-    background-color: #FBF4CA;
+    background-color: #F6EFDF;
 }
 
 #result{display: none;}

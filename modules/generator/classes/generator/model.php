@@ -14,19 +14,11 @@ defined('SYSPATH') or die('No direct access allowed.');
  */
 class Generator_Model {
 
-    private static $date_format = "Y-m-d";
-    private static $disabled_tables = array("roles", "roles_users", "user_tokens");
     private static $generated_files;
     private static $is_ok = array();
 
     public static function getIsOkArray() {
         return self::$is_ok;
-    }
-
-    public static function setDateFormat($date_format) {
-        if (!empty($date_format)) {
-            self::$date_format = $date_format;
-        }
     }
 
     private static function getCsrf() {
@@ -38,10 +30,17 @@ class Generator_Model {
         return "\tpublic function formErrors(){\n\t\treturn \$this->validation()->errors(\"form_errors\"); \n\t}\n";
     }
 
-    private static function getRules($type, $min, $max) {
+    private static function getRules(Generator_Field $field) {
+        $min = $field->getMin();
+        $max = $field->getMax();
+        $key = $field->getKey();
+        
+        $config = Generator_Util::loadConfig();
+        $date_format = $config->get("date_format");
         $validation = "\n\t\t\t\tarray(\"not_empty\"),\n";
-        switch ($type) {
-            case "date" : $validation .= "\t\t\t\tarray(\"date\",array(\":value\", \"" . self::$date_format . "\")),\n";
+        
+        switch ($field->getType()) {
+            case "date" : $validation .= "\t\t\t\tarray(\"date\",array(\":value\", \"" . $date_format . "\")),\n";
                 break;
             case "year" : $validation .= "\t\t\t\tarray(\"date\",array(\":value\", \"Y\")),\n";
                 break;
@@ -72,18 +71,22 @@ class Generator_Model {
             case "" : $validation .= "";
                 break;
         }
+                
         if (!empty($min) && !empty($max)) {
             $validation .= "\t\t\t\tarray(\"min_length\",array(\":value\", $min)),\n\t\t\t\tarray(\"max_length\",array(\":value\", $max)),\n";
         }
         if (empty($min) && !empty($max)) {
             $validation .= "\t\t\t\tarray(\"max_length\",array(\":value\", $max)),\n";
         }
+        if(!empty($key) && $key == "UNI"){
+            $validation .= "\t\t\t\tarray(array(\$this, \"unique\"), array(\"".$field->getName()."\", \":value\")),\n";
+        }
         return $validation;
     }
 
-    private static function getFilters($type) {
+    private static function getFilters(Generator_Field $field) {
         $validation = "\n\t\t\t\tarray(\"trim\"),\n";
-        switch ($type) {
+        switch ($field->getType()) {
             case "varchar" : $validation .= "\t\t\t\tarray(\"strtolower\"),\n\t\t\t\tarray(\"ucwords\"),\n";
                 break;
         }
@@ -145,8 +148,10 @@ class Generator_Model {
 
     public static function generate() {
         $tables = Database::instance()->list_tables();
+        $config = Generator_Util::loadConfig();
+        $disabled_tables = $config->get("disabled_tables");
         foreach ($tables as $key => $table) {
-            if (!in_array($table, self::$disabled_tables)) {
+            if (!in_array($table, $disabled_tables)) {
 
                 $table_simple_name = Generator_Util::name($table);
                 $model_name = Generator_Util::upperFirst($table_simple_name);
@@ -173,11 +178,11 @@ class Generator_Model {
 
                         if (!$field->isPrimaryKey()) {
                             if (!array_key_exists($field->getName(), $rules)) {
-                                $rules[$field->getName()] = self::getRules($field->getType(), $field->getMin(), $field->getMax());
+                                $rules[$field->getName()] = self::getRules($field);
                             }
 
                             if (!array_key_exists($field->getName(), $filters)) {
-                                $filters[$field->getName()] = self::getFilters($field->getType());
+                                $filters[$field->getName()] = self::getFilters($field);
                             }
                             if (!array_key_exists($field->getName(), $labels)) {
                                 $labels[$field->getName()] = $field->getName();

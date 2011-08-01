@@ -28,6 +28,10 @@ class Generator_Util {
             );
         }
     }
+    
+    public static function listTables(){
+        return Database::instance()->list_tables();
+    }
 
     public static function name($table) {
         $len = strlen($table) - 1;

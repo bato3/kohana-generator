@@ -14,7 +14,7 @@ defined('SYSPATH') or die('No direct access allowed.');
 class Controller_Generator extends Kohana_Controller_Template {
 
     private static $SESSION_KEY = "generator_logged_in";
-    private static $LOGIN_FAILD = "login faild!";
+    private static $LOGIN_FAILD = "login failed!";
     public $template = "template";
     private $logged_in = false;
     private $links = array("assets", "model", "form", "controller", "logout");
@@ -76,9 +76,9 @@ class Controller_Generator extends Kohana_Controller_Template {
 
     public function action_model() {
         $form = View::factory("forms/generatormodel");
-        $form->language = array("generate_model_button" => "Generate models",
-            "clear_button" => "Clear",
-            "date_format" => "Date format");
+        $form->language = array("model_button" => "Generate models",
+            "clear_button" => "Clear");
+        
         $form->action = "generatorajax/model";
         $this->template->content = $form;
     }
@@ -96,7 +96,9 @@ class Controller_Generator extends Kohana_Controller_Template {
 
     public function action_assets() {
         $form = View::factory("forms/generatorassets");
-        $form->language = array("assets_button" => "Generate assets structure");
+        $form->language = array("assets_button" => "Generate assets structure",
+            "clear_button" => "Clear");
+        
         $this->template->content = $form;
     }
 
@@ -104,6 +106,12 @@ class Controller_Generator extends Kohana_Controller_Template {
         if (!empty($flash)) {
             $this->template->flash = $flash;
         }
+    }
+    
+    public function action_teszt(){
+        $view = View::factory("teszt");
+        
+        $this->template->content = $view;
     }
 
 }

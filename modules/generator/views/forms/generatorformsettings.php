@@ -13,6 +13,12 @@ echo form::open($action, array("id" => "generate_form"));
         <tbody>
             <?php
             $i = 1;
+            $count = count($fields) + 1;
+            $select_pozition = array();
+            for($p = 1; $p < $count; ++$p){
+                $select_pozition[$p] = $p;
+            }
+            
             foreach ($fields as $array) {
                 $field = Generator_Field::factory($array);
                 ?>
@@ -23,8 +29,8 @@ echo form::open($action, array("id" => "generate_form"));
                     echo "<tr class=\"b\">";
                 }
                     echo "<td>" . form::label($field->getName(), $field->getName() . ": ") . "</td>";
-                    echo "<td>" . Generator_Form::suggestInput($field->getName(), $field->getType(), $field->getKey()) . "</td>";
-                    echo "<td>" . form::input("place[" . $field->getName() . "]", $i, array("class" => "place")) . "</td>";
+                    echo "<td>" . Generator_Form::inputSuggest($field->getName(), $i, $field->getType(), $field->getKey()) . "</td>";
+                    echo "<td>" . form::select("place[" . $field->getName() . "]", $select_pozition, $i, array("class" => "place", "id" => "pozition_".$i)) . "</td>";
                     ?>
                 </tr>
                 <?php

@@ -69,9 +69,7 @@ class Controller_Generatorajax extends Controller {
 
     public function action_model() {
         if ($this->request->is_ajax()) {
-            Generator_Model::setDateFormat($_POST["date_format"]);
             $html = Generator_Model::generate();
-
             $view = View::factory("forms/generatorshowgeneratedmodel");
             $view->write_ok = in_array(false, Generator_Model::getIsOkArray()) ? false : true;
             $view->files = $html;
