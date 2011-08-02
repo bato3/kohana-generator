@@ -248,12 +248,13 @@ class Generator_Form {
                 $rev[$place] = $name;
             } else {
                 $ok = false;
+                $new_place = 0;
                 while (!$ok) {
-                    if (!array_key_exists($place, $rev)) {
-                        $rev[$place] = $name;
+                    if (!array_key_exists($new_place, $rev)) {
+                        $rev[$new_place] = $name;
                         $ok = true;
                     }
-                    $place++;
+                    $new_place++;
                 }
             }
         }
@@ -275,7 +276,7 @@ class Generator_Form {
     public static function generate($post_array, $db_name=true) {
         $wrapper = self::$WRAPPERS[$post_array["wrapper"]];
         $filename = Generator_Util::name($post_array["generate_form_name"], $db_name);
-        
+
         $writer = new Generator_Filewriter($filename);
 
         $writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);

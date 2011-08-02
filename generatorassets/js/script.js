@@ -1,6 +1,8 @@
 $(document).ready(function() {
-    var i = 0;
+    
     // global-------------------------------------------------------------------
+    var i = 0;
+    
     $("#clear_button").click(function(){
         $("#result").fadeOut("slow", function(){
             $(this).html("")
@@ -46,7 +48,8 @@ $(document).ready(function() {
         if(0 < name.length){
             $("#input_name").val("");
             $.get("/generatorajax/inputs?id=in_"+i+"&name="+name, function(data){
-                var item = "<tr class=\"row_div\" id=\"row_div_"+i+"\"><td><label for=\""+name+"\">"+name+":</label></td><td>"+data+"</td><td><span class=\"delete\" id=\""+i+"\"><img src=\"/generatorassets/img/delete.png\"></span><input type=\"hidden\" name=\"place["+name+"]\" value=\""+i+"\" /></td></tr>";
+                var row_class = i % 2 == 0 ? "a" : "b";
+                var item = "<tr class=\""+row_class+"\" id=\"row_div_"+i+"\"><td><label for=\""+name+"\">"+name+":</label></td><td>"+data+"</td><td><span class=\"delete_tr\" id=\""+i+"\"><img src=\"/generatorassets/img/delete.png\"></span><input type=\"hidden\" name=\"place["+name+"]\" value=\""+i+"\" /></td></tr>";
                 $("#rows_holder > tbody").append(item);
                 $("#"+i).click(function(){
                     var id = $(this).attr("id").valueOf();

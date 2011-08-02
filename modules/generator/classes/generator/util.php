@@ -28,21 +28,21 @@ class Generator_Util {
             );
         }
     }
-    
-    public static function listTables(){
+
+    public static function listTables() {
         return Database::instance()->list_tables();
     }
 
     public static function name($table, $db_name=true) {
-        if($db_name){
+        if ($db_name) {
             $config = self::loadConfig();
-            if($config->get("table_names_plural")){
+            if ($config->get("table_names_plural")) {
                 $len = strlen($table) - 1;
                 return strtolower(substr($table, 0, $len));
-            }else{
+            } else {
                 return strtolower($table);
             }
-        }else{
+        } else {
             return strtolower($table);
         }
     }

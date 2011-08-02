@@ -7,7 +7,7 @@ echo form::open($action, array("id" => "generate_controller"));
     ?>
 </div>
 <?php
-echo form::button("clear_button", $language["clear_button"], array("id" => "clear_button"));
+echo form::button("clear_button", $labels["clear_button"], array("id" => "clear_button"));
 ?>
 <div class="extends_div">
     <?php
@@ -24,13 +24,13 @@ echo form::button("clear_button", $language["clear_button"], array("id" => "clea
 </div>
 <div>
     <?php
-    echo form::button("add_action_button", $language["add_action_button"], array("id" => "add_action_button"));
+    echo form::button("add_action_button", $labels["add_action_button"], array("id" => "add_action_button"));
     ?>
 </div>
 <div id="methods_holder"></div>
 <div>
     <?php
-    echo form::submit("generate_controller_button", $language["generate_controller_button"], array("id" => "generate_controller_button"));
+    echo form::submit("generate_controller_button", $labels["generate_controller_button"], array("id" => "generate_controller_button"));
     ?>
 </div>
 <?php

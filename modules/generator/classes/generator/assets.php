@@ -36,11 +36,11 @@ class Generator_Assets {
 
         $config = Generator_Util::loadConfig();
         $writer = new Generator_Filewriter($config->get("jquery_name"), true);
-        
-        if(!$writer->fileExists($config->get("jquery_name"), Generator_Filewriter::$ASSETS_JS)){
+
+        if (!$writer->fileExists($config->get("jquery_name"), Generator_Filewriter::$ASSETS_JS)) {
             $writer->addRow(file_get_contents($config->get("jquery_url")));
         }
-        
+
         $writer->write(Generator_Filewriter::$ASSETS_JS);
         self::$html .= $writer->getPath() . "<br />";
         return self::$html;

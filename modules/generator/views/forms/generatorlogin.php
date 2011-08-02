@@ -1,6 +1,6 @@
 <?php echo form::open($action); ?>
 <div>
-    <?php echo form::label("password", $language["password"] . ": ") ?>
+    <?php echo form::label("password", $labels["password"] . ": ") ?>
     <?php echo form::password("password", "", array("id" => "password")) ?>
     <?php
     if (isset($errors)) {
@@ -8,5 +8,5 @@
     }
     ?>
 </div>
-<div><?php echo form::submit("submit", $language["login"]) ?></div>
+<div><?php echo form::submit("submit", $labels["login"]) ?></div>
 <?php echo form::close(); ?>

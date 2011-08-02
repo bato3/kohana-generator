@@ -34,11 +34,11 @@ class Generator_Model {
         $min = $field->getMin();
         $max = $field->getMax();
         $key = $field->getKey();
-        
+
         $config = Generator_Util::loadConfig();
         $date_format = $config->get("date_format");
         $validation = "\n\t\t\t\tarray(\"not_empty\"),\n";
-        
+
         switch ($field->getType()) {
             case "date" : $validation .= "\t\t\t\tarray(\"date\",array(\":value\", \"" . $date_format . "\")),\n";
                 break;
@@ -71,15 +71,15 @@ class Generator_Model {
             case "" : $validation .= "";
                 break;
         }
-                
+
         if (!empty($min) && !empty($max)) {
             $validation .= "\t\t\t\tarray(\"min_length\",array(\":value\", $min)),\n\t\t\t\tarray(\"max_length\",array(\":value\", $max)),\n";
         }
         if (empty($min) && !empty($max)) {
             $validation .= "\t\t\t\tarray(\"max_length\",array(\":value\", $max)),\n";
         }
-        if(!empty($key) && $key == "UNI"){
-            $validation .= "\t\t\t\tarray(array(\$this, \"unique\"), array(\"".$field->getName()."\", \":value\")),\n";
+        if (!empty($key) && $key == "UNI") {
+            $validation .= "\t\t\t\tarray(array(\$this, \"unique\"), array(\"" . $field->getName() . "\", \":value\")),\n";
         }
         return $validation;
     }
@@ -147,7 +147,7 @@ class Generator_Model {
     }
 
     public static function generate() {
-        $tables = Database::instance()->list_tables();
+        $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
         $disabled_tables = $config->get("disabled_tables");
         foreach ($tables as $key => $table) {

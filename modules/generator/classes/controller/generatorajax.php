@@ -28,7 +28,8 @@ class Controller_Generatorajax extends Controller {
                 $form = View::factory("forms/generatorformsettings");
                 $form->action = "generatorajax/form";
                 $form->name = $id;
-                $form->language = array("generate_form_button" => "Generete Form");
+                $form->labels = array("flashmessage" => "Flash message",
+                    "generate_form_button" => "Generete Form");
                 $form->fields = Generator_Util::listTableFields($id);
                 $this->sendHtml($form->render());
             } else {
@@ -42,12 +43,12 @@ class Controller_Generatorajax extends Controller {
     public function action_form() {
         if ($this->request->is_ajax()) {
             $post = $_POST;
-            if(isset($_POST["formbuilder"])){
+            if (isset($_POST["formbuilder"])) {
                 $writer = Generator_Form::generate($post, false);
-            }else{
-                $writer = Generator_Form::generate($post);                
+            } else {
+                $writer = Generator_Form::generate($post);
             }
-            
+
             $view = View::factory("forms/generatorshowgeneratedform");
             $view->rows = $writer->getRows();
             $view->savepath = $writer->getPath();
@@ -91,13 +92,14 @@ class Controller_Generatorajax extends Controller {
             throw new HTTP_Exception_404();
         }
     }
-    
-    public function action_inputs(){
+
+    public function action_inputs() {
         $view = View::factory("forms/generatorinputs");
         $view->name = $_GET["name"];
         $view->id = $_GET["id"];
         $this->sendHtml($view);
     }
+
 }
 
 ?>

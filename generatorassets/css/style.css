@@ -33,12 +33,14 @@ legend{font-weight: bold;}
     width:940px;
     margin:auto;
 }
+
 #content{
     position:absolute;
     margin-top:30px;
     width:940px;
     height:1000px;
 }
+
 #menu{
     position: relative;
     background: url('/generatorassets/img/menu_bg.png');
@@ -48,14 +50,17 @@ legend{font-weight: bold;}
     border: 2px solid #ED6E29;
     text-transform: capitalize;
 }
+
 ul{ 
     position: relative;
     top: 1px;
 }
+
 li{ 	
     float: left;
     list-style: none; 
 }
+
 a{
     text-decoration: none;
     color:#413038;
@@ -64,14 +69,17 @@ a{
     padding-right: 6px;
     padding-bottom: 16px;
 }
+
 a:hover{
     background: url('/generatorassets/img/hover_bg.png');
     color: #FCF0E4;
 }
+
 input[type=text]{
     background-color: #F8F6EF;
     border: 1px solid #8CCBD0
 }
+
 input[type=text]:focus{
     background-color: #F4EDD9;
 }
@@ -80,6 +88,7 @@ input[type=password]{
     background-color: #F8F6EF;
     border: 1px solid #8CCBD0
 }
+
 input[type=password]:focus{
     background-color: #F4EDD9;
 }
@@ -142,15 +151,25 @@ input[type=password]:focus{
     padding-bottom: 5px;
 }
 
+#rows_holder th{
+    border-bottom: 4px solid #8CCBD0;
+}
+
+#rows_holder tr td{
+    text-align: center;
+}
+
 .fields_div{
     border-top: 1px solid #8CCBD0;
     margin-top: 10px;
     margin-bottom: 10px;
     padding-top: 5px;
 }
+
 .fields_div table th{
     border-bottom: 4px solid #8CCBD0;
 }
+
 .fields_div table td{
     text-align: center;
     border-bottom: 1px solid #8CCBD0;
@@ -167,6 +186,11 @@ input[type=password]:focus{
 .delete{
     position: relative;
     top: 5px;
+    cursor: pointer;
+}
+
+.delete_tr{
+    position: relative;
     cursor: pointer;
 }
 

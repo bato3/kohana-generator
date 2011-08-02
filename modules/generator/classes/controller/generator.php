@@ -18,14 +18,13 @@ class Controller_Generator extends Kohana_Controller_Template {
     public $template = "template";
     private $logged_in = false;
     private $links = array(
-        "index"  => "index",
-        "assets" => "assets", 
-        "model" => "model", 
-        "form" => "form from database", 
-        "formbuilder" => "form builder", 
-        "controller" => "controller builder", 
-        "logout" => "logout" 
-   );
+        "assets" => "assets",
+        "model" => "model",
+        "form" => "form",
+        "formbuilder" => "form builder",
+        "controller" => "controller builder",
+        "logout" => "logout"
+    );
 
     public function before() {
         parent::before();
@@ -34,18 +33,21 @@ class Controller_Generator extends Kohana_Controller_Template {
             Request::current()->redirect("generator/login");
         }
         $this->template->links = $this->links;
-        $this->template->legend = ucwords($this->links[$this->request->action()]);
+        if (array_key_exists($this->request->action(), $this->links)) {
+            $this->template->legend = ucwords($this->links[$this->request->action()]);
+        }
     }
 
     public function action_index() {
         $config = Generator_Util::loadConfig();
+        $this->template->legend = ucfirst($this->request->action());
         $this->template->content = "<h3>Hello " . ucwords(strtolower($config->get("author"))) . "!</h3><div>You are logged in!</div><div>Please setup your database first!</div>";
     }
 
     public function action_login() {
         $form = View::factory("forms/generatorlogin");
-        $form->language = array("login" => "Login", "password" => "Password");
         $form->action = "generator/login";
+        $form->labels = array("login" => "Login", "password" => "Password");
 
         if (isset($_POST["submit"])) {
             $validation = Validation::factory($_POST)
@@ -62,6 +64,7 @@ class Controller_Generator extends Kohana_Controller_Template {
             }
         }
 
+        $this->template->legend = ucfirst($this->request->action());
         $this->template->content = $form;
     }
 
@@ -72,19 +75,23 @@ class Controller_Generator extends Kohana_Controller_Template {
 
     public function action_form() {
         $form = View::factory("forms/generatorform");
-        $form->language = array("table" => "Db table names",
+        $form->labels = array("table" => "Db table names",
             "clear_button" => "Clear");
         $form->tablenames = Generator_Form::listTables(true);
+
         $this->template->content = $form;
     }
-    
+
     public function action_formbuilder() {
         $form = View::factory("forms/generatorformbuilder");
         $form->action = "generatorajax/formbuilder";
-        $form->language = array("generate_formbuilder_button" => "Generete Form",
+        $form->labels = array("generate_formbuilder_button" => "Generete Form",
             "add_row_button" => "Add new row",
+            "input_name" => "Input field name",
+            "flashmessage" => "Flash message",
+            "generate_form_name" => "File name",
             "clear_button" => "Clear");
-        
+
         $this->template->content = $form;
     }
 
@@ -94,29 +101,30 @@ class Controller_Generator extends Kohana_Controller_Template {
 
     public function action_model() {
         $form = View::factory("forms/generatormodel");
-        $form->language = array("model_button" => "Generate models",
-            "clear_button" => "Clear");
-        
         $form->action = "generatorajax/model";
+        $form->labels = array("model_button" => "Generate models",
+            "clear_button" => "Clear");
+
         $this->template->content = $form;
     }
 
     public function action_controller() {
         $form = View::factory("forms/generatorcontroller");
-        $form->language = array("generate_controller_button" => "Generate controller",
+        $form->action = "generatorajax/controller";
+        $form->labels = array("generate_controller_button" => "Generate controller",
             "controller_name" => "Controller name",
             "add_action_button" => "Add new action method",
             "clear_button" => "Clear"
         );
-        $form->action = "generatorajax/controller";
+
         $this->template->content = $form;
     }
 
     public function action_assets() {
         $form = View::factory("forms/generatorassets");
-        $form->language = array("assets_button" => "Generate assets structure",
+        $form->labels = array("assets_button" => "Generate assets structure",
             "clear_button" => "Clear");
-        
+
         $this->template->content = $form;
     }
 
@@ -125,7 +133,7 @@ class Controller_Generator extends Kohana_Controller_Template {
             $this->template->flash = $flash;
         }
     }
-    
+
 }
 
 ?>

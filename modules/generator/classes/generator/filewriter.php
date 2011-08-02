@@ -68,8 +68,8 @@ class Generator_Filewriter {
     public function writeIsOk() {
         return $this->write_is_ok;
     }
-    
-    private function getApplicationPaths($mod){
+
+    private function getApplicationPaths($mod) {
         switch ($mod) {
             case 1 :
                 return DOCROOT . "application" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "model" . DIRECTORY_SEPARATOR;
@@ -102,14 +102,14 @@ class Generator_Filewriter {
         $dirpath = null;
         $error = null;
         $dirpath = $this->getApplicationPaths($mod);
-        
+
         if (!file_exists($dirpath)) {
             @mkdir($dirpath);
             @chmod($dirpath, 0777);
         } else if (empty($this->filename)) {
             $error = "<div class=\"error\">Directory exists: <cite>$dirpath</cite> Please delete first!</div>";
         }
-        
+
         if (is_writable($dirpath)) {
             if (isset($this->filename)) {
                 $dirpath .= $this->filename;
@@ -134,9 +134,10 @@ class Generator_Filewriter {
         $this->path = empty($error) ? $dirpath : $error;
     }
 
-    public function fileExists($file, $mod=1){
+    public function fileExists($file, $mod=1) {
         return file_exists($this->getApplicationPaths($mod) . $file);
     }
+
 }
 
 ?>
