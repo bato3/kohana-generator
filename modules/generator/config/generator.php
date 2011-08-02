@@ -24,4 +24,6 @@ return array(
     "disabled_tables" => array(
         "roles", "roles_users", "user_tokens"
     ),
+    
+    "table_names_plural" => true,
 );

@@ -35,8 +35,13 @@ class Generator_Util {
 
     public static function name($table, $db_name=true) {
         if($db_name){
-            $len = strlen($table) - 1;
-            return strtolower(substr($table, 0, $len));
+            $config = self::loadConfig();
+            if($config->get("table_names_plural")){
+                $len = strlen($table) - 1;
+                return strtolower(substr($table, 0, $len));
+            }else{
+                return strtolower($table);
+            }
         }else{
             return strtolower($table);
         }
