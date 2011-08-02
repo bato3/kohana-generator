@@ -15,9 +15,9 @@
                 <ul>
                     <li><?php echo html::anchor("generator/", "index", array("id" => "index", "class" => "menu_link")) ?></li>
                     <?php
-                    foreach ($links as $link) {
+                    foreach ($links as $path => $link) {
                         ?>
-                        <li><?php echo html::anchor("generator/$link", $link, array("id" => $link, "class" => "menu_link")) ?></li>
+                        <li><?php echo html::anchor("generator/$path", $link, array("id" => $link, "class" => "menu_link")) ?></li>
                         <?php
                     }
                     ?>

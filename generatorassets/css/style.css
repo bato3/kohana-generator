@@ -133,6 +133,15 @@ input[type=password]:focus{
     padding-bottom: 5px;
 }
 
+#rows_holder{
+    border-top: 1px solid #8CCBD0;
+    border-bottom: 1px solid #8CCBD0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 .fields_div{
     border-top: 1px solid #8CCBD0;
     margin-top: 10px;

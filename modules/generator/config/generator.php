@@ -6,6 +6,8 @@ return array(
     "author" => "burningface",
     "license" => "GPL",
     "copyright" => "(c) 2011 burningface",
+    "error_class" => "form_error",
+    "row_class" => "form_row",
     
     "date_format" => "Y-m-d",
     "csrf_token_name" => "csrf",

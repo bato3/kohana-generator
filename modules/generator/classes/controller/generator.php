@@ -17,7 +17,14 @@ class Controller_Generator extends Kohana_Controller_Template {
     private static $LOGIN_FAILD = "login failed!";
     public $template = "template";
     private $logged_in = false;
-    private $links = array("assets", "model", "form", "controller", "logout");
+    private $links = array(
+        "assets" => "assets", 
+        "model" => "model generator", 
+        "form" => "form from database", 
+        "formbuilder" => "form builder", 
+        "controller" => "controller builder", 
+        "logout" => "logout" 
+   );
 
     public function before() {
         parent::before();
@@ -26,7 +33,7 @@ class Controller_Generator extends Kohana_Controller_Template {
             Request::current()->redirect("generator/login");
         }
         $this->template->links = $this->links;
-        $this->template->legend = ucfirst($this->request->action());
+        $this->template->legend = ucwords($this->links[$this->request->action()]);
     }
 
     public function action_index() {
@@ -69,6 +76,16 @@ class Controller_Generator extends Kohana_Controller_Template {
         $form->tablenames = Generator_Form::listTables(true);
         $this->template->content = $form;
     }
+    
+    public function action_formbuilder() {
+        $form = View::factory("forms/generatorformbuilder");
+        $form->action = "generatorajax/formbuilder";
+        $form->language = array("generate_formbuilder_button" => "Generete Form",
+            "add_row_button" => "Add new row",
+            "clear_button" => "Clear");
+        
+        $this->template->content = $form;
+    }
 
     public function action_loginform() {
         $this->template->content = "loginform";
@@ -107,8 +124,7 @@ class Controller_Generator extends Kohana_Controller_Template {
             $this->template->flash = $flash;
         }
     }
-
-
+    
 }
 
 ?>

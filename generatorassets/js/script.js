@@ -2,10 +2,20 @@ $(document).ready(function() {
     var i = 0;
     // global-------------------------------------------------------------------
     $("#clear_button").click(function(){
-        $("#result").fadeOut("slow", function(){ $(this).html("") });
-        $("#post_result").fadeOut("slow", function(){ $(this).html("") });
-        $("#methods_holder > div").fadeOut("slow", function(){ $(this).html("") });
+        $("#result").fadeOut("slow", function(){
+            $(this).html("")
+        });
+        $("#post_result").fadeOut("slow", function(){
+            $(this).html("")
+        });
+        $("#methods_holder > div").fadeOut("slow", function(){
+            $(this).html("")
+        });
+        $("#rows_holder > tbody > tr").fadeOut("slow", function(){
+            $(this).html("")
+        });
         $("#controllername").val("");
+        $("#generate_form_name").val("")
         return false;
     });
     
@@ -30,7 +40,40 @@ $(document).ready(function() {
         });
     });
     
-        
+    //form builder generator----------------------------------------------------
+    $("#add_row_button").click(function(){
+        var name = $("#input_name").val();
+        if(0 < name.length){
+            $("#input_name").val("");
+            $.get("/generatorajax/inputs?id=in_"+i+"&name="+name, function(data){
+                var item = "<tr class=\"row_div\" id=\"row_div_"+i+"\"><td><label for=\""+name+"\">"+name+":</label></td><td>"+data+"</td><td><span class=\"delete\" id=\""+i+"\"><img src=\"/generatorassets/img/delete.png\"></span><input type=\"hidden\" name=\"place["+name+"]\" value=\""+i+"\" /></td></tr>";
+                $("#rows_holder > tbody").append(item);
+                $("#"+i).click(function(){
+                    var id = $(this).attr("id").valueOf();
+                    $("#row_div_"+id).remove();
+                });
+                i++;
+            });
+        }else{
+            alert("Input name is empty!")
+        }
+        return false;
+    });
+    
+    $("#generate_formbuilder").submit(function(){
+        if(0 < $("#generate_form_name").val().length){
+            show_ajax_loader("#post_result");
+            $.post("/generatorajax/form", $("#generate_formbuilder").serialize(), function(data){
+                remove_ajax_loader("#post_result");
+                $("#post_result").html(data).fadeIn("slow");
+            });            
+        }else{
+            alert("File name is empty!")
+        }
+        return false;
+    });
+    
+    
     //assets generator----------------------------------------------------------
     $("#assets_button").click(function(){
         show_ajax_loader("#result");

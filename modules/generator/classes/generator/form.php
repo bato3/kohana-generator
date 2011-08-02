@@ -23,7 +23,7 @@ class Generator_Form {
         "textarea",
         "select",
         "radio",
-        "checkbox"
+        "checkbox",
     );
 
     private static function label($key) {
@@ -69,7 +69,9 @@ class Generator_Form {
     }
 
     private static function error($key) {
-        return "\t\t<?php echo isset(\$errors[\"$key\"]) ? \"<span class=\\\"errors\\\">\".\$errors[\"$key\"].\"</span>\" : \"\" ?>\n";
+        $config = Generator_Util::loadConfig();
+        $class = $config->get("error_class");
+        return "\t\t<?php echo isset(\$errors[\"$key\"]) ? \"<span class=\\\"$class\\\">\".\$errors[\"$key\"].\"</span>\" : \"\" ?>\n";
     }
 
     private static function formOpen() {
@@ -92,20 +94,26 @@ class Generator_Form {
         return "<?php if(isset(\$flash)){ ?> <div class=\"flash\"><?php echo \$flash ?></div> <?php } ?>";
     }
 
-    private static function wrappDiv($item, $attributes=array()) {
-        return empty($attributes) ? "\t<div>\n$item\t</div>" : "\t<div" . html::attributes($attributes) . ">\n$item\t</div>";
+    private static function wrappDiv($item) {
+        $config = Generator_Util::loadConfig();
+        $class = $config->get("row_class");
+        return empty($class) ? "\t<div>\n$item\t</div>" : "\t<div class=\"$class\">\n$item\t</div>";
     }
 
-    private static function wrappP($item, $attributes=array()) {
-        return empty($attributes) ? "\t<p>\n$item\t</p>" : "\t<p" . html::attributes($attributes) . ">\n$item\t</p>";
+    private static function wrappP($item) {
+        $config = Generator_Util::loadConfig();
+        $class = $config->get("row_class");
+        return empty($class) ? "\t<p>\n$item\t</p>" : "\t<p class=\"$class\">\n$item\t</p>";
     }
 
-    private static function wrappTD($item, $attributes=array()) {
-        return empty($attributes) ? "\t\t<td>\n$item\t\t</td>\n" : "\t\t<td" . html::attributes($attributes) . ">\n$item\t\t</td>\n";
+    private static function wrappTD($item) {
+        return "\t\t<td>\n\t$item\t\t</td>\n";
     }
 
-    private static function wrappTR($item, $attributes=array()) {
-        return empty($attributes) ? "\t<tr>\n$item\t</tr>" : "\t<tr" . html::attributes($attributes) . ">\n$item\t</tr>";
+    private static function wrappTR($item) {
+        $config = Generator_Util::loadConfig();
+        $class = $config->get("row_class");
+        return empty($class) ? "\t<tr>\n$item\t</tr>" : "\t<tr class=\"$class\">\n$item\t</tr>";
     }
 
     public static function listTables($with_login=false) {
@@ -171,47 +179,60 @@ class Generator_Form {
         }
     }
 
-    private static function getInput($key=null, $val=null) {
-        if (is_numeric($val) && !empty($val) && !empty($key)) {
-            $method = self::$INPUTS[$val];
+    private static function getInput($key, $val=null) {
+        if ($key == "submit") {
+            return call_user_func("Generator_Form::submit");
+        } else if (is_numeric($val) && !empty($val)) {
+            if (array_key_exists($val, self::$INPUTS)) {
+                $method = self::$INPUTS[$val];
 
-            if (!empty($method)) {
-                if (method_exists("Generator_Form", $method)) {
-                    if ($method != "hidden") {
-                        return self::label($key) . call_user_func("Generator_Form::$method", $key);
-                    } else {
-                        return call_user_func("Generator_Form::$method", $key);
+                if (!empty($method)) {
+                    if (method_exists("Generator_Form", $method)) {
+                        if ($method != "hidden") {
+                            return call_user_func("Generator_Form::$method", $key);
+                        } else {
+                            return call_user_func("Generator_Form::$method", $key);
+                        }
                     }
                 }
             }
-        } else if (empty($val) && $key == "submit") {
-            return self::label("submit") . call_user_func("Generator_Form::submit");
         }
     }
 
-    private static function rowWrapper($row, $wrapper, $key=null, $val=null) {
-        if (!empty($row) && !empty($wrapper)) {
-            if (!empty($key) && self::$INPUTS[$val] != "hidden") {
-                switch ($wrapper) {
-                    case "table" :
-                        return self::wrappTR(self::wrappTD($row) . self::wrappTD(self::error($key)));
-                        break;
-                    case "p" :
-                        return self::wrappP($row . self::error($key));
-                        break;
-                    default :
-                        return self::wrappDiv($row . self::error($key));
-                }
-            } else {
-                switch ($wrapper) {
-                    case "table" :
-                        return self::wrappTR(self::wrappTD($row));
-                        break;
-                    case "p" :
-                        return self::wrappP($row);
-                        break;
-                    default :
-                        return self::wrappDiv($row);
+    private static function rowWrapper($key, $val, $wrapper="div") {
+        if (!empty($key)) {
+            $input = self::getInput($key, $val);
+            $label = self::label($key);
+
+            if (!empty($wrapper) && !empty($input)) {
+                if (array_key_exists($val, self::$INPUTS) && self::$INPUTS[$val] != "hidden" || $key == "submit") {
+                    switch ($wrapper) {
+                        case "table" :
+                            return self::wrappTR(self::wrappTD($label) . self::wrappTD($input) . self::wrappTD(self::error($key)));
+                            break;
+                        case "p" :
+                            return self::wrappP($label . $input . self::error($key));
+                            break;
+                        case "div" :
+                            return self::wrappDiv($label . $input . self::error($key));
+                            break;
+                        default :
+                            return self::wrappDiv($label . $input . self::error($key));
+                    }
+                } else {
+                    switch ($wrapper) {
+                        case "table" :
+                            return self::wrappTR(self::wrappTD("&nbsp;\n") . self::wrappTD("&nbsp;\n") . self::wrappTD($input));
+                            break;
+                        case "p" :
+                            return self::wrappP($input);
+                            break;
+                        case "div" :
+                            return self::wrappDiv($input);
+                            break;
+                        default :
+                            return self::wrappDiv($input);
+                    }
                 }
             }
         }
@@ -251,10 +272,10 @@ class Generator_Form {
         return $array;
     }
 
-    public static function generate($post_array) {
+    public static function generate($post_array, $db_name=true) {
         $wrapper = self::$WRAPPERS[$post_array["wrapper"]];
-        $filename = Generator_Util::name($post_array["generate_form_name"]);
-
+        $filename = Generator_Util::name($post_array["generate_form_name"], $db_name);
+        
         $writer = new Generator_Filewriter($filename);
 
         $writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
@@ -274,10 +295,10 @@ class Generator_Form {
         $post_array = self::orderPost($post_array);
         foreach ($post_array as $key => $val) {
             if (is_numeric($val) && !empty($key) && $key != "wrapper") {
-                $writer->addRow(self::rowWrapper(Generator_Form::getInput($key, $val), $wrapper, $key, $val));
+                $writer->addRow(self::rowWrapper($key, $val, $wrapper));
             }
         }
-        $writer->addRow(self::rowWrapper(Generator_Form::getInput("submit"), $wrapper));
+        $writer->addRow(self::rowWrapper("submit", null, $wrapper));
 
         if ($wrapper == "table") {
             $writer->addRow(self::tableClose());

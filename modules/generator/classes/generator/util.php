@@ -33,9 +33,13 @@ class Generator_Util {
         return Database::instance()->list_tables();
     }
 
-    public static function name($table) {
-        $len = strlen($table) - 1;
-        return substr($table, 0, $len);
+    public static function name($table, $db_name=true) {
+        if($db_name){
+            $len = strlen($table) - 1;
+            return strtolower(substr($table, 0, $len));
+        }else{
+            return strtolower($table);
+        }
     }
 
     public static function upperFirst($string) {
