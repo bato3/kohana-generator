@@ -18,6 +18,7 @@ class Controller_Generator extends Kohana_Controller_Template {
     public $template = "template";
     private $logged_in = false;
     private $links = array(
+        "index"  => "index",
         "assets" => "assets", 
         "model" => "model", 
         "form" => "form from database", 
