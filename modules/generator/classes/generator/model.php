@@ -23,11 +23,35 @@ class Generator_Model {
 
     private static function getCsrf() {
         $config = Generator_Util::loadConfig();
-        return "\tpublic function csrf(\$values){\n\t\treturn Validation::factory(array(\"csrf\" => \$values[\"" . $config->get("csrf_token_name") . "\"]))->rule(\"csrf\", \"Security::check\");\n\t}\n";
+        return "       public function csrf(\$values){
+            return Validation::factory(array(\"csrf\" => \$values[\"" . $config->get("csrf_token_name") . "\"]))->rule(\"csrf\", \"Security::check\");
+       }
+        ";
     }
 
     private static function getFormErrors() {
-        return "\tpublic function formErrors(){\n\t\treturn \$this->validation()->errors(\"form_errors\"); \n\t}\n";
+        return "       public function formErrors() {
+            return \$this->validation()->errors(\"form_errors\"); 
+       }
+        ";
+    }
+    
+    private static function getSelect($primary_key) {
+        $config = Generator_Util::loadConfig();
+        return "       public function selectOptions(\$value_field=\"$primary_key\", \$key_field=\"$primary_key\", \$preoption=\"".$config->get("select_pre_option")."\") {
+            if(empty(\$key_field)){ \$key_field = \"$primary_key\"; }
+            \$result = \$this->find_all()->as_array(\$key_field, \$value_field);
+            
+            \$array = array();
+
+            if (!empty(\$preoption)) {
+                \$array[\" \"] = \$preoption;
+                return array_merge(\$array, \$result);
+            }
+    
+            return \$result();
+       }
+        ";
     }
 
     private static function getRules(Generator_Field $field) {
@@ -103,7 +127,7 @@ class Generator_Model {
 
         $db = Database::instance();
         $query = $db->query(Database::SELECT, 'SELECT * FROM information_schema.key_column_usage WHERE (TABLE_NAME=\''
-                        . $table . '\' OR REFERENCED_TABLE_NAME=\'' . $table . '\') AND referenced_column_name IS NOT NULL');
+                . $table . '\' OR REFERENCED_TABLE_NAME=\'' . $table . '\') AND referenced_column_name IS NOT NULL');
 
         foreach ($query as $row) {
             $foreign_key = $row['COLUMN_NAME'];
@@ -172,11 +196,13 @@ class Generator_Model {
                     $fields = Generator_Util::listTableFields($table);
                     $rules = array();
                     $filters = array();
-                    $labels = array();
+                    $labels = array("create"=>"create", "edit"=>"edit", "delete"=>"delete");
+                    $primary_key = "";
                     foreach ($fields as $array) {
                         $field = Generator_Field::factory($array);
 
                         if (!$field->isPrimaryKey()) {
+                            
                             if (!array_key_exists($field->getName(), $rules)) {
                                 $rules[$field->getName()] = self::getRules($field);
                             }
@@ -184,9 +210,13 @@ class Generator_Model {
                             if (!array_key_exists($field->getName(), $filters)) {
                                 $filters[$field->getName()] = self::getFilters($field);
                             }
-                            if (!array_key_exists($field->getName(), $labels)) {
-                                $labels[$field->getName()] = $field->getName();
-                            }
+                            
+                        }else{
+                            $primary_key = $field->getName();
+                        }
+
+                        if (!array_key_exists($field->getName(), $labels)) {
+                            $labels[$field->getName()] = $field->getName();
                         }
                     }
                     $writer->addRow(Generator_Util::methodInfoHead("array"));
@@ -201,7 +231,12 @@ class Generator_Model {
 
                     $writer->addRow(Generator_Util::methodInfoHead("Validation"));
                     $writer->addRow(self::getCsrf());
-
+                    
+                    if(!empty ($primary_key)){
+                        $writer->addRow(Generator_Util::methodInfoHead("array"));
+                        $writer->addRow(self::getSelect($primary_key));
+                    }
+                    
                     $writer->addRow(Generator_Util::$CLOSE_CLASS_FILE);
                 }
                 $writer->write(Generator_Filewriter::$MODEL);

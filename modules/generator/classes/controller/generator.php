@@ -15,14 +15,16 @@ class Controller_Generator extends Kohana_Controller_Template {
 
     private static $SESSION_KEY = "generator_logged_in";
     private static $LOGIN_FAILD = "login failed!";
-    public $template = "template";
+    public $template = "generatortemplate";
     private $logged_in = false;
     private $links = array(
         "assets" => "assets",
         "model" => "model",
+        "list" => "list",
         "form" => "form",
         "formbuilder" => "form builder",
         "controller" => "controller builder",
+        "curlcontroller" => "curl controller",
         "logout" => "logout"
     );
 
@@ -45,27 +47,33 @@ class Controller_Generator extends Kohana_Controller_Template {
     }
 
     public function action_login() {
-        $form = View::factory("forms/generatorlogin");
-        $form->action = "generator/login";
-        $form->labels = array("login" => "Login", "password" => "Password");
+        if (!$this->logged_in) {
 
-        if (isset($_POST["submit"])) {
-            $validation = Validation::factory($_POST)
-                    ->rule("password", "not_empty");
-            if ($validation->check()) {
-                $config = Generator_Util::loadConfig();
-                if ($_POST["password"] == $config->get("password")) {
-                    Session::instance()->set(self::$SESSION_KEY, true);
-                    $this->request->redirect("generator");
+            $form = View::factory("forms/generatorlogin");
+            $form->action = "generator/login";
+            $form->labels = array("login" => "Login", "password" => "Password");
+
+            if (isset($_POST["submit"])) {
+                $validation = Validation::factory($_POST)
+                        ->rule("password", "not_empty");
+                if ($validation->check()) {
+                    $config = Generator_Util::loadConfig();
+                    if ($_POST["password"] == $config->get("password")) {
+                        Session::instance()->set(self::$SESSION_KEY, true);
+                        $this->request->redirect("generator");
+                    }
+                } else {
+                    $this->showFlash(self::$LOGIN_FAILD);
+                    $form->errors = $validation->errors("form_errors");
                 }
-            } else {
-                $this->showFlash(self::$LOGIN_FAILD);
-                $form->errors = $validation->errors("form_errors");
             }
-        }
 
-        $this->template->legend = ucfirst($this->request->action());
-        $this->template->content = $form;
+            $this->template->legend = ucfirst($this->request->action());
+            $this->template->content = $form;
+            
+        } else {
+            $this->request->redirect("/generator");
+        }
     }
 
     public function action_logout() {
@@ -101,8 +109,15 @@ class Controller_Generator extends Kohana_Controller_Template {
 
     public function action_model() {
         $form = View::factory("forms/generatormodel");
-        $form->action = "generatorajax/model";
         $form->labels = array("model_button" => "Generate models",
+            "clear_button" => "Clear");
+
+        $this->template->content = $form;
+    }
+    
+    public function action_list() {
+        $form = View::factory("forms/generatorlist");
+        $form->labels = array("list_button" => "Generate lists",
             "clear_button" => "Clear");
 
         $this->template->content = $form;
@@ -117,6 +132,19 @@ class Controller_Generator extends Kohana_Controller_Template {
             "clear_button" => "Clear"
         );
 
+        $this->template->content = $form;
+    }
+    
+    public function action_curlcontroller() {
+        $form = View::factory("forms/generatorcurlcontroller");
+        $form->action = "generatorajax/curlcontroller";
+        $form->labels = array("generate_curlcontroller_button" => "Generate curl controller",
+            "models" => "Models",
+            "clear_button" => "Clear"
+        );
+        
+        $reader = new Generator_Filereader();
+        $form->models = $reader->getModels();
         $this->template->content = $form;
     }
 

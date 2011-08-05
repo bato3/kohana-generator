@@ -21,7 +21,7 @@ class Generator_Controller {
         return $config->get("controllers");
     }
 
-    private static function getExtends($extends) {
+    protected static function getExtends($extends) {
         $html = " extends ";
         $controllers = self::getControllers();
         if (array_key_exists($extends, $controllers)) {
@@ -30,25 +30,25 @@ class Generator_Controller {
         return $html . " {\n";
     }
 
-    private static function getActions($actions_array) {
+    protected static function getActions($actions_array) {
         $actions = "";
         foreach ($actions_array as $action) {
             if (!empty($action)) {
                 $name = strtolower($action);
                 $actions .= Generator_Util::methodInfoHead();
-                $actions .= "\n\tpublic function action_$name() {}\n\n";
+                $actions .= "   public function action_$name() {}\n\n";
             }
         }
         return $actions;
     }
 
-    private static function getActionPaths($controller, $actions_array) {
+    protected static function getActionPaths($controller, $actions_array) {
         $paths = "";
         $controller = strtolower($controller);
         foreach ($actions_array as $action) {
             if (!empty($action)) {
                 $name = strtolower($action);
-                $paths .= "\tprivate \$" . $name . "_url = \"$controller/$name\";\n";
+                $paths .= "   private \$" . $name . "_url = \"$controller/$name\";\n";
             }
         }
         return $paths;

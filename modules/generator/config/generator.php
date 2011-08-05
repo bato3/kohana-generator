@@ -21,7 +21,6 @@ return array(
         "Controller",
         "Controller_Template",
         "Controller_Template_Twig",
-        "Controller_Template_Smarty"
     ),
     
     "disabled_tables" => array(
@@ -29,4 +28,5 @@ return array(
     ),
     
     "table_names_plural" => true,
+    "select_pre_option" => "-- válasszon --",
 );

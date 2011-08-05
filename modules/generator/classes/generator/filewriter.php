@@ -11,15 +11,8 @@ defined('SYSPATH') or die('No direct access allowed.');
  *
  * @author burningface
  */
-class Generator_Filewriter {
+class Generator_Filewriter extends Generator_File {
 
-    public static $MODEL = 1;
-    public static $FORM = 2;
-    public static $CONTROLLER = 3;
-    public static $ASSETS = 4;
-    public static $ASSETS_CSS = 5;
-    public static $ASSETS_JS = 6;
-    public static $ASSETS_IMG = 7;
     private $filename;
     private $name;
     private $path;
@@ -69,34 +62,6 @@ class Generator_Filewriter {
         return $this->write_is_ok;
     }
 
-    private function getApplicationPaths($mod) {
-        switch ($mod) {
-            case 1 :
-                return DOCROOT . "application" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "model" . DIRECTORY_SEPARATOR;
-                break;
-            case 2 :
-                return DOCROOT . "application" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "forms" . DIRECTORY_SEPARATOR;
-                break;
-            case 3 :
-                return DOCROOT . "application" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "controller" . DIRECTORY_SEPARATOR;
-                break;
-            case 4 :
-                return DOCROOT . "assets" . DIRECTORY_SEPARATOR;
-                break;
-            case 5 :
-                return DOCROOT . "assets" . DIRECTORY_SEPARATOR . "css" . DIRECTORY_SEPARATOR;
-                break;
-            case 6 :
-                return DOCROOT . "assets" . DIRECTORY_SEPARATOR . "js" . DIRECTORY_SEPARATOR;
-                break;
-            case 7 :
-                return DOCROOT . "assets" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
-                break;
-            default :
-                return DOCROOT . "application" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "model" . DIRECTORY_SEPARATOR;
-        }
-    }
-
     public function write($mod=1) {
         $fh = null;
         $dirpath = null;
@@ -111,6 +76,7 @@ class Generator_Filewriter {
         }
 
         if (is_writable($dirpath)) {
+
             if (isset($this->filename)) {
                 $dirpath .= $this->filename;
                 if (!file_exists($dirpath)) {
@@ -132,10 +98,6 @@ class Generator_Filewriter {
         }
 
         $this->path = empty($error) ? $dirpath : $error;
-    }
-
-    public function fileExists($file, $mod=1) {
-        return file_exists($this->getApplicationPaths($mod) . $file);
     }
 
 }

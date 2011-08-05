@@ -100,10 +100,22 @@ $(document).ready(function() {
     });
     postForm("#generate_controller", "/generatorajax/controller");
     
+    //curl controller generator-------------------------------------------------
+    postForm("#generate_curlcontroller", "/generatorajax/curlcontroller");
+    
     //model generator-----------------------------------------------------------
     $("#model_button").click(function(){
         show_ajax_loader("#result");
         $.get("/generatorajax/model", function(data){
+            remove_ajax_loader("#result");
+            $("#result").html(data).fadeIn("slow");
+        });
+    });
+    
+    //list generator------------------------------------------------------------
+    $("#list_button").click(function(){
+        show_ajax_loader("#result");
+        $.get("/generatorajax/list", function(data){
             remove_ajax_loader("#result");
             $("#result").html(data).fadeIn("slow");
         });

@@ -72,12 +72,37 @@ class Controller_Generatorajax extends Controller {
             throw new HTTP_Exception_404();
         }
     }
+    
+    public function action_curlcontroller() {
+        if ($this->request->is_ajax()) {
+            $writer = Generator_Curlcontroller::generate($_POST);
+            $view = View::factory("forms/generatorshowgeneratedcontroller");
+            $view->rows = $writer->getRows();
+            $view->savepath = $writer->getPath();
+            $view->write_ok = $writer->writeIsOk();
+            $this->sendHtml($view);
+        } else {
+            throw new HTTP_Exception_404();
+        }
+    }
 
     public function action_model() {
         if ($this->request->is_ajax()) {
             $html = Generator_Model::generate();
             $view = View::factory("forms/generatorshowgeneratedmodel");
             $view->write_ok = in_array(false, Generator_Model::getIsOkArray()) ? false : true;
+            $view->files = $html;
+            $this->sendHtml($view);
+        } else {
+            throw new HTTP_Exception_404();
+        }
+    }
+    
+    public function action_list() {
+        if ($this->request->is_ajax()) {
+            $html = Generator_List::generate();
+            $view = View::factory("forms/generatorshowgeneratedmodel");
+            $view->write_ok = in_array(false, Generator_List::getIsOkArray()) ? false : true;
             $view->files = $html;
             $this->sendHtml($view);
         } else {

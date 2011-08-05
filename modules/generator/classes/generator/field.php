@@ -48,6 +48,18 @@ class Generator_Field {
     public function getKey() {
         return isset($this->field["key"]) ? $this->field["key"] : "";
     }
+    
+    public function getReferencedTableName(){
+        return $this->field["REFERENCED_TABLE_NAME"];
+    }
+        
+    public function getReferencedModelName(){
+        return "Model_".Generator_Util::upperFirst(Generator_Util::name($this->getReferencedTableName()));
+    }
+    
+    public function getReferencedColumnName(){
+        return isset($this->field["COLUMN_NAME"]) ? $this->field["COLUMN_NAME"] : "";
+    }
 
     public function __toString() {
         return "name: " . $this->getName() . " type: " . $this->getType() . " key: " . $this->getKey() . " min: " . $this->getMin() . " max: " . $this->getMax() . "";
