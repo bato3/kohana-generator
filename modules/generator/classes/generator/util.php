@@ -58,9 +58,9 @@ class Generator_Util {
 
     public static function methodInfoHead($return=null) {
         if (!empty($return)) {
-            return "\t/**\n\t*\n\t* @return $return\n\t*\n\t*/";
+            return "    /**\n    *\n    * @return $return\n    *\n    */";
         } else {
-            return "\t/**\n\t*\n\t*/";
+            return "    /**\n    *\n    */";
         }
     }
 

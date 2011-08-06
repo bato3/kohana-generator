@@ -28,50 +28,50 @@ class Generator_Form {
 
     private static function label($key) {
         $label = "\$labels[\"" . $key . "\"].\": \"";
-        return "\t\t<?php echo form::label(\"$key\", $label) ?>\n";
+        return "        <?php echo form::label(\"$key\", $label) ?>\n";
     }
 
     private static function radio($key) {
         $yeslabel = "\$labels[\"" . $key . "_yes\"].\": \"";
         $nolabel = "\$labels[\"" . $key . "_no\"].\": \"";
-        return "\t\t<?php echo form::label(\"$key\", $yeslabel) ?>\n\t\t<?php echo form::radio(\"$key\", 1, isset(\$values[\"$key\"]) ? \$values[\"$key\"] ?  true : false : false) ?>\n\t\t&nbsp;&nbsp;<?php echo form::label(\"$key\", $nolabel) ?>\n\t\t<?php echo form::radio(\"$key\", 0, isset(\$values[\"$key\"]) ? !\$values[\"$key\"] ? true : false : true) ?>\n";
+        return "        <?php echo form::label(\"$key\", $yeslabel) ?>\n        <?php echo form::radio(\"$key\", 1, isset(\$values[\"$key\"]) ? \$values[\"$key\"] ?  true : false : false) ?>\n        &nbsp;&nbsp;<?php echo form::label(\"$key\", $nolabel) ?>\n        <?php echo form::radio(\"$key\", 0, isset(\$values[\"$key\"]) ? !\$values[\"$key\"] ? true : false : true) ?>\n";
     }
 
     private static function checkbox($key) {
-        return "\t\t<?php echo form::checkbox(\"$key\", 1, false, array(\"id\" => \"$key\")) ?>\n";
+        return "        <?php echo form::checkbox(\"$key\", 1, false, array(\"id\" => \"$key\")) ?>\n";
     }
 
     private static function password($key) {
-        return "\t\t<?php echo form::password(\"$key\", isset(\$values[\"$key\"]) ? \$values[\"$key\"] : \"\", array(\"id\" => \"$key\")) ?>\n";
+        return "        <?php echo form::password(\"$key\", isset(\$values[\"$key\"]) ? \$values[\"$key\"] : \"\", array(\"id\" => \"$key\")) ?>\n";
     }
 
     private static function input($key) {
-        return "\t\t<?php echo form::input(\"$key\", isset(\$values[\"$key\"]) ? \$values[\"$key\"] : \"\", array(\"id\" => \"$key\")) ?>\n";
+        return "        <?php echo form::input(\"$key\", isset(\$values[\"$key\"]) ? \$values[\"$key\"] : \"\", array(\"id\" => \"$key\")) ?>\n";
     }
 
     private static function select($key) {
-        return "\t\t<?php echo form::select(\"$key\", \$$key, isset(\$values[\"$key\"]) ? \$values[\"$key\"] : \"\", array(\"id\" => \"$key\")) ?>\n";
+        return "        <?php echo form::select(\"$key\", \$$key, isset(\$values[\"$key\"]) ? \$values[\"$key\"] : \"\", array(\"id\" => \"$key\")) ?>\n";
     }
 
     private static function textarea($key) {
-        return "\t\t<?php echo form::textarea(\"$key\", isset(\$values[\"$key\"]) ? \$values[\"$key\"] : \"\", array(\"id\" => \"$key\")) ?>\n";
+        return "        <?php echo form::textarea(\"$key\", isset(\$values[\"$key\"]) ? \$values[\"$key\"] : \"\", array(\"id\" => \"$key\")) ?>\n";
     }
 
     private static function hidden($key) {
-        return "\t\t<?php echo form::hidden(\"$key\", isset(\$values[\"$key\"]) ? \$values[\"$key\"] : \"\") ?>\n";
+        return "        <?php echo form::hidden(\"$key\", isset(\$values[\"$key\"]) ? \$values[\"$key\"] : \"\") ?>\n";
     }
 
     private static function submit() {
         $label = "\$labels[\"submit\"]";
         $config = Generator_Util::loadConfig();
         $name = $config->get("csrf_token_name");
-        return "\t\t<?php echo form::hidden(\"$name\", Security::token()) ?>\n\t\t<?php echo form::submit(\"submit\", $label, array(\"id\" => \"submit\")) ?>\n";
+        return "        <?php echo form::hidden(\"$name\", Security::token()) ?>\n        <?php echo form::submit(\"submit\", $label, array(\"id\" => \"submit\")) ?>\n";
     }
 
     private static function error($key) {
         $config = Generator_Util::loadConfig();
         $class = $config->get("error_class");
-        return "\t\t<?php echo isset(\$errors[\"$key\"]) ? \"<span class=\\\"$class\\\">\".\$errors[\"$key\"].\"</span>\" : \"\" ?>\n";
+        return "        <?php echo isset(\$errors[\"$key\"]) ? \"<span class=\\\"$class\\\">\".\$errors[\"$key\"].\"</span>\" : \"\" ?>\n";
     }
 
     private static function formOpen() {
@@ -97,23 +97,23 @@ class Generator_Form {
     private static function wrappDiv($item) {
         $config = Generator_Util::loadConfig();
         $class = $config->get("row_class");
-        return empty($class) ? "\t<div>\n$item\t</div>" : "\t<div class=\"$class\">\n$item\t</div>";
+        return empty($class) ? "    <div>\n$item    </div>" : "    <div class=\"$class\">\n$item    </div>";
     }
 
     private static function wrappP($item) {
         $config = Generator_Util::loadConfig();
         $class = $config->get("row_class");
-        return empty($class) ? "\t<p>\n$item\t</p>" : "\t<p class=\"$class\">\n$item\t</p>";
+        return empty($class) ? "    <p>\n$item    </p>" : "    <p class=\"$class\">\n$item    </p>";
     }
 
     private static function wrappTD($item) {
-        return "\t\t<td>\n\t$item\t\t</td>\n";
+        return "        <td>\n    $item        </td>\n";
     }
 
     private static function wrappTR($item) {
         $config = Generator_Util::loadConfig();
         $class = $config->get("row_class");
-        return empty($class) ? "\t<tr>\n$item\t</tr>" : "\t<tr class=\"$class\">\n$item\t</tr>";
+        return empty($class) ? "    <tr>\n$item    </tr>" : "    <tr class=\"$class\">\n$item    </tr>";
     }
 
     public static function listTables($with_login=false) {
@@ -222,7 +222,7 @@ class Generator_Form {
                 } else {
                     switch ($wrapper) {
                         case "table" :
-                            return self::wrappTR(self::wrappTD("&nbsp;\n") . self::wrappTD("&nbsp;\n") . self::wrappTD($input));
+                            return self::wrappTR(self::wrappTD("        &nbsp;\n") . self::wrappTD("        &nbsp;\n") . self::wrappTD($input));
                             break;
                         case "p" :
                             return self::wrappP($input);

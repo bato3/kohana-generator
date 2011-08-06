@@ -59,6 +59,13 @@ class Generator_Curlcontroller extends Generator_Controller {
         
         $form = $model;
         $model = "Model_".Generator_Util::upperFirst($model);
+        if($config->get("multilang_support")){
+            $writer->addRow("
+    public function before() {
+        parent::before();
+        I18n::\$lang = \"en\";
+    }");
+        }
         $writer->addRow("
     public function action_index() {
         \$model = new $model();

@@ -29,5 +29,5 @@ return array(
     
     "multilang_support" => true,
     "table_names_plural" => true,
-    "select_pre_option" => "-- válasszon --",
+    "select_pre_option" => "-- select one --",
 );

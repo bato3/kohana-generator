@@ -23,14 +23,14 @@ class Generator_Model {
 
     private static function getCsrf() {
         $config = Generator_Util::loadConfig();
-        return "       public function csrf(\$values){
+        return "    public function csrf(\$values){
             return Validation::factory(array(\"csrf\" => \$values[\"" . $config->get("csrf_token_name") . "\"]))->rule(\"csrf\", \"Security::check\");
        }
         ";
     }
 
     private static function getFormErrors() {
-        return "       public function formErrors() {
+        return "    public function formErrors() {
             return \$this->validation()->errors(\"form_errors\"); 
        }
         ";
@@ -38,22 +38,22 @@ class Generator_Model {
 
     private static function getSelect($primary_key) {
         $config = Generator_Util::loadConfig();
-        return "       public function selectOptions(\$value_field=\"$primary_key\", \$key_field=\"$primary_key\", \$preoption=\"" . $config->get("select_pre_option") . "\") {
-            if(empty(\$key_field)){ \$key_field = \"$primary_key\"; }
+        return "    public function selectOptions(\$value_field=\"$primary_key\", \$key_field=\"$primary_key\", \$preoption=\"" . $config->get("select_pre_option") . "\") {
+        if(empty(\$key_field)){ \$key_field = \"$primary_key\"; }
             
-            if (!empty(\$preoption)) {
-                \$array = array();
-                \$array[\" \"] = \$preoption;  
-                \$result = \$this->order_by(\$value_field)->find_all()->as_array(\$key_field, \$value_field);
-                foreach (\$result as \$key => \$value) {
-                    \$array[\$key] = \$value;
-                }
-                return \$array;
-            }else{
-                return \$this->order_by(\$value_field)->find_all()->as_array(\$key_field, \$value_field);
+        if (!empty(\$preoption)) {
+            \$array = array();
+            \$array[\" \"] = \$preoption;  
+            \$result = \$this->order_by(\$value_field)->find_all()->as_array(\$key_field, \$value_field);
+            foreach (\$result as \$key => \$value) {
+                \$array[\$key] = \$value;
             }
-       }
-        ";
+            return \$array;
+        }else{
+            return \$this->order_by(\$value_field)->find_all()->as_array(\$key_field, \$value_field);
+        }
+    }
+    ";
     }
 
     private static function getRules(Generator_Field $field) {
@@ -63,57 +63,57 @@ class Generator_Model {
 
         $config = Generator_Util::loadConfig();
         $date_format = $config->get("date_format");
-        $validation = "\n\t\t\t\tarray(\"not_empty\"),\n";
+        $validation = "\n                array(\"not_empty\"),\n";
 
         switch ($field->getType()) {
-            case "date" : $validation .= "\t\t\t\tarray(\"date\",array(\":value\", \"" . $date_format . "\")),\n";
+            case "date" : $validation .= "                array(\"date\",array(\":value\", \"" . $date_format . "\")),\n";
                 break;
-            case "year" : $validation .= "\t\t\t\tarray(\"date\",array(\":value\", \"Y\")),\n";
+            case "year" : $validation .= "                array(\"date\",array(\":value\", \"Y\")),\n";
                 break;
-            case "smallint" : $validation .= "\t\t\t\tarray(\"digit\"),\n";
+            case "smallint" : $validation .= "                array(\"digit\"),\n";
                 break;
-            case "smallint unsigned" : $validation .= "\t\t\t\tarray(\"digit\"),\n";
+            case "smallint unsigned" : $validation .= "                array(\"digit\"),\n";
                 break;
-            case "int" : $validation .= "\t\t\t\tarray(\"digit\"),\n";
+            case "int" : $validation .= "                array(\"digit\"),\n";
                 break;
-            case "int unsigned" : $validation .= "\t\t\t\tarray(\"digit\"),\n";
+            case "int unsigned" : $validation .= "                array(\"digit\"),\n";
                 break;
-            case "bigint" : $validation .= "\t\t\t\tarray(\"digit\"),\n";
+            case "bigint" : $validation .= "                array(\"digit\"),\n";
                 break;
-            case "bigint unsigned" : $validation .= "\t\t\t\tarray(\"digit\"),\n";
+            case "bigint unsigned" : $validation .= "                array(\"digit\"),\n";
                 break;
-            case "float" : $validation .= "\t\t\t\tarray(\"numeric\"),\n";
+            case "float" : $validation .= "                array(\"numeric\"),\n";
                 break;
-            case "float unsigned" : $validation .= "\t\t\t\tarray(\"numeric\"),\n";
+            case "float unsigned" : $validation .= "                array(\"numeric\"),\n";
                 break;
-            case "double" : $validation .= "\t\t\t\tarray(\"numeric\"),\n";
+            case "double" : $validation .= "                array(\"numeric\"),\n";
                 break;
-            case "double unsigned" : $validation .= "\t\t\t\tarray(\"numeric\"),\n";
+            case "double unsigned" : $validation .= "                array(\"numeric\"),\n";
                 break;
-            case "decimal" : $validation .= "\t\t\t\tarray(\"numeric\"),\n";
+            case "decimal" : $validation .= "                array(\"numeric\"),\n";
                 break;
-            case "decimal unsigned" : $validation .= "\t\t\t\tarray(\"numeric\"),\n";
+            case "decimal unsigned" : $validation .= "                array(\"numeric\"),\n";
                 break;
             case "" : $validation .= "";
                 break;
         }
 
         if (!empty($min) && !empty($max)) {
-            $validation .= "\t\t\t\tarray(\"min_length\",array(\":value\", $min)),\n\t\t\t\tarray(\"max_length\",array(\":value\", $max)),\n";
+            $validation .= "                array(\"min_length\",array(\":value\", $min)),\n                array(\"max_length\",array(\":value\", $max)),\n";
         }
         if (empty($min) && !empty($max)) {
-            $validation .= "\t\t\t\tarray(\"max_length\",array(\":value\", $max)),\n";
+            $validation .= "                array(\"max_length\",array(\":value\", $max)),\n";
         }
         if (!empty($key) && $key == "UNI") {
-            $validation .= "\t\t\t\tarray(array(\$this, \"unique\"), array(\"" . $field->getName() . "\", \":value\")),\n";
+            $validation .= "                array(array(\$this, \"unique\"), array(\"" . $field->getName() . "\", \":value\")),\n";
         }
         return $validation;
     }
 
     private static function getFilters(Generator_Field $field) {
-        $validation = "\n\t\t\t\tarray(\"trim\"),\n";
+        $validation = "\n                array(\"trim\"),\n";
         switch ($field->getType()) {
-            case "varchar" : $validation .= "\t\t\t\tarray(\"strtolower\"),\n\t\t\t\tarray(\"ucwords\"),\n";
+            case "varchar" : $validation .= "                array(\"strtolower\"),\n                array(\"ucwords\"),\n";
                 break;
         }
         return $validation . "";
@@ -124,8 +124,8 @@ class Generator_Model {
     }
 
     private static function getTableRelationShips($table) {
-        $has_many = array("\tprotected \$_has_many = array(");
-        $belongs_to = array("\tprotected \$_belongs_to = array(");
+        $has_many = array("    protected \$_has_many = array(");
+        $belongs_to = array("    protected \$_belongs_to = array(");
 
         $db = Database::instance();
         $query = $db->query(Database::SELECT, 'SELECT * FROM information_schema.key_column_usage WHERE (TABLE_NAME=\''
@@ -135,41 +135,41 @@ class Generator_Model {
             $foreign_key = $row['COLUMN_NAME'];
             if ($row['REFERENCED_TABLE_NAME'] === $table) {
                 $name = Generator_Util::name($row['TABLE_NAME']);
-                $has_many[] = "\t\t\"$name\" => array(\"model\" => \"$name\", \"foreign_key\" => \"$foreign_key\"),";
+                $has_many[] = "        \"$name\" => array(\"model\" => \"$name\", \"foreign_key\" => \"$foreign_key\"),";
             } else {
                 $name = Generator_Util::name($row['REFERENCED_TABLE_NAME']);
-                $belongs_to[] = "\t\t\"$name\" => array(\"model\" => \"$name\", \"foreign_key\" => \"$foreign_key\"),";
+                $belongs_to[] = "        \"$name\" => array(\"model\" => \"$name\", \"foreign_key\" => \"$foreign_key\"),";
             }
         }
 
-        $has_many[] = "\t);\n";
-        $belongs_to[] = "\t);\n";
+        $has_many[] = "    );\n";
+        $belongs_to[] = "    );\n";
         return array_merge($belongs_to, $has_many);
     }
 
     private static function labels($array) {
-        $html = "\tpublic function labels(){\n\t\treturn array(\n";
+        $html = "    public function labels(){\n        return array(\n";
         foreach ($array as $key => $value) {
-            $html .= "\t\t\t\"$key\" => \"$value\",\n";
+            $html .= "            \"$key\" => \"$value\",\n";
         }
-        $html .= "\t\t\t\"submit\" => \"submit\",\n";
-        return $html . "\n\t\t);\n\t}\n";
+        $html .= "            \"submit\" => \"submit\",\n";
+        return $html . "\n        );\n    }\n";
     }
 
     private static function rules($array) {
-        $html = "\tpublic function rules(){\n\t\treturn array(\n";
+        $html = "    public function rules(){\n        return array(\n";
         foreach ($array as $key => $value) {
-            $html .= "\t\t\t\"$key\" => array(" . $value . "\t\t\t),\n";
+            $html .= "            \"$key\" => array(" . $value . "            ),\n";
         }
-        return $html . "\n\t\t);\n\t}\n";
+        return $html . "\n        );\n    }\n";
     }
 
     private static function filters($array) {
-        $html = "\tpublic function filters(){\n\t\treturn array(\n";
+        $html = "    public function filters(){\n        return array(\n";
         foreach ($array as $key => $value) {
-            $html .= "\t\t\t\"$key\" => array(" . $value . "\t\t\t),\n";
+            $html .= "            \"$key\" => array(" . $value . "            ),\n";
         }
-        return $html . "\n\t\t);\n\t}\n";
+        return $html . "\n        );\n    }\n";
     }
 
     public static function generate() {
@@ -260,14 +260,14 @@ class Generator_Model {
                         $lang_writer->addRow("return array(");
                         foreach ($i18n as $key => $val) {
                             if (is_array($val)) {
-                                $lang_writer->addRow("\t\"$key\" => array(");
+                                $lang_writer->addRow("    \"$key\" => array(");
                                 foreach ($val as $k => $v) {
-                                    $lang_writer->addRow("\t\t\"$k\" => \"$v\",");
+                                    $lang_writer->addRow("        \"$k\" => \"$v\",");
                                 }
-                                $lang_writer->addRow("\t\t\"submit\" => \"submit\",");
-                                $lang_writer->addRow("\t),\n");
+                                $lang_writer->addRow("        \"submit\" => \"submit\",");
+                                $lang_writer->addRow("    ),\n");
                             } else {
-                                $lang_writer->addRow("\t\"$key\" => \"$val\",");
+                                $lang_writer->addRow("    \"$key\" => \"$val\",");
                             }
                         }
                         $lang_writer->addRow(");");
