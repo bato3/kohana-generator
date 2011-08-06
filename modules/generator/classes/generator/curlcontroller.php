@@ -75,7 +75,7 @@ class Generator_Curlcontroller extends Generator_Controller {
             if (\$model->validation()->check()) {
                 
                 \$model->save(\$model->validation());
-                \$this->request->redirect(\$this->create_url);
+                \$this->request->redirect(\$this->index_url);
                 
             } else {
                 
@@ -93,7 +93,8 @@ class Generator_Curlcontroller extends Generator_Controller {
         \$this->initForm();
         \$this->form->labels = \$model->labels();
         \$this->form->action = \$this->edit_url . \"/\" . \$this->request->param(\"id\");
-                
+         \$this->form->values = \$model->as_array();        
+        
         if (isset(\$_POST[\"submit\"])) {
                 
             if (\$model->loaded()) {
@@ -101,8 +102,8 @@ class Generator_Curlcontroller extends Generator_Controller {
                 
                 if (\$model->validation()->check()) {
                 
-                    \$model->update(\$this->model->validation());
-                    \$this->request->redirect(\$this->edit_url);
+                    \$model->update(\$model->validation());
+                    \$this->request->redirect(\$this->index_url);
                 
                 } else {
                 

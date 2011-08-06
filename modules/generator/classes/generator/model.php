@@ -40,16 +40,18 @@ class Generator_Model {
         $config = Generator_Util::loadConfig();
         return "       public function selectOptions(\$value_field=\"$primary_key\", \$key_field=\"$primary_key\", \$preoption=\"".$config->get("select_pre_option")."\") {
             if(empty(\$key_field)){ \$key_field = \"$primary_key\"; }
-            \$result = \$this->find_all()->as_array(\$key_field, \$value_field);
             
-            \$array = array();
-
             if (!empty(\$preoption)) {
-                \$array[\" \"] = \$preoption;
-                return array_merge(\$array, \$result);
+                \$array = array();
+                \$array[\" \"] = \$preoption;  
+                \$result = \$this->order_by(\$value_field)->find_all()->as_array(\$key_field, \$value_field);
+                foreach (\$result as \$key => \$value) {
+                    \$array[\$key] = \$value;
+                }
+                return \$array;
+            }else{
+                return \$this->order_by(\$value_field)->find_all()->as_array(\$key_field, \$value_field);
             }
-    
-            return \$result();
        }
         ";
     }
