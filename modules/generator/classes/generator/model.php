@@ -35,10 +35,10 @@ class Generator_Model {
        }
         ";
     }
-    
+
     private static function getSelect($primary_key) {
         $config = Generator_Util::loadConfig();
-        return "       public function selectOptions(\$value_field=\"$primary_key\", \$key_field=\"$primary_key\", \$preoption=\"".$config->get("select_pre_option")."\") {
+        return "       public function selectOptions(\$value_field=\"$primary_key\", \$key_field=\"$primary_key\", \$preoption=\"" . $config->get("select_pre_option") . "\") {
             if(empty(\$key_field)){ \$key_field = \"$primary_key\"; }
             
             if (!empty(\$preoption)) {
@@ -176,6 +176,8 @@ class Generator_Model {
         $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
         $disabled_tables = $config->get("disabled_tables");
+        $i18n = array("back" => "back", "create" => "new", "edit" => "edit", "delete" => "delete");
+        $i18n_langs = array("hu", "de", "en", "it");
         foreach ($tables as $key => $table) {
             if (!in_array($table, $disabled_tables)) {
 
@@ -198,13 +200,13 @@ class Generator_Model {
                     $fields = Generator_Util::listTableFields($table);
                     $rules = array();
                     $filters = array();
-                    $labels = array("create"=>"create", "edit"=>"edit", "delete"=>"delete");
+                    $labels = array();
                     $primary_key = "";
                     foreach ($fields as $array) {
                         $field = Generator_Field::factory($array);
 
                         if (!$field->isPrimaryKey()) {
-                            
+
                             if (!array_key_exists($field->getName(), $rules)) {
                                 $rules[$field->getName()] = self::getRules($field);
                             }
@@ -212,8 +214,7 @@ class Generator_Model {
                             if (!array_key_exists($field->getName(), $filters)) {
                                 $filters[$field->getName()] = self::getFilters($field);
                             }
-                            
-                        }else{
+                        } else {
                             $primary_key = $field->getName();
                         }
 
@@ -233,17 +234,50 @@ class Generator_Model {
 
                     $writer->addRow(Generator_Util::methodInfoHead("Validation"));
                     $writer->addRow(self::getCsrf());
-                    
-                    if(!empty ($primary_key)){
+
+                    if (!empty($primary_key)) {
                         $writer->addRow(Generator_Util::methodInfoHead("array"));
                         $writer->addRow(self::getSelect($primary_key));
                     }
-                    
+
                     $writer->addRow(Generator_Util::$CLOSE_CLASS_FILE);
+                    $i18n[$table_simple_name] = $labels;
                 }
                 $writer->write(Generator_Filewriter::$MODEL);
+
                 self::$is_ok[] = $writer->writeIsOk();
                 self::$generated_files .= $writer->getPath() . "<br />";
+            }
+        }
+        if ($config->get("multilang_support")) {
+            $ok = in_array(false, self::$is_ok) ? false : true;
+            if ($ok) {
+                foreach ($i18n_langs as $lang_file) {
+                    $lang_writer = new Generator_Filewriter($lang_file);
+                    if (!$lang_writer->fileExists($lang_file . ".php", Generator_Filewriter::$I18n)) {
+                        $lang_writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
+                        $lang_writer->addRow("<?php");
+                        $lang_writer->addRow("return array(");
+                        foreach ($i18n as $key => $val) {
+                            if (is_array($val)) {
+                                $lang_writer->addRow("\t\"$key\" => array(");
+                                foreach ($val as $k => $v) {
+                                    $lang_writer->addRow("\t\t\"$k\" => \"$v\",");
+                                }
+                                $lang_writer->addRow("\t\t\"submit\" => \"submit\",");
+                                $lang_writer->addRow("\t),\n");
+                            } else {
+                                $lang_writer->addRow("\t\"$key\" => \"$val\",");
+                            }
+                        }
+                        $lang_writer->addRow(");");
+                        $lang_writer->addRow("?>");
+                    }
+                    $lang_writer->write(Generator_Filewriter::$I18n);
+                    self::$generated_files .= $lang_writer->getPath() . "<br />";
+                }
+            } else {
+                self::$generated_files .= "<div class=\"error\">I18n languages support skipped! Delete models first !</div><br />";
             }
         }
         return self::$generated_files;

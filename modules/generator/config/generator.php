@@ -27,6 +27,7 @@ return array(
         "roles", "roles_users", "user_tokens"
     ),
     
+    "multilang_support" => true,
     "table_names_plural" => true,
     "select_pre_option" => "-- válasszon --",
 );

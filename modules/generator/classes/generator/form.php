@@ -306,6 +306,7 @@ class Generator_Form {
         }
 
         $writer->addRow(self::formClose());
+        $writer->addRow("<div class=\"back_to_list\"><a href=\"/$filename/\"><?php echo __(\"back\") ?></a></div>");
         $writer->write(Generator_Filewriter::$FORM);
         return $writer;
     }

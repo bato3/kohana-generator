@@ -21,6 +21,7 @@ class Generator_File {
     public static $ASSETS_JS = 6;
     public static $ASSETS_IMG = 7;
     public static $LIST = 8;
+    public static $I18n = 9;
 
     protected function getApplicationPaths($mod) {
         switch ($mod) {
@@ -47,6 +48,9 @@ class Generator_File {
                 break;
             case 8 :
                 return DOCROOT . "application" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "lists" . DIRECTORY_SEPARATOR;
+                break;
+            case 9 :
+                return DOCROOT . "application" . DIRECTORY_SEPARATOR . "i18n" . DIRECTORY_SEPARATOR;
                 break;
             default :
                 return DOCROOT . "application" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "model" . DIRECTORY_SEPARATOR;

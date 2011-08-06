@@ -37,22 +37,24 @@ class Generator_List {
                     $body = "";
                     $edithead = "";
                     $edit = "";
-                    $foot = "           <td><?php echo html::anchor(\"".$table_simple_name."/create\", \$labels[\"create\"]); ?></td>\n";
+                    $foot = "          <td><?php echo html::anchor(\"".$table_simple_name."/create\", __(\"create\")); ?></td>\n";
+                    $i=0;
                     foreach ($fields as $array){
                         $field = Generator_Field::factory($array);
                         $head .= "          <th><?php echo \$labels[\"".$field->getName()."\"] ?></th>\n";
                         $body .= "          <td><?php echo \$object->".$field->getName()."; ?></td>\n";
                         if($field->isPrimaryKey()){
-                            $edithead .= "          <th><?php echo \$labels[\"edit\"] ?></th>\n";
-                            $edithead .= "          <th><?php echo \$labels[\"delete\"] ?></th>\n";
-                            $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/edit/\".\$object->".$field->getName().", \$labels[\"edit\"]); ?></td>\n";
-                            $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/delete/\".\$object->".$field->getName().", \$labels[\"delete\"]); ?></td>\n";
+                            $edithead .= "          <th><?php echo __(\"edit\") ?></th>\n";
+                            $edithead .= "          <th><?php echo __(\"delete\") ?></th>\n";
+                            $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/edit/\".\$object->".$field->getName().", __(\"edit\")); ?></td>\n";
+                            $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/delete/\".\$object->".$field->getName().", __(\"delete\")); ?></td>\n";
                         }
+                        if(0 < $i){
+                            $foot .= "          <td>&nbsp;</td>\n";
+                        }
+                        ++$i;
                     }
-                    
-                    "";
-                    "html::anchor(\"".$table_simple_name."/edit\")";
-                    
+                                        
                     $writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
                     $writer->addRow("<table>");
                     $writer->addRow("   <thead>");
@@ -79,6 +81,7 @@ class Generator_List {
                     $writer->addRow("   ?>");
                     $writer->addRow("   </tbody>");
                     $writer->addRow("</table>");
+                    
                 }
                 $writer->write(Generator_Filewriter::$LIST);
                 self::$is_ok[] = $writer->writeIsOk();

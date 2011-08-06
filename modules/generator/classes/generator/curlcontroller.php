@@ -45,12 +45,17 @@ class Generator_Curlcontroller extends Generator_Controller {
         $writer->addRow("class " . $controllername . " extends Controller_Template {\n");
         $writer->addRow(self::getActionPaths($model, $actions));
         
-        $writer->addRow("   private \$form;");
+        $writer->addRow("    private \$form;");
         
         $controllers = self::getControllers(); 
         
-        $writer->addRow("   public \$template = \"template\";");
+        $writer->addRow("    public \$template = \"template\";");
         
+        $config = Generator_Util::loadConfig();
+        $lang = "\$model->labels();";
+        if($config->get("multilang_support")){
+            $lang = "__(\"$model\");";
+        }
         
         $form = $model;
         $model = "Model_".Generator_Util::upperFirst($model);
@@ -58,7 +63,7 @@ class Generator_Curlcontroller extends Generator_Controller {
     public function action_index() {
         \$model = new $model();
         \$list = View::factory(\"lists/$form\");
-        \$list->labels = \$model->labels();
+        \$list->labels = $lang
         \$list->result = \$model->find_all();
         \$this->template->content = \$list;
     }
@@ -66,7 +71,7 @@ class Generator_Curlcontroller extends Generator_Controller {
     public function action_create() {
         \$model = new $model();
         \$this->initForm();
-        \$this->form->labels = \$model->labels();
+        \$this->form->labels = $lang
         \$this->form->action = \$this->create_url;
                 
         if (isset(\$_POST[\"submit\"])) {
@@ -91,7 +96,7 @@ class Generator_Curlcontroller extends Generator_Controller {
     public function action_edit() {
         \$model = new $model(\$this->request->param(\"id\"));
         \$this->initForm();
-        \$this->form->labels = \$model->labels();
+        \$this->form->labels = $lang
         \$this->form->action = \$this->edit_url . \"/\" . \$this->request->param(\"id\");
          \$this->form->values = \$model->as_array();        
         

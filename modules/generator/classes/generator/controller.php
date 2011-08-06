@@ -48,7 +48,7 @@ class Generator_Controller {
         foreach ($actions_array as $action) {
             if (!empty($action)) {
                 $name = strtolower($action);
-                $paths .= "   private \$" . $name . "_url = \"$controller/$name\";\n";
+                $paths .= "    private \$" . $name . "_url = \"$controller/$name\";\n";
             }
         }
         return $paths;
