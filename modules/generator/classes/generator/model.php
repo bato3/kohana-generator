@@ -14,13 +14,6 @@ defined('SYSPATH') or die('No direct access allowed.');
  */
 class Generator_Model {
 
-    private static $generated_files;
-    private static $is_ok = array();
-
-    public static function getIsOkArray() {
-        return self::$is_ok;
-    }
-
     private static function getCsrf() {
         $config = Generator_Util::loadConfig();
         return "    public function csrf(\$values){
@@ -252,8 +245,7 @@ class Generator_Model {
             }
         }
         if ($config->get("multilang_support")) {
-            $ok = in_array(false, self::$is_ok) ? false : true;
-            if ($ok) {
+            if ($result->writeIsOK()) {
                 foreach ($i18n_langs as $lang_file) {
                     $lang_writer = new Generator_Filewriter($lang_file);
                     if (!$lang_writer->fileExists($lang_file . ".php", Generator_Filewriter::$I18n)) {
