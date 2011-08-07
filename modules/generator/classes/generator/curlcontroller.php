@@ -32,7 +32,8 @@ class Generator_Curlcontroller extends Generator_Controller {
 
 
     public static function generate($post) {
-
+        $result = new Generator_Result();
+        
         $model = !empty($post["model"]) ? $post["model"] : self::$default_controller;
         $actions = array("index","create","edit","delete");
 
@@ -56,6 +57,8 @@ class Generator_Curlcontroller extends Generator_Controller {
         if($config->get("multilang_support")){
             $lang = "__(\"$model\");";
         }
+        
+        $exception = $config->get("item_not_found_exception"); 
         
         $form = $model;
         $model = "Model_".Generator_Util::upperFirst($model);
@@ -98,6 +101,7 @@ class Generator_Curlcontroller extends Generator_Controller {
                 
         }
         \$this->template->content = \$this->form;
+                
     }
 
     public function action_edit() {
@@ -105,7 +109,12 @@ class Generator_Curlcontroller extends Generator_Controller {
         \$this->initForm();
         \$this->form->labels = $lang
         \$this->form->action = \$this->edit_url . \"/\" . \$this->request->param(\"id\");
-         \$this->form->values = \$model->as_array();        
+                
+        if (\$model->loaded()) {
+            \$this->form->values = \$model->as_array();        
+        }else{
+            throw new HTTP_Exception_404(\"".$exception["1"]." \" . \$this->request->param(\"id\") . \" ".$exception["2"]."\");
+        }       
         
         if (isset(\$_POST[\"submit\"])) {
                 
@@ -128,15 +137,30 @@ class Generator_Curlcontroller extends Generator_Controller {
                 
         }
         \$this->template->content = \$this->form;
+                
+    }
+                
+    public function action_show() {
+        \$model = new $model(\$this->request->param(\"id\"));
+        
+        if (\$model->loaded()) {
+            \$view = View::factory(\"shows/$form\");
+            \$view->labels = $lang
+            \$view->model = \$model;
+            \$this->template->content = \$view;
+        }else{
+            throw new HTTP_Exception_404(\"".$exception["1"]." \" . \$this->request->param(\"id\") . \" ".$exception["2"]."\");
+        }
+
     }
 
     public function action_delete() {
         \$model = new $model(\$this->request->param(\"id\"));
+        
         if (\$model->loaded()) {
-                
             \$model->delete();
-                
         }
+                
         \$this->request->redirect(\$this->index_url);
     }
                 
@@ -148,7 +172,11 @@ class Generator_Curlcontroller extends Generator_Controller {
 
         $writer->addRow(Generator_Util::$CLOSE_CLASS_FILE);
         $writer->write(Generator_Filewriter::$CONTROLLER);
-        return $writer;
+        
+        $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
+        $result->addWriteIsOk($writer->writeIsOk());
+        
+        return $result;
     }
 }
 

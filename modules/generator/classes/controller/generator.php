@@ -21,6 +21,7 @@ class Controller_Generator extends Kohana_Controller_Template {
         "assets" => "assets",
         "model" => "model",
         "list" => "list",
+        "show" => "show",
         "form" => "form",
         "formbuilder" => "form builder",
         "controller" => "controller builder",
@@ -118,6 +119,14 @@ class Controller_Generator extends Kohana_Controller_Template {
     public function action_list() {
         $form = View::factory("forms/generatorlist");
         $form->labels = array("list_button" => "Generate lists",
+            "clear_button" => "Clear");
+
+        $this->template->content = $form;
+    }
+    
+    public function action_show() {
+        $form = View::factory("forms/generatorshow");
+        $form->labels = array("show_button" => "Generate shows",
             "clear_button" => "Clear");
 
         $this->template->content = $form;

@@ -12,15 +12,10 @@ defined('SYSPATH') or die('No direct access allowed.');
  * @author burningface
  */
 class Generator_List {
-    
-    private static $generated_files;
-    private static $is_ok = array();
-
-    public static function getIsOkArray() {
-        return self::$is_ok;
-    }
 
     public static function generate() {
+        $result = new Generator_Result();
+        
         $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
         $disabled_tables = $config->get("disabled_tables");
@@ -44,8 +39,10 @@ class Generator_List {
                         $head .= "          <th><?php echo \$labels[\"".$field->getName()."\"] ?></th>\n";
                         $body .= "          <td><?php echo \$object->".$field->getName()."; ?></td>\n";
                         if($field->isPrimaryKey()){
+                            $edithead .= "          <th><?php echo __(\"show\") ?></th>\n";
                             $edithead .= "          <th><?php echo __(\"edit\") ?></th>\n";
                             $edithead .= "          <th><?php echo __(\"delete\") ?></th>\n";
+                            $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/show/\".\$object->".$field->getName().", __(\"show\")); ?></td>\n";
                             $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/edit/\".\$object->".$field->getName().", __(\"edit\")); ?></td>\n";
                             $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/delete/\".\$object->".$field->getName().", __(\"delete\")); ?></td>\n";
                         }
@@ -84,11 +81,11 @@ class Generator_List {
                     
                 }
                 $writer->write(Generator_Filewriter::$LIST);
-                self::$is_ok[] = $writer->writeIsOk();
-                self::$generated_files .= $writer->getPath() . "<br />";
+                $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
+                $result->addWriteIsOk($writer->writeIsOk());
             }
         }
-        return self::$generated_files;
+        return $result;
     }
 
 }

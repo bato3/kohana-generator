@@ -173,10 +173,12 @@ class Generator_Model {
     }
 
     public static function generate() {
+        $result = new Generator_Result();
+        
         $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
         $disabled_tables = $config->get("disabled_tables");
-        $i18n = array("back" => "back", "create" => "new", "edit" => "edit", "delete" => "delete");
+        $i18n = array("back" => "back", "create" => "new", "edit" => "edit", "delete" => "delete","show" => "show");
         $i18n_langs = array("hu", "de", "en", "it");
         foreach ($tables as $key => $table) {
             if (!in_array($table, $disabled_tables)) {
@@ -245,8 +247,8 @@ class Generator_Model {
                 }
                 $writer->write(Generator_Filewriter::$MODEL);
 
-                self::$is_ok[] = $writer->writeIsOk();
-                self::$generated_files .= $writer->getPath() . "<br />";
+                $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
+                $result->addWriteIsOk($writer->writeIsOk());
             }
         }
         if ($config->get("multilang_support")) {
@@ -274,13 +276,15 @@ class Generator_Model {
                         $lang_writer->addRow("?>");
                     }
                     $lang_writer->write(Generator_Filewriter::$I18n);
-                    self::$generated_files .= $lang_writer->getPath() . "<br />";
+                    $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
+                    $result->addWriteIsOk($writer->writeIsOk());
                 }
             } else {
-                self::$generated_files .= "<div class=\"error\">I18n languages support skipped! Delete models first !</div><br />";
+                $result->addItem("i18n", "<div class=\"error\">I18n languages support skipped! Delete models first !</div>");
+                $result->addWriteIsOk(false);
             }
         }
-        return self::$generated_files;
+        return $result;
     }
 
 }

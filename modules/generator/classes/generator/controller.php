@@ -55,6 +55,7 @@ class Generator_Controller {
     }
 
     public static function generate($post) {
+        $result = new Generator_Result();
         $extends = $post["extends"];
 
         $controller = !empty($post["controllername"]) ? $post["controllername"] : self::$default_controller;
@@ -73,7 +74,11 @@ class Generator_Controller {
 
         $writer->addRow(Generator_Util::$CLOSE_CLASS_FILE);
         $writer->write(Generator_Filewriter::$CONTROLLER);
-        return $writer;
+        
+        $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
+        $result->addWriteIsOk($writer->writeIsOk());
+        
+        return $result;
     }
 
 }

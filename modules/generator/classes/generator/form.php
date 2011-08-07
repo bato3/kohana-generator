@@ -96,13 +96,13 @@ class Generator_Form {
 
     private static function wrappDiv($item) {
         $config = Generator_Util::loadConfig();
-        $class = $config->get("row_class");
+        $class = $config->get("form_row_class");
         return empty($class) ? "    <div>\n$item    </div>" : "    <div class=\"$class\">\n$item    </div>";
     }
 
     private static function wrappP($item) {
         $config = Generator_Util::loadConfig();
-        $class = $config->get("row_class");
+        $class = $config->get("form_row_class");
         return empty($class) ? "    <p>\n$item    </p>" : "    <p class=\"$class\">\n$item    </p>";
     }
 
@@ -112,7 +112,7 @@ class Generator_Form {
 
     private static function wrappTR($item) {
         $config = Generator_Util::loadConfig();
-        $class = $config->get("row_class");
+        $class = $config->get("form_row_class");
         return empty($class) ? "    <tr>\n$item    </tr>" : "    <tr class=\"$class\">\n$item    </tr>";
     }
 
@@ -239,41 +239,48 @@ class Generator_Form {
     }
 
     private static function orderPost($post) {
-        $places = $post["place"];
-        unset($post["place"]);
+        if (isset($post["place"])) {
+            $places = $post["place"];
+            unset($post["place"]);
 
-        $rev = array();
-        foreach ($places as $name => $place) {
-            if (!array_key_exists($place, $rev)) {
-                $rev[$place] = $name;
-            } else {
-                $ok = false;
-                $new_place = 0;
-                while (!$ok) {
-                    if (!array_key_exists($new_place, $rev)) {
-                        $rev[$new_place] = $name;
-                        $ok = true;
-                    }
-                    $new_place++;
-                }
-            }
-        }
-        ksort($rev);
-
-        $array = array();
-        foreach ($rev as $index => $name) {
-            foreach ($post as $key => $value) {
-                if ($name == $key) {
-                    if (!array_key_exists($key, $array)) {
-                        $array[$key] = $value;
+            $rev = array();
+            foreach ($places as $name => $place) {
+                if (!array_key_exists($place, $rev)) {
+                    $rev[$place] = $name;
+                } else {
+                    $ok = false;
+                    $new_place = 0;
+                    while (!$ok) {
+                        if (!array_key_exists($new_place, $rev)) {
+                            $rev[$new_place] = $name;
+                            $ok = true;
+                        }
+                        $new_place++;
                     }
                 }
             }
+            ksort($rev);
+
+            $array = array();
+            foreach ($rev as $index => $name) {
+                foreach ($post as $key => $value) {
+                    if ($name == $key) {
+                        if (!array_key_exists($key, $array)) {
+                            $array[$key] = $value;
+                        }
+                    }
+                }
+            }
+            return $array;
+        } else {
+            return array();
         }
-        return $array;
     }
 
     public static function generate($post_array, $db_name=true) {
+        $result = new Generator_Result();
+
+        $config = Generator_Util::loadConfig();
         $wrapper = self::$WRAPPERS[$post_array["wrapper"]];
         $filename = Generator_Util::name($post_array["generate_form_name"], $db_name);
 
@@ -306,9 +313,13 @@ class Generator_Form {
         }
 
         $writer->addRow(self::formClose());
-        $writer->addRow("<div class=\"back_to_list\"><a href=\"/$filename/\"><?php echo __(\"back\") ?></a></div>");
+        $writer->addRow("<div class=\"" . $config->get("back_link_class") . "\"><a href=\"/$filename/\"><?php echo __(\"back\") ?></a></div>");
         $writer->write(Generator_Filewriter::$FORM);
-        return $writer;
+
+        $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
+        $result->addWriteIsOk($writer->writeIsOk());
+
+        return $result;
     }
 
 }

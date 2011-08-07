@@ -44,16 +44,13 @@ class Controller_Generatorajax extends Controller {
         if ($this->request->is_ajax()) {
             $post = $_POST;
             if (isset($_POST["formbuilder"])) {
-                $writer = Generator_Form::generate($post, false);
+                $result = Generator_Form::generate($post, false);
             } else {
-                $writer = Generator_Form::generate($post);
+                $result = Generator_Form::generate($post);
             }
 
-            $view = View::factory("forms/generatorshowgeneratedform");
-            $view->rows = $writer->getRows();
-            $view->savepath = $writer->getPath();
-            $view->write_ok = $writer->writeIsOk();
-            $view->flash_generated = isset($_POST["flashmessage"]) ? true : false;
+            $view = View::factory("forms/generatorshowgeneratedresult");
+            $view->result = $result;
             $this->sendHtml($view);
         } else {
             throw new HTTP_Exception_404();
@@ -62,11 +59,9 @@ class Controller_Generatorajax extends Controller {
 
     public function action_controller() {
         if ($this->request->is_ajax()) {
-            $writer = Generator_Controller::generate($_POST);
-            $view = View::factory("forms/generatorshowgeneratedcontroller");
-            $view->rows = $writer->getRows();
-            $view->savepath = $writer->getPath();
-            $view->write_ok = $writer->writeIsOk();
+            $result = Generator_Controller::generate($_POST);
+            $view = View::factory("forms/generatorshowgeneratedresult");
+            $view->result = $result;
             $this->sendHtml($view);
         } else {
             throw new HTTP_Exception_404();
@@ -75,11 +70,9 @@ class Controller_Generatorajax extends Controller {
     
     public function action_curlcontroller() {
         if ($this->request->is_ajax()) {
-            $writer = Generator_Curlcontroller::generate($_POST);
-            $view = View::factory("forms/generatorshowgeneratedcontroller");
-            $view->rows = $writer->getRows();
-            $view->savepath = $writer->getPath();
-            $view->write_ok = $writer->writeIsOk();
+            $result = Generator_Curlcontroller::generate($_POST);
+            $view = View::factory("forms/generatorshowgeneratedresult");
+            $view->result = $result;
             $this->sendHtml($view);
         } else {
             throw new HTTP_Exception_404();
@@ -88,10 +81,9 @@ class Controller_Generatorajax extends Controller {
 
     public function action_model() {
         if ($this->request->is_ajax()) {
-            $html = Generator_Model::generate();
-            $view = View::factory("forms/generatorshowgeneratedmodel");
-            $view->write_ok = in_array(false, Generator_Model::getIsOkArray()) ? false : true;
-            $view->files = $html;
+            $result = Generator_Model::generate();
+            $view = View::factory("forms/generatorshowgeneratedresult");
+            $view->result = $result;
             $this->sendHtml($view);
         } else {
             throw new HTTP_Exception_404();
@@ -100,10 +92,20 @@ class Controller_Generatorajax extends Controller {
     
     public function action_list() {
         if ($this->request->is_ajax()) {
-            $html = Generator_List::generate();
-            $view = View::factory("forms/generatorshowgeneratedmodel");
-            $view->write_ok = in_array(false, Generator_List::getIsOkArray()) ? false : true;
-            $view->files = $html;
+            $result = Generator_List::generate();
+            $view = View::factory("forms/generatorshowgeneratedresult");
+            $view->result = $result;
+            $this->sendHtml($view);
+        } else {
+            throw new HTTP_Exception_404();
+        }
+    }
+    
+    public function action_show() {
+        if ($this->request->is_ajax()) {
+            $result = Generator_Show::generate();
+            $view = View::factory("forms/generatorshowgeneratedresult");
+            $view->result = $result;
             $this->sendHtml($view);
         } else {
             throw new HTTP_Exception_404();
@@ -112,7 +114,10 @@ class Controller_Generatorajax extends Controller {
 
     public function action_assets() {
         if ($this->request->is_ajax()) {
-            $this->sendHtml(Generator_Assets::generate());
+            $result = Generator_Assets::generate();
+            $view = View::factory("forms/generatorshowgeneratedresult");
+            $view->result = $result;
+            $this->sendHtml($view);
         } else {
             throw new HTTP_Exception_404();
         }

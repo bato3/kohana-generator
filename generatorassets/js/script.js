@@ -69,6 +69,7 @@ $(document).ready(function() {
             $.post("/generatorajax/form", $("#generate_formbuilder").serialize(), function(data){
                 remove_ajax_loader("#post_result");
                 $("#post_result").html(data).fadeIn("slow");
+                details();
             });            
         }else{
             alert("File name is empty!")
@@ -83,6 +84,7 @@ $(document).ready(function() {
         $.get("/generatorajax/assets", function(data){
             remove_ajax_loader("#result");
             $("#result").html(data).fadeIn("slow");
+            details();
         });
     });
     
@@ -109,6 +111,7 @@ $(document).ready(function() {
         $.get("/generatorajax/model", function(data){
             remove_ajax_loader("#result");
             $("#result").html(data).fadeIn("slow");
+            details();
         });
     });
     
@@ -118,9 +121,20 @@ $(document).ready(function() {
         $.get("/generatorajax/list", function(data){
             remove_ajax_loader("#result");
             $("#result").html(data).fadeIn("slow");
+            details();
         });
     });
-
+    
+    //show generator------------------------------------------------------------
+    $("#show_button").click(function(){
+        show_ajax_loader("#result");
+        $.get("/generatorajax/show", function(data){
+            remove_ajax_loader("#result");
+            $("#result").html(data).fadeIn("slow");
+            details();
+        });
+    });
+    
 });
 
 function postForm(form_id,url){
@@ -129,6 +143,7 @@ function postForm(form_id,url){
         $.post(url, $(form_id).serialize(), function(data){
             remove_ajax_loader("#post_result");
             $("#post_result").html(data).fadeIn("slow");
+            details();
         });
         return false;
     });
@@ -143,4 +158,11 @@ function show_ajax_loader(elem){
 function remove_ajax_loader(elem){
     $(elem).remove("#ajax_loader");
     $(elem).hide();
+}
+
+function details(){
+    $(".details_link").click(function(){
+        var id = $(this).attr("id").valueOf();
+        $("#details_"+id).toggle("slow");
+    });
 }

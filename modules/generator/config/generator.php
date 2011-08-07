@@ -9,7 +9,10 @@ return array(
     "copyright" => "(c) 2011 burningface",
     
     "error_class" => "form_error",
-    "row_class" => "form_row",
+    "form_row_class" => "form_row",
+    "row_class" => "row",
+    "back_link_class" => "back_to_list",
+    
     "date_format" => "Y-m-d",
     "csrf_token_name" => "csrf",
     
@@ -25,6 +28,11 @@ return array(
     
     "disabled_tables" => array(
         "roles", "roles_users", "user_tokens"
+    ),
+    
+    "item_not_found_exception" => array(
+        "1" => "This record",
+        "2" => "doesn't exists !",
     ),
     
     "multilang_support" => true,
