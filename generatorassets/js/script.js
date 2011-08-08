@@ -105,6 +105,16 @@ $(document).ready(function() {
     //curl controller generator-------------------------------------------------
     postForm("#generate_curlcontroller", "/generatorajax/curlcontroller");
     
+    //assets generator----------------------------------------------------------
+    $("#template_button").click(function(){
+        show_ajax_loader("#result");
+        $.get("/generatorajax/template", function(data){
+            remove_ajax_loader("#result");
+            $("#result").html(data).fadeIn("slow");
+            details();
+        });
+    });
+    
     //model generator-----------------------------------------------------------
     $("#model_button").click(function(){
         show_ajax_loader("#result");

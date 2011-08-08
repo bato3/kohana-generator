@@ -96,7 +96,7 @@ input[type=password]:focus{
 .errors{
     position: relative;
     float: right;
-    right: 480px;
+    right: 500px;
     color: red;
 }
 

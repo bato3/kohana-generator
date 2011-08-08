@@ -19,6 +19,7 @@ class Controller_Generator extends Kohana_Controller_Template {
     private $logged_in = false;
     private $links = array(
         "assets" => "assets",
+        "template" => "template",
         "model" => "model",
         "list" => "list",
         "show" => "show",
@@ -160,6 +161,14 @@ class Controller_Generator extends Kohana_Controller_Template {
     public function action_assets() {
         $form = View::factory("forms/generatorassets");
         $form->labels = array("assets_button" => "Generate assets structure",
+            "clear_button" => "Clear");
+
+        $this->template->content = $form;
+    }
+    
+    public function action_template() {
+        $form = View::factory("forms/generatortemplate");
+        $form->labels = array("template_button" => "Generate template",
             "clear_button" => "Clear");
 
         $this->template->content = $form;

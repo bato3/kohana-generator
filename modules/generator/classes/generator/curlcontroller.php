@@ -50,7 +50,7 @@ class Generator_Curlcontroller extends Generator_Controller {
         
         $controllers = self::getControllers(); 
         
-        $writer->addRow("    public \$template = \"template\";");
+        $writer->addRow("    public \$template = \"template/template\";");
         
         $config = Generator_Util::loadConfig();
         $lang = "\$model->labels();";
@@ -67,6 +67,7 @@ class Generator_Curlcontroller extends Generator_Controller {
     public function before() {
         parent::before();
         I18n::\$lang = \"en\";
+        \$this->template->title = \"$form &#187; \" . \$this->request->action();        
     }");
         }
         $writer->addRow("

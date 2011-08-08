@@ -122,6 +122,17 @@ class Controller_Generatorajax extends Controller {
             throw new HTTP_Exception_404();
         }
     }
+    
+    public function action_template() {
+        if ($this->request->is_ajax()) {
+            $result = Generator_Template::generate();
+            $view = View::factory("forms/generatorshowgeneratedresult");
+            $view->result = $result;
+            $this->sendHtml($view);
+        } else {
+            throw new HTTP_Exception_404();
+        }
+    }
 
     public function action_inputs() {
         $view = View::factory("forms/generatorinputs");
