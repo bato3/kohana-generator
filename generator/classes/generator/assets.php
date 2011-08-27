@@ -18,19 +18,19 @@ class Generator_Assets {
         
         $writer = new Generator_Filewriter();
         $writer->write(Generator_Filewriter::$ASSETS);
-        $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
+        $result->addItem($writer->getFilename(), $writer->getPath());
         $result->addWriteIsOk($writer->writeIsOk());
 
         $writer->write(Generator_Filewriter::$ASSETS_CSS);
-        $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
+        $result->addItem($writer->getFilename(), $writer->getPath());
         $result->addWriteIsOk($writer->writeIsOk());
 
         $writer->write(Generator_Filewriter::$ASSETS_IMG);
-        $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
+        $result->addItem($writer->getFilename(), $writer->getPath());
         $result->addWriteIsOk($writer->writeIsOk());
 
         $writer->write(Generator_Filewriter::$ASSETS_JS);
-        $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
+        $result->addItem($writer->getFilename(), $writer->getPath());
         $result->addWriteIsOk($writer->writeIsOk());
 
         $writer = new Generator_Filewriter("reset.css", true);

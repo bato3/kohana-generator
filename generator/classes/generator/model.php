@@ -29,14 +29,18 @@ class Generator_Model {
         ";
     }
 
-    private static function getSelect($primary_key) {
+    private static function getSelect($table_name) {
         $config = Generator_Util::loadConfig();
-        return "    public function selectOptions(\$value_field=\"$primary_key\", \$key_field=\"$primary_key\", \$preoption=\"" . $config->get("select_pre_option") . "\") {
-        if(empty(\$key_field)){ \$key_field = \"$primary_key\"; }
+        return "    public function selectOptions() {
+        \$config = Kohana::\$config->load(\"models\");
+        \$options = \$config->get(\"$table_name\");
+        \$key_field = \$options[\"select_option_key\"];
+        \$value_field = \$options[\"select_option_value\"];
+        \$pre_option = \$options[\"select_option_pre_option\"];
             
-        if (!empty(\$preoption)) {
+        if (!empty(\$pre_option)) {
             \$array = array();
-            \$array[\" \"] = \$preoption;  
+            \$array[\" \"] = \$pre_option;  
             \$result = \$this->order_by(\$value_field)->find_all()->as_array(\$key_field, \$value_field);
             foreach (\$result as \$key => \$value) {
                 \$array[\$key] = \$value;
@@ -140,12 +144,22 @@ class Generator_Model {
         return array_merge($belongs_to, $has_many);
     }
 
-    private static function labels($array) {
-        $html = "    public function labels(){\n        return array(\n";
-        foreach ($array as $key => $value) {
-            $html .= "            \"$key\" => \"$value\",\n";
+    private static function labels($array, $model, $multilang) {
+        $html = "    public function labels(){\n";
+        if($multilang){
+            $html .= "        \$lang = I18n::get(\"$model\");\n";
+            $html .= "        return array(\n";
+            foreach ($array as $key => $value) {
+                $html .= "            \"$key\" => \$lang[\"$value\"],\n";
+            }
+            $html .= "            \"submit\" => \$lang[\"submit\"],\n";
+        }else{
+            $html .= "        return array(\n";
+            foreach ($array as $key => $value) {
+                $html .= "            \"$key\" => \"$value\",\n";
+            }
+            $html .= "            \"submit\" => \"submit\",\n";
         }
-        $html .= "            \"submit\" => \"submit\",\n";
         return $html . "\n        );\n    }\n";
     }
 
@@ -167,12 +181,12 @@ class Generator_Model {
 
     public static function generate() {
         $result = new Generator_Result();
-        
+
         $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
         $disabled_tables = $config->get("disabled_tables");
-        $i18n = array("back" => "back", "create" => "new", "edit" => "edit", "delete" => "delete","show" => "show");
-        $i18n_langs = array("hu", "de", "en", "it");
+        $i18n = array("back" => "back", "create" => "new", "edit" => "edit", "delete" => "delete", "show" => "show");
+        $model_names = array();
         foreach ($tables as $key => $table) {
             if (!in_array($table, $disabled_tables)) {
 
@@ -222,7 +236,7 @@ class Generator_Model {
                     $writer->addRow(Generator_Util::methodInfoHead("array"));
                     $writer->addRow(self::filters($filters));
                     $writer->addRow(Generator_Util::methodInfoHead("array"));
-                    $writer->addRow(self::labels($labels));
+                    $writer->addRow(self::labels($labels, $table_simple_name, $config->get("multilang_support")));
 
                     $writer->addRow(Generator_Util::methodInfoHead("array"));
                     $writer->addRow(self::getFormErrors());
@@ -232,7 +246,8 @@ class Generator_Model {
 
                     if (!empty($primary_key)) {
                         $writer->addRow(Generator_Util::methodInfoHead("array"));
-                        $writer->addRow(self::getSelect($primary_key));
+                        $writer->addRow(self::getSelect($table_simple_name));
+                        $model_names[$table_simple_name] = $primary_key;
                     }
 
                     $writer->addRow(Generator_Util::$CLOSE_CLASS_FILE);
@@ -246,6 +261,7 @@ class Generator_Model {
         }
         if ($config->get("multilang_support")) {
             if ($result->writeIsOK()) {
+                $i18n_langs = $config->get("languages");
                 foreach ($i18n_langs as $lang_file) {
                     $lang_writer = new Generator_Filewriter($lang_file);
                     if (!$lang_writer->fileExists($lang_file . ".php", Generator_Filewriter::$I18n)) {
@@ -264,18 +280,84 @@ class Generator_Model {
                                 $lang_writer->addRow("    \"$key\" => \"$val\",");
                             }
                         }
+                        $lang_writer->addRow("    \"item_not_found_exception\" => \"" . $config->get("item_not_found_exception") . "\",");
+                        $validation = $config->get("validation");
+                        foreach ($validation as $key => $val) {
+                            $lang_writer->addRow("    \"$key\" => \"$val\",");
+                        }
                         $lang_writer->addRow(");");
                         $lang_writer->addRow("?>");
                     }
                     $lang_writer->write(Generator_Filewriter::$I18n);
-                    $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
-                    $result->addWriteIsOk($writer->writeIsOk());
+                    $result->addItem($lang_writer->getFilename(), $lang_writer->getPath(), $lang_writer->getRows());
+                    $result->addWriteIsOk($lang_writer->writeIsOk());
                 }
             } else {
                 $result->addItem("i18n", "<div class=\"error\">I18n languages support skipped! Delete models first !</div>");
                 $result->addWriteIsOk(false);
             }
+
+            $validation = $config->get("i18_validation");
+            $validation_writer = new Generator_Filewriter("validation");
+            if (!$validation_writer->fileExists("validation.php", Generator_Filewriter::$MESSAGES)) {
+                $validation_writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
+                $validation_writer->addRow("<?php");
+                $validation_writer->addRow("return array(");
+                foreach ($validation as $key => $val) {
+                    $validation_writer->addRow("    \"$key\" => \"$val\",");
+                }
+                $validation_writer->addRow(");");
+                $validation_writer->addRow("?>");
+                $validation_writer->write(Generator_Filewriter::$MESSAGES);
+                $result->addItem($validation_writer->getFilename(), $validation_writer->getPath(), $validation_writer->getRows());
+                $result->addWriteIsOk($validation_writer->writeIsOk());
+            } else {
+                $result->addItem("validation.php", "<div class=\"error\">validation.php is exsists! Please delete first !</div>");
+                $result->addWriteIsOk(false);
+            }
+        } else {
+
+            $validation = $config->get("validation");
+            $validation_writer = new Generator_Filewriter("validation");
+            if (!$validation_writer->fileExists("validation.php", Generator_Filewriter::$MESSAGES)) {
+                $validation_writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
+                $validation_writer->addRow("<?php");
+                $validation_writer->addRow("return array(");
+                foreach ($validation as $key => $val) {
+                    $validation_writer->addRow("    \"$key\" => \"$val\",");
+                }
+                $validation_writer->addRow(");");
+                $validation_writer->addRow("?>");
+                $validation_writer->write(Generator_Filewriter::$MESSAGES);
+                $result->addItem($validation_writer->getFilename(), $validation_writer->getPath(), $validation_writer->getRows());
+                $result->addWriteIsOk($validation_writer->writeIsOk());
+            } else {
+                $result->addItem("validation", "<div class=\"error\">validation.php is exsists! Please delete first !</div>");
+                $result->addWriteIsOk(false);
+            }
         }
+        $config_writer = new Generator_Filewriter("models");
+        if (!$validation_writer->fileExists("models.php", Generator_Filewriter::$CONFIG)) {
+            $config_writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
+            $config_writer->addRow("<?php");
+            $config_writer->addRow("return array(");
+            foreach ($model_names as $name => $primary_key) {
+                $config_writer->addRow("    \"$name\" => array(");
+                $config_writer->addRow("        \"select_option_key\" => \"$primary_key\",");
+                $config_writer->addRow("        \"select_option_value\" => \"$primary_key\",");
+                $config_writer->addRow("        \"select_option_pre_option\" => \"" . $config->get("select_pre_option") . "\",");
+                $config_writer->addRow("    ),\n");
+            }
+            $config_writer->addRow(");");
+            $config_writer->addRow("?>");
+            $config_writer->write(Generator_Filewriter::$CONFIG);
+            $result->addItem($config_writer->getFilename(), $config_writer->getPath(), $config_writer->getRows());
+            $result->addWriteIsOk($config_writer->writeIsOk());
+        } else {
+            $result->addItem("models.php", "<div class=\"error\">models.php is exsists! Please delete first !</div>");
+            $result->addWriteIsOk(false);
+        }
+
         return $result;
     }
 

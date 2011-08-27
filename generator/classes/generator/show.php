@@ -1,4 +1,5 @@
 <?php
+
 defined('SYSPATH') or die('No direct access allowed.');
 /*
  * To change this template, choose Tools | Templates
@@ -11,10 +12,10 @@ defined('SYSPATH') or die('No direct access allowed.');
  * @author burningface
  */
 class Generator_Show {
-    
+
     public static function generate() {
         $result = new Generator_Result();
-        
+
         $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
         $disabled_tables = $config->get("disabled_tables");
@@ -29,15 +30,15 @@ class Generator_Show {
                     $fields = Generator_Util::listTableFields($table);
                     $writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
                     $writer->addRow("<div>");
-                    
-                    foreach ($fields as $array){
+
+                    foreach ($fields as $array) {
                         $field = Generator_Field::factory($array);
-                        $writer->addRow("          <div class=\"".$config->get("row_class")."\"><?php echo \$labels[\"".$field->getName()."\"] ?>: <?php echo \$model->".$field->getName()."; ?></div>");
+                        $writer->addRow("          <div class=\"" . $config->get("row_class") . "\"><?php echo \$labels[\"" . $field->getName() . "\"] ?>: <?php echo \$model->" . $field->getName() . "; ?></div>");
                     }
                     $writer->addRow("<div>");
-                    $writer->addRow("<div class=\"".$config->get("back_link_class")."\"><a href=\"/$table_simple_name/\"><?php echo __(\"back\") ?></a></div>");
+                    $writer->addRow("<div class=\"" . $config->get("back_link_class") . "\"><a href=\"/$table_simple_name/\"><?php echo __(\"back\") ?></a></div>");
                 }
-                
+
                 $writer->write(Generator_Filewriter::$SHOW);
                 $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());
                 $result->addWriteIsOk($writer->writeIsOk());
@@ -45,6 +46,7 @@ class Generator_Show {
         }
         return $result;
     }
+
 }
 
 ?>

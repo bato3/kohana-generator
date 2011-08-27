@@ -36,7 +36,7 @@ class Generator_Curlcontroller extends Generator_Controller {
         
         $model = !empty($post["model"]) ? $post["model"] : self::$default_controller;
         $actions = array("index","create","edit","delete");
-
+        $config = Generator_Util::loadConfig();
         $writer = new Generator_Filewriter($model);
 
         $controllername = "Controller_" . Generator_Util::upperFirst($model);
@@ -45,28 +45,29 @@ class Generator_Curlcontroller extends Generator_Controller {
         $writer->addRow(Generator_Util::classInfoHead($controllername));
         $writer->addRow("class " . $controllername . " extends Controller_Template {\n");
         $writer->addRow(self::getActionPaths($model, $actions));
-        
+        $exception = "throw new HTTP_Exception_404(sprintf(__(\"item_not_found_exception\"), \$this->request->param(\"id\")));";
+        if(!$config->get("multilang_support")){
+            $writer->addRow("    private \$item_not_found_exception = \"".$config->get("item_not_found_exception")."\";");
+            $exception = "throw new HTTP_Exception_404(sprintf(\$this->exception, \$this->request->param(\"id\")));";
+        }
+        $writer->addRow("    public \$template = \"template/template\";");
         $writer->addRow("    private \$form;");
         
-        $controllers = self::getControllers(); 
-        
-        $writer->addRow("    public \$template = \"template/template\";");
-        
-        $config = Generator_Util::loadConfig();
+        //$controllers = self::getControllers(); 
+
         $lang = "\$model->labels();";
         if($config->get("multilang_support")){
             $lang = "__(\"$model\");";
-        }
-        
-        $exception = $config->get("item_not_found_exception"); 
+        } 
         
         $form = $model;
         $model = "Model_".Generator_Util::upperFirst($model);
         if($config->get("multilang_support")){
+            $languages = $config->get("languages");
             $writer->addRow("
     public function before() {
         parent::before();
-        I18n::\$lang = \"en\";
+        I18n::\$lang = \"".$languages[0]."\";
         \$this->template->title = \"$form &#187; \" . \$this->request->action();        
     }");
         }
@@ -86,9 +87,8 @@ class Generator_Curlcontroller extends Generator_Controller {
         \$this->form->action = \$this->create_url;
                 
         if (isset(\$_POST[\"submit\"])) {
-            \$model->values(\$_POST);
-                
-            if (\$model->validation()->check()) {
+                            
+            if (\$model->values(\$_POST)->validation()->check() && \$model->csrf(\$_POST)->check()) {
                 
                 \$model->save(\$model->validation());
                 \$this->request->redirect(\$this->index_url);
@@ -114,15 +114,14 @@ class Generator_Curlcontroller extends Generator_Controller {
         if (\$model->loaded()) {
             \$this->form->values = \$model->as_array();        
         }else{
-            throw new HTTP_Exception_404(\"".$exception["1"]." \" . \$this->request->param(\"id\") . \" ".$exception["2"]."\");
+            $exception
         }       
         
         if (isset(\$_POST[\"submit\"])) {
                 
             if (\$model->loaded()) {
-                \$model->values(\$_POST);
                 
-                if (\$model->validation()->check()) {
+                if (\$model->values(\$_POST)->validation()->check() && \$model->csrf(\$_POST)->check()) {
                 
                     \$model->update(\$model->validation());
                     \$this->request->redirect(\$this->index_url);
@@ -150,7 +149,7 @@ class Generator_Curlcontroller extends Generator_Controller {
             \$view->model = \$model;
             \$this->template->content = \$view;
         }else{
-            throw new HTTP_Exception_404(\"".$exception["1"]." \" . \$this->request->param(\"id\") . \" ".$exception["2"]."\");
+            $exception
         }
 
     }

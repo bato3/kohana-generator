@@ -199,7 +199,7 @@ class Generator_Form {
         }
     }
 
-    private static function rowWrapper($key, $val, $wrapper="div") {
+    private static function rowWrapper($key, $val, $wrapper="div", $hiddencontent=null) {
         if (!empty($key)) {
             $input = self::getInput($key, $val);
             $label = self::label($key);
@@ -208,30 +208,30 @@ class Generator_Form {
                 if (array_key_exists($val, self::$INPUTS) && self::$INPUTS[$val] != "hidden" || $key == "submit") {
                     switch ($wrapper) {
                         case "table" :
-                            return self::wrappTR(self::wrappTD($label) . self::wrappTD($input) . self::wrappTD(self::error($key)));
+                            return self::wrappTR(self::wrappTD($label) . self::wrappTD($hiddencontent.$input) . self::wrappTD(self::error($key)));
                             break;
                         case "p" :
-                            return self::wrappP($label . $input . self::error($key));
+                            return self::wrappP($label . $hiddencontent.$input . self::error($key));
                             break;
                         case "div" :
-                            return self::wrappDiv($label . $input . self::error($key));
+                            return self::wrappDiv($label . $hiddencontent.$input . self::error($key));
                             break;
                         default :
-                            return self::wrappDiv($label . $input . self::error($key));
+                            return self::wrappDiv($label . $hiddencontent.$input . self::error($key));
                     }
                 } else {
                     switch ($wrapper) {
                         case "table" :
-                            return self::wrappTR(self::wrappTD("        &nbsp;\n") . self::wrappTD("        &nbsp;\n") . self::wrappTD($input));
+                            return self::wrappTR(self::wrappTD("        &nbsp;\n") . self::wrappTD("        &nbsp;\n") . self::wrappTD($hiddencontent.$input));
                             break;
                         case "p" :
-                            return self::wrappP($input);
+                            return self::wrappP($hiddencontent.$input);
                             break;
                         case "div" :
-                            return self::wrappDiv($input);
+                            return self::wrappDiv($hiddencontent.$input);
                             break;
                         default :
-                            return self::wrappDiv($input);
+                            return self::wrappDiv($hiddencontent.$input);
                     }
                 }
             }
@@ -301,12 +301,17 @@ class Generator_Form {
         }
 
         $post_array = self::orderPost($post_array);
+        $hidden = ""; 
         foreach ($post_array as $key => $val) {
             if (is_numeric($val) && !empty($key) && $key != "wrapper") {
-                $writer->addRow(self::rowWrapper($key, $val, $wrapper));
+                if(self::$INPUTS[$val] != "hidden"){
+                    $writer->addRow(self::rowWrapper($key, $val, $wrapper));
+                }else{
+                    $hidden .= self::hidden($key);
+                }
             }
         }
-        $writer->addRow(self::rowWrapper("submit", null, $wrapper));
+        $writer->addRow(self::rowWrapper("submit", null, $wrapper,$hidden));
 
         if ($wrapper == "table") {
             $writer->addRow(self::tableClose());

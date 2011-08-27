@@ -24,6 +24,8 @@ class Generator_File {
     public static $I18n = 9;
     public static $SHOW = 10;
     public static $TEMPLATE = 11;
+    public static $CONFIG = 12;
+    public static $MESSAGES = 13;
 
     protected function getApplicationPaths($mod) {
         switch ($mod) {
@@ -59,6 +61,12 @@ class Generator_File {
                 break;
             case 11 :
                 return DOCROOT . "application" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR;
+                break;
+            case 12 :
+                return DOCROOT . "application" . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR;
+                break;
+            case 13 :
+                return DOCROOT . "application" . DIRECTORY_SEPARATOR . "messages" . DIRECTORY_SEPARATOR;
                 break;
             default :
                 return DOCROOT . "application" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "model" . DIRECTORY_SEPARATOR;
