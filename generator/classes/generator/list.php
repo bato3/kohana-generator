@@ -37,7 +37,7 @@ class Generator_List {
                     foreach ($fields as $array){
                         $field = Generator_Field::factory($array);
                         $head .= "          <th><?php echo \$labels[\"".$field->getName()."\"] ?></th>\n";
-                        $body .= "          <td><?php echo \$object->".$field->getName()."; ?></td>\n";
+                        $body .= "          <td><?php echo htmlspecialchars(\$object->".$field->getName().", ENT_QUOTES); ?></td>\n";
                         if($field->isPrimaryKey()){
                             $edithead .= "          <th><?php echo __(\"show\") ?></th>\n";
                             $edithead .= "          <th><?php echo __(\"edit\") ?></th>\n";

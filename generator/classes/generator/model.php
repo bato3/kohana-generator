@@ -297,14 +297,14 @@ class Generator_Model {
                 $result->addWriteIsOk(false);
             }
 
-            $validation = $config->get("i18_validation");
+            $validation = $config->get("validation");
             $validation_writer = new Generator_Filewriter("validation");
             if (!$validation_writer->fileExists("validation.php", Generator_Filewriter::$MESSAGES)) {
                 $validation_writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
                 $validation_writer->addRow("<?php");
                 $validation_writer->addRow("return array(");
                 foreach ($validation as $key => $val) {
-                    $validation_writer->addRow("    \"$key\" => \"$val\",");
+                    $validation_writer->addRow("    \"$key\" => \"$key\",");
                 }
                 $validation_writer->addRow(");");
                 $validation_writer->addRow("?>");

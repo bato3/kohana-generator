@@ -33,7 +33,7 @@ class Generator_Show {
 
                     foreach ($fields as $array) {
                         $field = Generator_Field::factory($array);
-                        $writer->addRow("          <div class=\"" . $config->get("row_class") . "\"><?php echo \$labels[\"" . $field->getName() . "\"] ?>: <?php echo \$model->" . $field->getName() . "; ?></div>");
+                        $writer->addRow("          <div class=\"" . $config->get("row_class") . "\"><?php echo \$labels[\"" . $field->getName() . "\"] ?>: <?php echo htmlspecialchars(\$model->" . $field->getName() . ", ENT_QUOTES); ?></div>");
                     }
                     $writer->addRow("<div>");
                     $writer->addRow("<div class=\"" . $config->get("back_link_class") . "\"><a href=\"/$table_simple_name/\"><?php echo __(\"back\") ?></a></div>");
