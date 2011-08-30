@@ -1,36 +1,17 @@
 <?php
-defined('SYSPATH') or die('No direct access allowed.');
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
 /**
- * Description of curlcontroller
+ * Description of curlcontrollertwig
  *
  * @author burningface
  */
-class Generator_Curlcontroller extends Generator_Controller {
+class Generator_Curlcontrollertwig extends Generator_Curlcontroller {
     
-    protected static function referenced($model){
-        $m = new $model;
-        $table = $m->table_name();
-        
-        $result = "";
-        $db = Database::instance();
-        $query = $db->query(Database::SELECT, 'SELECT * FROM information_schema.key_column_usage WHERE (TABLE_NAME=\''
-                . $table . '\' OR REFERENCED_TABLE_NAME=\'' . $table . '\') AND referenced_column_name IS NOT NULL AND REFERENCED_TABLE_NAME != \'' . $table . '\'');
-        
-        foreach($query as $array){
-            $field = Generator_Field::factory($array);
-            $result .= "        \$" . $field->getReferencedColumnName() . " = new " . $field->getReferencedModelName() ."();\n"; 
-            $result .= "        \$this->form->" . $field->getReferencedColumnName() . " = " ."\$" . $field->getReferencedColumnName() . "->selectOptions();\n";
-        }
-        
-        return $result;
-    }
-
-
     public static function generate($post) {
         $result = new Generator_Result();
         
@@ -38,19 +19,19 @@ class Generator_Curlcontroller extends Generator_Controller {
         $actions = array("index","create","edit","delete");
         $config = Generator_Util::loadConfig();
         $writer = new Generator_Filewriter($model);
-
+        self::generateViews($model);
+        
         $controllername = "Controller_" . Generator_Util::upperFirst($model);
-
+        
         $writer->addRow(Generator_Util::$OPEN_CLASS_FILE);
         $writer->addRow(Generator_Util::classInfoHead($controllername));
-        $writer->addRow("class " . $controllername . " extends Controller_Template {\n");
+        $writer->addRow("class " . $controllername . " extends Controller_Template_Twig {\n");
         $writer->addRow(self::getActionPaths($model, $actions));
         $exception = "throw new HTTP_Exception_404(sprintf(__(\"item_not_found_exception\"), \$this->request->param(\"id\")));";
         if(!$config->get("multilang_support")){
             $writer->addRow("    private \$item_not_found_exception = \"".$config->get("item_not_found_exception")."\";");
             $exception = "throw new HTTP_Exception_404(sprintf(\$this->exception, \$this->request->param(\"id\")));";
         }
-        $writer->addRow("    public \$template = \"template/template\";");
         $writer->addRow("    private \$form;");
         
         //$controllers = self::getControllers(); 
@@ -82,10 +63,12 @@ class Generator_Curlcontroller extends Generator_Controller {
         $writer->addRow("
     public function action_index() {
         \$model = new $model();
-        \$list = View::factory(\"lists/$form\");
-        \$list->labels = $lang
-        \$list->result = \$model->find_all();
-        \$this->template->content = \$list;
+        \$this->template->labels = $lang
+        \$this->template->show = __(\"show\");
+        \$this->template->edit = __(\"edit\");
+        \$this->template->delete = __(\"delete\");
+        \$this->template->create = __(\"create\");
+        \$this->template->result = \$model->find_all();
     }
     
     public function action_create() {
@@ -109,7 +92,7 @@ class Generator_Curlcontroller extends Generator_Controller {
             }
                 
         }
-        \$this->template->content = \$this->form;
+        \$this->template->form = \$this->form;
                 
     }
 
@@ -144,7 +127,7 @@ class Generator_Curlcontroller extends Generator_Controller {
             }
                 
         }
-        \$this->template->content = \$this->form;
+        \$this->template->form = \$this->form;
                 
     }
                 
@@ -152,10 +135,9 @@ class Generator_Curlcontroller extends Generator_Controller {
         \$model = new $model(\$this->request->param(\"id\"));
         
         if (\$model->loaded()) {
-            \$view = View::factory(\"shows/$form\");
-            \$view->labels = $lang
-            \$view->model = \$model;
-            \$this->template->content = \$view;
+            \$this->template->labels = $lang
+            \$this->template->model = \$model;
+            \$this->template->back = __(\"back\");    
         }else{
             $exception
         }
@@ -185,6 +167,55 @@ class Generator_Curlcontroller extends Generator_Controller {
         $result->addWriteIsOk($writer->writeIsOk());
         
         return $result;
+    }
+    
+    private static function generateViews($name){
+        $index_writer = new Generator_Filewriter("index.html",true);
+        $path = $index_writer->getApplicationPaths(Generator_Filewriter::$VIEWS).$name;
+        
+        if($index_writer->mkdir($path)){
+            $index_writer->userSpecPath($path);
+
+            $index_writer->addRow("{% extends \"template/template.html\" %}");
+            $index_writer->addRow("{% block content %}");
+            $index_writer->addRow("{% include \"lists/$name.html\" %}");
+            $index_writer->addRow("{% endblock %}");
+            $index_writer->write(Generator_Filewriter::$USER_SPECIFIES_IT);
+
+            $create_writer = new Generator_Filewriter("create.html",true);
+            $create_writer->userSpecPath($path);
+
+            $create_writer->addRow("{% extends \"template/template.html\" %}");
+            $create_writer->addRow("{% block content %}");
+            $create_writer->addRow("{% autoescape false %}");
+            $create_writer->addRow("{{ form }}");
+            $create_writer->addRow("{% endautoescape %}");
+            $create_writer->addRow("{% endblock %}");
+            $create_writer->write(Generator_Filewriter::$USER_SPECIFIES_IT);
+
+            $edit_writer = new Generator_Filewriter("edit.html",true);
+            $edit_writer->userSpecPath($path);
+
+            $edit_writer->addRow("{% extends \"template/template.html\" %}");
+            $edit_writer->addRow("{% block content %}");
+            $edit_writer->addRow("{% autoescape false %}");
+            $edit_writer->addRow("{{ form }}");
+            $edit_writer->addRow("{% endautoescape %}");
+            $edit_writer->addRow("{% endblock %}");
+            $edit_writer->write(Generator_Filewriter::$USER_SPECIFIES_IT);
+
+            $show_writer = new Generator_Filewriter("show.html",true);
+            $show_writer->userSpecPath($path);
+
+            $show_writer->addRow("{% extends \"template/template.html\" %}");
+            $show_writer->addRow("{% block content %}");
+            $show_writer->addRow("{% include \"shows/$name.html\" %}");
+            $show_writer->addRow("{% endblock %}");
+            $show_writer->write(Generator_Filewriter::$USER_SPECIFIES_IT);
+        
+        }else{
+            Kohana_Log::instance()->add(Log::ALERT, "nem lehet létrehozni $path");
+        }
     }
 }
 

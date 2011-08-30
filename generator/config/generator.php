@@ -19,7 +19,6 @@ return array(
     "jquery_url" => "https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js",
     "jquery_name" => "jquery.min.js",
     
-    
     "controllers" => array(
         "Controller",
         "Controller_Template",

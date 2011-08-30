@@ -105,10 +105,11 @@ $(document).ready(function() {
     //curl controller generator-------------------------------------------------
     postForm("#generate_curlcontroller", "/generatorajax/curlcontroller");
     
-    //assets generator----------------------------------------------------------
+    //template generator----------------------------------------------------------
     $("#template_button").click(function(){
         show_ajax_loader("#result");
-        $.get("/generatorajax/template", function(data){
+        var template_type = $(".template:checked").val();
+        $.get("/generatorajax/template?template="+template_type, function(data){
             remove_ajax_loader("#result");
             $("#result").html(data).fadeIn("slow");
             details();
@@ -128,7 +129,8 @@ $(document).ready(function() {
     //list generator------------------------------------------------------------
     $("#list_button").click(function(){
         show_ajax_loader("#result");
-        $.get("/generatorajax/list", function(data){
+        var template_type = $(".template:checked").val();
+        $.get("/generatorajax/list?template="+template_type, function(data){
             remove_ajax_loader("#result");
             $("#result").html(data).fadeIn("slow");
             details();
@@ -138,7 +140,8 @@ $(document).ready(function() {
     //show generator------------------------------------------------------------
     $("#show_button").click(function(){
         show_ajax_loader("#result");
-        $.get("/generatorajax/show", function(data){
+        var template_type = $(".template:checked").val();
+        $.get("/generatorajax/show?template="+template_type, function(data){
             remove_ajax_loader("#result");
             $("#result").html(data).fadeIn("slow");
             details();

@@ -1,18 +1,17 @@
 <?php
 
-defined('SYSPATH') or die('No direct access allowed.');
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
 /**
- * Description of list
+ * Description of listtwig
  *
  * @author burningface
  */
-class Generator_List {
-
+class Generator_Listtwig {
+    
     public static function generate() {
         $result = new Generator_Result();
         
@@ -24,36 +23,35 @@ class Generator_List {
                 $table_simple_name = Generator_Util::name($table);
                 $model_name = Generator_Util::upperFirst($table_simple_name);
 
-                $writer = new Generator_Filewriter($table_simple_name);
+                $writer = new Generator_Filewriter($table_simple_name.".html", true);
 
-                if (!$writer->fileExists($table_simple_name . ".php", Generator_Filewriter::$LIST)) {
+                if (!$writer->fileExists($table_simple_name . ".html", Generator_Filewriter::$LIST)) {
                     $fields = Generator_Util::listTableFields($table);
                     $head = "";
                     $body = "";
                     $edithead = "";
                     $edit = "";
-                    $foot = "          <td><?php echo html::anchor(\"".$table_simple_name."/create\", __(\"create\")); ?></td>\n";
+                    $foot = "          <td><a href=\"/".$table_simple_name."/create\">{{ create }}</a></td>\n";
                     $foot .= "          <td>&nbsp;</td>\n";
                     $foot .= "          <td>&nbsp;</td>\n";
                     
                     foreach ($fields as $array){
                         $field = Generator_Field::factory($array);
-                        $head .= "          <th><?php echo \$labels[\"".$field->getName()."\"] ?></th>\n";
-                        $body .= "          <td><?php echo htmlspecialchars(\$object->".$field->getName().", ENT_QUOTES); ?></td>\n";
+                        $head .= "          <th>{{ labels.".$field->getName()." }}</th>\n";
+                        $body .= "          <td>{{ object.".$field->getName()." }}</td>\n";
                         $foot .= "          <td>&nbsp;</td>\n";
                         
                         if($field->isPrimaryKey()){
-                            $edithead .= "          <th><?php echo __(\"show\") ?></th>\n";
-                            $edithead .= "          <th><?php echo __(\"edit\") ?></th>\n";
-                            $edithead .= "          <th><?php echo __(\"delete\") ?></th>\n";
-                            $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/show/\".\$object->".$field->getName().", __(\"show\")); ?></td>\n";
-                            $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/edit/\".\$object->".$field->getName().", __(\"edit\")); ?></td>\n";
-                            $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/delete/\".\$object->".$field->getName().", __(\"delete\")); ?></td>\n";
+                            $edithead .= "          <th>{{ show }}</th>\n";
+                            $edithead .= "          <th>{{ edit }}</th>\n";
+                            $edithead .= "          <th>{{ delete }}</th>\n";
+                            $edit .= "          <td><a href=\"/".$table_simple_name."/show/{{ object.".$field->getName()." }}\">{{ show }}</a></td>\n";
+                            $edit .= "          <td><a href=\"/".$table_simple_name."/edit/{{ object.".$field->getName()." }}\">{{ edit }}</a></td>\n";
+                            $edit .= "          <td><a href=\"/".$table_simple_name."/delete/{{ object.".$field->getName()." }}\">{{ delete }}</a></td>\n";
                         }
                         
                     }
                                         
-                    $writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
                     $writer->addRow("<table>");
                     $writer->addRow("   <thead>");
                     $writer->addRow("       <tr>\n");
@@ -67,16 +65,12 @@ class Generator_List {
                     $writer->addRow("       </tr>");
                     $writer->addRow("</tfoot>");
                     $writer->addRow("   <tbody>");
-                    $writer->addRow("   <?php");
-                    $writer->addRow("   foreach(\$result as \$object) {");
-                    $writer->addRow("   ?>");
+                    $writer->addRow("   {% for object in result %}");
                     $writer->addRow("   <tr>\n");
                     $writer->addRow($body);
                     $writer->addRow($edit);
                     $writer->addRow("   </tr>");
-                    $writer->addRow("   <?php");
-                    $writer->addRow("   }");
-                    $writer->addRow("   ?>");
+                    $writer->addRow("   {% endfor %}");
                     $writer->addRow("   </tbody>");
                     $writer->addRow("</table>");
                     
@@ -88,7 +82,6 @@ class Generator_List {
         }
         return $result;
     }
-
 }
 
 ?>

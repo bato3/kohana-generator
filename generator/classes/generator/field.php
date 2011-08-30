@@ -69,7 +69,7 @@ class Generator_Field {
         return $this->getKey() == "PRI" ? true : false;
     }
 
-    public function isForeigKey() {
+    public function isForeignKey() {
         return $this->getKey() == "MUL" ? true : false;
     }
 

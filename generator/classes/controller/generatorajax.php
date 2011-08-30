@@ -70,7 +70,12 @@ class Controller_Generatorajax extends Controller {
     
     public function action_curlcontroller() {
         if ($this->request->is_ajax()) {
-            $result = Generator_Curlcontroller::generate($_POST);
+            $result = "Upsz";
+            if($_POST["template"] == "php"){
+                $result = Generator_Curlcontroller::generate($_POST);
+            }elseif($_POST["template"] == "twig"){
+                $result = Generator_Curlcontrollertwig::generate($_POST);
+            }
             $view = View::factory("forms/generatorshowgeneratedresult");
             $view->result = $result;
             $this->sendHtml($view);
@@ -92,7 +97,12 @@ class Controller_Generatorajax extends Controller {
     
     public function action_list() {
         if ($this->request->is_ajax()) {
-            $result = Generator_List::generate();
+            $result = "Upsz";
+            if($_GET["template"] == "php"){
+                $result = Generator_List::generate();
+            }else if($_GET["template"] == "twig"){
+                $result = Generator_Listtwig::generate();
+            }
             $view = View::factory("forms/generatorshowgeneratedresult");
             $view->result = $result;
             $this->sendHtml($view);
@@ -103,7 +113,12 @@ class Controller_Generatorajax extends Controller {
     
     public function action_show() {
         if ($this->request->is_ajax()) {
-            $result = Generator_Show::generate();
+            $result = "Upsz";
+            if($_GET["template"] == "php"){
+                $result = Generator_Show::generate();
+            }else if($_GET["template"] == "twig"){
+                $result = Generator_Showtwig::generate();
+            }
             $view = View::factory("forms/generatorshowgeneratedresult");
             $view->result = $result;
             $this->sendHtml($view);
@@ -125,7 +140,12 @@ class Controller_Generatorajax extends Controller {
     
     public function action_template() {
         if ($this->request->is_ajax()) {
-            $result = Generator_Template::generate();
+            $result = "Upsz";
+            if($_GET["template"] == "php"){
+                $result = Generator_Template::generate();
+            }else if($_GET["template"] == "twig"){
+                $result = Generator_Templatetwig::generate();
+            }
             $view = View::factory("forms/generatorshowgeneratedresult");
             $view->result = $result;
             $this->sendHtml($view);

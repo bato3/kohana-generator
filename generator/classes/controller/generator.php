@@ -14,7 +14,7 @@ defined('SYSPATH') or die('No direct access allowed.');
 class Controller_Generator extends Kohana_Controller_Template {
 
     private static $SESSION_KEY = "generator_logged_in";
-    private static $LOGIN_FAILD = "login failed!";
+    private static $LOGIN_FAILED = "login failed!";
     public $template = "generatortemplate";
     private $logged_in = false;
     private $links = array(
@@ -65,7 +65,7 @@ class Controller_Generator extends Kohana_Controller_Template {
                         $this->request->redirect("generator");
                     }
                 } else {
-                    $this->showFlash(self::$LOGIN_FAILD);
+                    $this->showFlash(self::$LOGIN_FAILED);
                     $form->errors = $validation->errors("form_errors");
                 }
             }

@@ -19,6 +19,7 @@ class Generator_Filewriter extends Generator_File {
     private $rows = array();
     private $write_is_ok = false;
     private $error = null;
+    private $user_spec_path;
 
     public function __construct($filename=null, $disable_php_extension=false) {
         if (!empty($filename) && !$disable_php_extension) {
@@ -34,12 +35,6 @@ class Generator_Filewriter extends Generator_File {
     public function addRow($row) {
         if (!empty($row)) {
             $this->rows[] = $row;
-        }
-    }
-
-    public function addRows($rows) {
-        if (!empty($row)) {
-            $this->rows = array_merge($this->rows, $rows);
         }
     }
 
@@ -63,9 +58,17 @@ class Generator_Filewriter extends Generator_File {
         return $this->write_is_ok;
     }
 
-    private function mkdir($path) {
-        @mkdir($path);
-        @chmod($path, 0777);
+    public function userSpecPath($path) {
+        $this->user_spec_path = $path.DIRECTORY_SEPARATOR;
+    }
+    
+    public function mkdir($path) {
+        $result=false;
+        if(!file_exists($path)){
+            $result = @mkdir($path);
+            @chmod($path, 0777);
+        }
+        return $result;
     }
 
     private function writeFile($path) {
@@ -98,7 +101,11 @@ class Generator_Filewriter extends Generator_File {
 
     public function write($mod=1) {
         
-        $dirpath = $this->getApplicationPaths($mod);
+        if($mod != Generator_Filewriter::$USER_SPECIFIES_IT){
+            $dirpath = $this->getApplicationPaths($mod);
+        }else{
+            $dirpath = $this->user_spec_path;
+        }
 
         if (!isset($this->filename)) {
             if (!file_exists($dirpath)) {
