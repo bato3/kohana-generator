@@ -13,8 +13,8 @@ defined('SYSPATH') or die('No direct access allowed.');
  */
 class Generator_Util {
 
-    public static $SIMPLE_OPEN_FILE = "<?php defined('SYSPATH') or die('No direct access allowed.'); ?>\n";
-    public static $OPEN_CLASS_FILE = "<?php defined('SYSPATH') or die('No direct access allowed.'); ?>\n<?php\n";
+    public static $SIMPLE_OPEN_FILE = "<?php defined(\"SYSPATH\") or die(\"No direct access allowed.\"); ?>\n";
+    public static $OPEN_CLASS_FILE = "<?php defined(\"SYSPATH\") or die(\"No direct access allowed.\"); ?>\n<?php\n";
     public static $CLOSE_CLASS_FILE = "}\n\n?>";
 
     public static function listTableFields($table) {

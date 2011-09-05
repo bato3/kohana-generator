@@ -1,12 +1,34 @@
 <div id="generator_result">
     <?php
-    if (!$result->writeIsOK()) {
-        echo "<div class=\"error\"><h1>Something wrong!</h1></div>";
+    $ok = true;
+    if(is_array($result)){
+        $is_ok = array();
+        foreach($result as $item){
+            array_push($is_ok, $item->writeIsOK());
+        }
+        if (in_array(false, $is_ok)) {
+            echo "<div class=\"error\"><h1>Something wrong!</h1></div>";
+            $ok = false;
+        }
+    }else{
+        if (!$result->writeIsOK()) {
+            echo "<div class=\"error\"><h1>Something wrong!</h1></div>";
+            $ok = false;
+        }
     }
     ?>
     <div>
         <?php
-        $list = $result->getItems();
+        $list = array();
+        
+        if(is_array($result)){
+            foreach($result as $item){
+                $list = array_merge($list, $item->getItems());
+            }
+        }else{
+            $list = $result->getItems();            
+        }
+            
         $i = 1;
         foreach ($list as $key => $item) {
             ?>
@@ -18,7 +40,7 @@
                         <h3>File source code:</h3>
                         <code>
                             <?php
-                            if (!$result->writeIsOK()) {
+                            if (!$ok) {
                                 echo "<div class=\"error\">";
                             }
                             if (is_array($item[1])) {
@@ -32,7 +54,7 @@
                                 echo $item[1];
                                 echo "</p>";
                             }
-                            if (!$result->writeIsOK()) {
+                            if (!$ok) {
                                 echo "</div>";
                             }
                             ?>

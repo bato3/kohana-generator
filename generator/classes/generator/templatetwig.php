@@ -14,11 +14,13 @@ class Generator_Templatetwig {
         
     public static function generate(){
         $result = new Generator_Result();
+        $config = Generator_Util::loadConfig();
+        $twig_extension = $config->get("twig_extension");
         $template = 
 "<!DOCTYPE html>
 <html>
     <head>
-        <title>{% if title %}{{title}}{% endif %}</title>
+        <title>{% if title %}{% autoescape false %}{{title}}{% endautoescape %}{% endif %}</title>
         <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
         {% block stylesheets %}
         <link type=\"text/css\" href=\"/assets/css/reset.css\" rel=\"stylesheet\">
@@ -34,7 +36,7 @@ class Generator_Templatetwig {
     </body>
 </html>";
         
-        $writer = new Generator_Filewriter("template.html", true);
+        $writer = new Generator_Filewriter("template.$twig_extension", true);
         $writer->addRow($template);
         $writer->write(Generator_Filewriter::$TEMPLATE);
         $result->addItem($writer->getFilename(), $writer->getPath(), $writer->getRows());

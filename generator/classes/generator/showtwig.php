@@ -17,24 +17,26 @@ class Generator_Showtwig {
 
         $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
+        $twig_extension = $config->get("twig_extension");
         $disabled_tables = $config->get("disabled_tables");
+        $show_div_class = $config->get("show_div_class");
         foreach ($tables as $key => $table) {
             if (!in_array($table, $disabled_tables)) {
                 $table_simple_name = Generator_Util::name($table);
                 $model_name = Generator_Util::upperFirst($table_simple_name);
 
-                $writer = new Generator_Filewriter($table_simple_name.".html", true);
+                $writer = new Generator_Filewriter($table_simple_name.".$twig_extension", true);
 
-                if (!$writer->fileExists($table_simple_name . ".html", Generator_Filewriter::$SHOW)) {
+                if (!$writer->fileExists($table_simple_name . ".$twig_extension", Generator_Filewriter::$SHOW)) {
                     $fields = Generator_Util::listTableFields($table);
-                    $writer->addRow("<div>");
+                    $writer->addRow("<div class=\"".$show_div_class."\">");
 
                     foreach ($fields as $array) {
                         $field = Generator_Field::factory($array);
                         $writer->addRow("      <div class=\"" . $config->get("row_class") . "\">{{ labels." . $field->getName() . " }}: {{ model." . $field->getName() . " }}</div>");
                     }
-                    $writer->addRow("<div>");
-                    $writer->addRow("<div class=\"" . $config->get("back_link_class") . "\"><a href=\"/$table_simple_name/\">{{ back }}</a></div>");
+                    $writer->addRow("</div>");
+                    $writer->addRow("<div class=\"" . $config->get("back_link_class") . "\"><a href=\"/$table_simple_name/\">{% autoescape false %}{{ back }}{% endautoescape %}</a></div>");
                 }
 
                 $writer->write(Generator_Filewriter::$SHOW);

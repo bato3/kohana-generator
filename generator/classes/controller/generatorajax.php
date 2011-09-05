@@ -16,7 +16,8 @@ class Controller_Generatorajax extends Controller {
     private function sendHtml($html) {
         $this->response->headers(array(
             "content-type" => "text/html",
-            "cache-control" => "no-cache"
+            "cache-control" => "no-cache",
+            "expires: -1"
         ));
         $this->response->body($html)->send_headers()->body();
     }

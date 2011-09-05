@@ -3,20 +3,24 @@
 defined('SYSPATH') or die('No direct script access.');
 
 return array(
+    
     "password" => "admin",
-    "author" => "burningface",
-    "license" => "GPL",
-    "copyright" => "(c) 2011 burningface",
+    
+    "author" => "your name here",
+    "license" => "your licence here",
+    "copyright" => "(c) 2011 your name here",
     
     "error_class" => "form_error",
     "form_row_class" => "form_row",
     "row_class" => "row",
     "back_link_class" => "back_to_list",
+    "show_div_class" => "show_div",
     
     "date_format" => "Y-m-d",
     "csrf_token_name" => "csrf",
+    "twig_extension" => "html.twig",
     
-    "jquery_url" => "https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js",
+    "jquery_url" => "http://code.jquery.com/jquery-latest.min.js",
     "jquery_name" => "jquery.min.js",
     
     "controllers" => array(

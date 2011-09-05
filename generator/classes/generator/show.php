@@ -19,6 +19,7 @@ class Generator_Show {
         $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
         $disabled_tables = $config->get("disabled_tables");
+        $show_div_class = $config->get("show_div_class");
         foreach ($tables as $key => $table) {
             if (!in_array($table, $disabled_tables)) {
                 $table_simple_name = Generator_Util::name($table);
@@ -29,13 +30,13 @@ class Generator_Show {
                 if (!$writer->fileExists($table_simple_name . ".php", Generator_Filewriter::$SHOW)) {
                     $fields = Generator_Util::listTableFields($table);
                     $writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
-                    $writer->addRow("<div>");
+                    $writer->addRow("<div class=\"".$show_div_class."\">");
 
                     foreach ($fields as $array) {
                         $field = Generator_Field::factory($array);
                         $writer->addRow("      <div class=\"" . $config->get("row_class") . "\"><?php echo \$labels[\"" . $field->getName() . "\"] ?>: <?php echo htmlspecialchars(\$model->" . $field->getName() . ", ENT_QUOTES); ?></div>");
                     }
-                    $writer->addRow("<div>");
+                    $writer->addRow("</div>");
                     $writer->addRow("<div class=\"" . $config->get("back_link_class") . "\"><a href=\"/$table_simple_name/\"><?php echo __(\"back\") ?></a></div>");
                 }
 

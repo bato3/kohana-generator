@@ -17,21 +17,22 @@ class Generator_Listtwig {
         
         $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
+        $twig_extension = $config->get("twig_extension");
         $disabled_tables = $config->get("disabled_tables");
         foreach ($tables as $key => $table) {
             if (!in_array($table, $disabled_tables)) {
                 $table_simple_name = Generator_Util::name($table);
                 $model_name = Generator_Util::upperFirst($table_simple_name);
 
-                $writer = new Generator_Filewriter($table_simple_name.".html", true);
+                $writer = new Generator_Filewriter($table_simple_name.".$twig_extension", true);
 
-                if (!$writer->fileExists($table_simple_name . ".html", Generator_Filewriter::$LIST)) {
+                if (!$writer->fileExists($table_simple_name . ".$twig_extension", Generator_Filewriter::$LIST)) {
                     $fields = Generator_Util::listTableFields($table);
                     $head = "";
                     $body = "";
                     $edithead = "";
                     $edit = "";
-                    $foot = "          <td><a href=\"/".$table_simple_name."/create\">{{ create }}</a></td>\n";
+                    $foot = "          <td><a href=\"/".$table_simple_name."/create\">{% autoescape false %}{{ create }}{% endautoescape %}</a></td>\n";
                     $foot .= "          <td>&nbsp;</td>\n";
                     $foot .= "          <td>&nbsp;</td>\n";
                     
@@ -42,12 +43,12 @@ class Generator_Listtwig {
                         $foot .= "          <td>&nbsp;</td>\n";
                         
                         if($field->isPrimaryKey()){
-                            $edithead .= "          <th>{{ show }}</th>\n";
-                            $edithead .= "          <th>{{ edit }}</th>\n";
-                            $edithead .= "          <th>{{ delete }}</th>\n";
-                            $edit .= "          <td><a href=\"/".$table_simple_name."/show/{{ object.".$field->getName()." }}\">{{ show }}</a></td>\n";
-                            $edit .= "          <td><a href=\"/".$table_simple_name."/edit/{{ object.".$field->getName()." }}\">{{ edit }}</a></td>\n";
-                            $edit .= "          <td><a href=\"/".$table_simple_name."/delete/{{ object.".$field->getName()." }}\">{{ delete }}</a></td>\n";
+                            $edithead .= "          <th>{{ show_head }}</th>\n";
+                            $edithead .= "          <th>{{ edit_head }}</th>\n";
+                            $edithead .= "          <th>{{ delete_head }}</th>\n";
+                            $edit .= "          <td><a href=\"/".$table_simple_name."/show/{{ object.".$field->getName()." }}\">{% autoescape false %}{{ show }}{% endautoescape %}</a></td>\n";
+                            $edit .= "          <td><a href=\"/".$table_simple_name."/edit/{{ object.".$field->getName()." }}\">{% autoescape false %}{{ edit }}{% endautoescape %}</a></td>\n";
+                            $edit .= "          <td><a href=\"/".$table_simple_name."/delete/{{ object.".$field->getName()." }}\">{% autoescape false %}{{ delete }}{% endautoescape %}</a></td>\n";
                         }
                         
                     }

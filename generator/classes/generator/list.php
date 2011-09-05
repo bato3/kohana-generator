@@ -43,9 +43,9 @@ class Generator_List {
                         $foot .= "          <td>&nbsp;</td>\n";
                         
                         if($field->isPrimaryKey()){
-                            $edithead .= "          <th><?php echo __(\"show\") ?></th>\n";
-                            $edithead .= "          <th><?php echo __(\"edit\") ?></th>\n";
-                            $edithead .= "          <th><?php echo __(\"delete\") ?></th>\n";
+                            $edithead .= "          <th><?php echo __(\"show_head\") ?></th>\n";
+                            $edithead .= "          <th><?php echo __(\"edit_head\") ?></th>\n";
+                            $edithead .= "          <th><?php echo __(\"delete_head\") ?></th>\n";
                             $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/show/\".\$object->".$field->getName().", __(\"show\")); ?></td>\n";
                             $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/edit/\".\$object->".$field->getName().", __(\"edit\")); ?></td>\n";
                             $edit .= "          <td><?php echo html::anchor(\"".$table_simple_name."/delete/\".\$object->".$field->getName().", __(\"delete\")); ?></td>\n";

@@ -185,7 +185,9 @@ class Generator_Model {
         $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
         $disabled_tables = $config->get("disabled_tables");
-        $i18n = array("back" => "back", "create" => "new", "edit" => "edit", "delete" => "delete", "show" => "show");
+        $i18n = array("back" => "back", 
+            "edit_head" => "edit", "delete_head" => "delete", "show_head" => "show",
+            "create" => "new", "edit" => "edit", "delete" => "delete", "show" => "show");
         $model_names = array();
         foreach ($tables as $key => $table) {
             if (!in_array($table, $disabled_tables)) {
