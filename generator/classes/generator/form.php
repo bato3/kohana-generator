@@ -162,6 +162,9 @@ class Generator_Form {
             case "varchar" :
                 $suggest = 1;
                 break;
+            case "password" :
+                $suggest = 2;
+                break;
             default :
                 $suggest = 1;
         }

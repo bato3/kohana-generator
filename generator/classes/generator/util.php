@@ -23,7 +23,7 @@ class Generator_Util {
         } else {
             return array(
                 array("column_name" => "username", "data_type" => "varchar"),
-                array("column_name" => "password", "data_type" => "varchar"),
+                array("column_name" => "password", "data_type" => "password"),
                 array("column_name" => "remember", "data_type" => "checkbox")
             );
         }
