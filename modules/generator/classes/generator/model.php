@@ -187,7 +187,18 @@ class Generator_Model {
         $disabled_tables = $config->get("disabled_tables");
         $i18n = array("back" => "back", 
             "edit_head" => "edit", "delete_head" => "delete", "show_head" => "show",
-            "create" => "new", "edit" => "edit", "delete" => "delete", "show" => "show");
+            "create" => "new", "edit" => "edit", "delete" => "delete", "show" => "show",
+            "save_success" => "Save success!",
+            "update_success" => "Update success!",
+            "delete_success" => "Delete success!",
+            "save_failed" => "Save failed!",
+            "update_failed" => "Update failed!",
+            "delete_failed" => "Delete failed!",
+            "First" => "First",
+            "Previous" => "&laquo;Previous",
+            "Next" => "Next&raquo;",
+            "Last" => "Last",
+        );
         $model_names = array();
         foreach ($tables as $key => $table) {
             if (!in_array($table, $disabled_tables)) {
@@ -272,6 +283,7 @@ class Generator_Model {
                         $lang_writer->addRow("return array(");
                         foreach ($i18n as $key => $val) {
                             if (is_array($val)) {
+                                $lang_writer->addRow("    //$key");
                                 $lang_writer->addRow("    \"$key\" => array(");
                                 foreach ($val as $k => $v) {
                                     $lang_writer->addRow("        \"$k\" => \"$v\",");

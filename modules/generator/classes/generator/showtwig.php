@@ -1,23 +1,23 @@
 <?php
 
-defined('SYSPATH') or die('No direct access allowed.');
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
 /**
- * Description of show
+ * Description of showtwig
  *
  * @author burningface
  */
-class Generator_Show {
-
+class Generator_Showtwig {
+    
     public static function generate() {
         $result = new Generator_Result();
 
         $tables = Generator_Util::listTables();
         $config = Generator_Util::loadConfig();
+        $twig_extension = $config->get("twig_extension");
         $disabled_tables = $config->get("disabled_tables");
         $show_div_class = $config->get("show_div_class");
         foreach ($tables as $key => $table) {
@@ -25,19 +25,18 @@ class Generator_Show {
                 $table_simple_name = Generator_Util::name($table);
                 $model_name = Generator_Util::upperFirst($table_simple_name);
 
-                $writer = new Generator_Filewriter($table_simple_name);
+                $writer = new Generator_Filewriter($table_simple_name.".$twig_extension", true);
 
-                if (!$writer->fileExists($table_simple_name . ".php", Generator_Filewriter::$SHOW)) {
+                if (!$writer->fileExists($table_simple_name . ".$twig_extension", Generator_Filewriter::$SHOW)) {
                     $fields = Generator_Util::listTableFields($table);
-                    $writer->addRow(Generator_Util::$SIMPLE_OPEN_FILE);
                     $writer->addRow("<div class=\"".$show_div_class."\">");
 
                     foreach ($fields as $array) {
                         $field = Generator_Field::factory($array);
-                        $writer->addRow("      <div class=\"" . $config->get("row_class") . "\"><?php echo \$labels[\"" . $field->getName() . "\"] ?>: <?php echo htmlspecialchars(\$model->" . $field->getName() . ", ENT_QUOTES); ?></div>");
+                        $writer->addRow("      <div class=\"" . $config->get("row_class") . "\"><span class=\"".$config->get("show_label_class")."\">{{ labels." . $field->getName() . " }}</span>: <span class=\"".$config->get("show_result_class")."\">{{ model." . $field->getName() . " }}</span></div>");
                     }
                     $writer->addRow("</div>");
-                    $writer->addRow("<div class=\"" . $config->get("back_link_class") . "\"><a href=\"/$table_simple_name/\"><?php echo __(\"back\") ?></a></div>");
+                    $writer->addRow("<div class=\"" . $config->get("back_link_class") . "\"><a href=\"/$table_simple_name/\">{% autoescape false %}{{ back }}{% endautoescape %}</a></div>");
                 }
 
                 $writer->write(Generator_Filewriter::$SHOW);
@@ -47,7 +46,6 @@ class Generator_Show {
         }
         return $result;
     }
-
 }
 
 ?>

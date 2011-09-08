@@ -15,9 +15,12 @@ return array(
     "row_class" => "row",
     "back_link_class" => "back_to_list",
     "show_div_class" => "show_div",
+    "show_label_class" => "show_label",
+    "show_result_class" => "show_result",
     
     "date_format" => "Y-m-d",
     "csrf_token_name" => "csrf",
+    "flash_message_session_key" => "flash",
     "twig_extension" => "html.twig",
     
     "jquery_url" => "http://code.jquery.com/jquery-latest.min.js",

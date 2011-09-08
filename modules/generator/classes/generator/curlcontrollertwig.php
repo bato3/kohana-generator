@@ -32,6 +32,7 @@ class Generator_Curlcontrollertwig extends Generator_Curlcontroller {
             $exception = "throw new HTTP_Exception_404(sprintf(\$this->exception, \$this->request->param(\"id\")));";
         }
         $writer->addRow("    private \$form;");
+        $writer->addRow("    private \$session;");
         
         //$controllers = self::getControllers(); 
 
@@ -49,13 +50,15 @@ class Generator_Curlcontrollertwig extends Generator_Curlcontroller {
     public function before() {
         parent::before();
         I18n::\$lang = \"".$languages[0]."\";
-        \$this->template->title = \"$form &#187; \" . \$this->request->action();        
+        \$this->template->title = \"$form &#187; \" . \$this->request->action();  
+        \$this->session = Session::instance();
     }");
         }else{
             $writer->addRow("
     public function before() {
         parent::before();
-        \$this->template->title = \"$form &#187; \" . \$this->request->action();        
+        \$this->template->title = \"$form &#187; \" . \$this->request->action();       
+        \$this->session = Session::instance();
     }");
         }
         
@@ -87,12 +90,14 @@ class Generator_Curlcontrollertwig extends Generator_Curlcontroller {
             if (\$model->values(\$_POST)->validation()->check() && \$model->csrf(\$_POST)->check()) {
                 
                 \$model->save(\$model->validation());
+                \$this->session->set(\"".$config->get("flash")."\", __(\"save_success\"));
                 \$this->request->redirect(\$this->index_url);
                 
             } else {
                 
                 \$this->form->errors = \$model->validation()->errors(\"form_errors\");
                 \$this->form->values = \$_POST;
+                \$this->form->flash = __(\"save_failed\");
                 
             }
                 
@@ -120,12 +125,14 @@ class Generator_Curlcontrollertwig extends Generator_Curlcontroller {
                 if (\$model->values(\$_POST)->validation()->check() && \$model->csrf(\$_POST)->check()) {
                 
                     \$model->update(\$model->validation());
+                    \$this->session->set(\"".$config->get("flash")."\", __(\"update_success\"));
                     \$this->request->redirect(\$this->index_url);
                 
                 } else {
                 
                     \$this->form->errors = \$model->validation()->errors(\"form_errors\");
                     \$this->form->values = \$_POST;
+                    \$this->form->flash = __(\"update_failed\");
                 
                 }
                 
@@ -154,6 +161,9 @@ class Generator_Curlcontrollertwig extends Generator_Curlcontroller {
         
         if (\$model->loaded()) {
             \$model->delete();
+            \$this->session->set(\"".$config->get("flash")."\", __(\"delete_success\"));
+        }else{
+            \$this->session->set(\"".$config->get("flash")."\", __(\"delete_failed\"));
         }
                 
         \$this->request->redirect(\$this->index_url);
@@ -161,6 +171,11 @@ class Generator_Curlcontrollertwig extends Generator_Curlcontroller {
                 
     private function initForm(){
         \$this->form = View::factory(\"forms/$form\");\n".self::referenced($model)."
+        \$flash = \$this->session->get(\"".$config->get("flash")."\");
+        if(!empty (\$flash)){
+            \$this->form->flash = \$flash;
+            \$this->session->delete(\"".$config->get("flash")."\");
+        }
     }
                 "
         );
