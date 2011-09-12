@@ -37,14 +37,14 @@ class Generator_Util {
         if ($db_name) {
             $config = self::loadConfig();
             if ($config->get("table_names_plural")) {
-                $len = strlen($table) - 1;
-                return strtolower(substr($table, 0, $len));
+                return strtolower(Inflector::singular($table));
             } else {
                 return strtolower($table);
             }
         } else {
             return strtolower($table);
         }
+        
     }
 
     public static function upperFirst($string) {

@@ -218,6 +218,10 @@ class Generator_Model {
                     foreach ($relations as $relation) {
                         $writer->addRow($relation);
                     }
+                    
+                    if(!$config->get("table_names_plural")){
+                        $writer->addRow("    protected \$_table_name = \"$table_simple_name\";");
+                    }
 
                     $fields = Generator_Util::listTableFields($table);
                     $rules = array();
