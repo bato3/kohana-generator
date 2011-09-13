@@ -1,9 +1,5 @@
+<?php defined('SYSPATH') or die('No direct access allowed.'); ?>
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Description of showtwig
