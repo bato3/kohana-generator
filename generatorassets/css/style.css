@@ -1,0 +1,237 @@
+/* 
+    Document   : style
+    Created on : 2011.07.28., 8:43:47
+    Author     : burningface
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+/*
+bg color : #E6E6DC;
+menu bg color: #FEC02D;
+hover bg color: #ED6E29;
+*/
+
+body{
+    background: url('/generatorassets/img/bg.png');
+    color:#413038;
+    font-size: 12px;
+}
+
+fieldset{
+    border: 1px solid #8CCBD0;
+}
+
+legend{font-weight: bold;}
+
+#wrapper{
+    position: relative;
+    width:940px;
+    margin:auto;
+}
+
+#content{
+    position:absolute;
+    margin-top:30px;
+    width:940px;
+    height:1000px;
+}
+
+#menu{
+    position: relative;
+    background: url('/generatorassets/img/menu_bg.png');
+    width: 936px;
+    height: 50px;
+    font-size: 15px;
+    border: 2px solid #ED6E29;
+    text-transform: capitalize;
+}
+
+ul{ 
+    position: relative;
+    top: 1px;
+}
+
+li{ 	
+    float: left;
+    list-style: none; 
+}
+
+#menu a{
+    text-decoration: none;
+    color:#413038;
+    padding-left: 6px;
+    padding-top: 16px;
+    padding-right: 6px;
+    padding-bottom: 16px;
+}
+
+#menu a:hover{
+    background: url('/generatorassets/img/hover_bg.png');
+    color: #FCF0E4;
+}
+
+input[type=text]{
+    background-color: #F8F6EF;
+    border: 1px solid #8CCBD0
+}
+
+input[type=text]:focus{
+    background-color: #F4EDD9;
+}
+
+input[type=password]{
+    background-color: #F8F6EF;
+    border: 1px solid #8CCBD0
+}
+
+input[type=password]:focus{
+    background-color: #F4EDD9;
+}
+
+.errors{
+    position: relative;
+    float: right;
+    right: 450px;
+    color: red;
+}
+
+.flash{
+    position: relative;
+    text-align: center;
+    font-size: 16px;
+    background-color: #B6361B;
+    color: #FCF0E4;
+    margin-bottom: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.flash_div{
+    border-top: 1px solid #8CCBD0;
+    margin-bottom: 10px;
+    padding-top: 5px;
+}
+
+.wrappers_div{
+    border-top: 1px solid #8CCBD0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.extends_div{
+    border-top: 1px solid #8CCBD0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#methods_holder{
+    border-top: 1px solid #8CCBD0;
+    border-bottom: 1px solid #8CCBD0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#rows_holder{
+    border-top: 1px solid #8CCBD0;
+    border-bottom: 1px solid #8CCBD0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#rows_holder th{
+    border-bottom: 4px solid #8CCBD0;
+}
+
+#rows_holder tr td{
+    text-align: center;
+}
+
+.fields_div{
+    border-top: 1px solid #8CCBD0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 5px;
+}
+
+.fields_div table th{
+    border-bottom: 4px solid #8CCBD0;
+}
+
+.fields_div table td{
+    text-align: center;
+    border-bottom: 1px solid #8CCBD0;
+    min-width: 100px;
+}
+.fields_div table td select{
+    min-width: 50px;
+}
+
+.action_div{
+    margin-bottom: 5px;
+}
+
+.delete{
+    position: relative;
+    top: 5px;
+    cursor: pointer;
+}
+
+.delete_tr{
+    position: relative;
+    cursor: pointer;
+}
+
+#generator_result{
+    position: relative;
+    width: 900px;
+    margin: auto;
+    margin-top: 10px;
+    padding: 5px;
+    background-color: #F6EFDF;
+    border: 2px solid #AE8559;
+}
+
+#generator_result h3{
+    color: #5B3721;
+}
+
+.place{ width: 30px; }
+
+.error{
+    color: red;
+}
+
+.a{
+    background-color: #FEFAEE;
+}
+
+.b{
+    background-color: #F6EFDF;
+}
+
+#result{ display: none; }
+#post_result{ display: none; }
+
+.details{
+    background-color: #FEFAEE;
+    padding: 5px; 
+}
+.details p{ text-align: justify; }
+.item_details{ display: none; margin-bottom: 5px;}
+.details_link{ font-weight: bold; }
+.details_link_div{ margin-bottom: 5px; }
+.details_link_div a{ text-decoration: none; color:#5D6300;}
+.details_link_div a:hover{ text-decoration:  underline; }
