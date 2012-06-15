@@ -1,0 +1,137 @@
+div,h1,h2,h3,h4,h5,h6, ul{
+    padding:0;
+    margin:0;
+}
+
+body { 
+    background: url('/gmedia/img/bg.png') repeat-x;
+    font-size: 12px;
+    background-color: #ffefdb;
+}
+
+.clear{
+    clear: both;
+    display: none;
+}
+
+#page_wrapper{
+    position: relative;
+    width: 960px;
+    margin: auto;
+}
+
+.ui-widget-content{
+    background: url('/gmedia/img/bg_a.png') repeat-x;
+    background-color: #e8e8e8;
+    vertical-align: inherit;
+    height: 800px;
+    padding: 0;
+    border: 1px solid #FF7C38;
+    padding: 4px;
+}
+
+.ui-widget-header{
+    height: 25px;
+    text-align: center;
+    padding-left: 5px;
+    padding-top: 10px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+}
+
+.ui-state-error{
+    padding: 5px;
+    margin: 5px;
+    text-align: center;
+}
+
+.error_list{
+    padding-bottom: 8px;
+}
+
+#k_icon{
+    background: url('/gmedia/img/kohana.png');
+    width: 62px;
+    height: 20px;
+    float: left;
+}
+
+#menu{
+    position: relative;
+    width: 250px;
+    float: left;
+    margin-left: 5px;
+    margin-top: 10px;
+}
+
+#menu ul li{ 
+    list-style: none; 
+}
+
+#template_result_wrapper{
+    position: relative;
+    margin-left: 5px;
+    margin-top: 10px;
+    float: left;
+    width: 680px;
+}
+
+#result_wrapper{}
+
+#template_result, #result{
+    position: relative;
+    width: 620px;
+    margin: auto;
+}
+
+#template_result .button{
+    position: relative;
+    width: 100%;
+    margin: auto;
+}
+
+#accordion div{
+    height: 350px;
+    overflow: auto;
+}
+
+#accordion div ul li{
+    list-style: decimal;
+    color: #8A8A8D;
+    border-bottom: 1px dashed #FFFFFC;
+}
+
+#accordion div ul li .success{
+    position: relative;
+    float: right;
+    background: url('/gmedia/img/success.png') no-repeat;
+    width: 17px;
+    height: 17px;
+}
+
+input[type=password]{
+    width: 200px;
+    padding: 4px;
+    border: 1px solid #FF7C38;
+}
+
+select{
+    width: 100%;
+    margin-bottom: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border: 1px solid #FF7C38;
+}
+
+input[type=text]{
+    width: 100%;
+    margin-bottom: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border: 1px solid #FF7C38;
+}
+
+label{
+    font-size: 14px;
+    font-weight: bold;
+}
