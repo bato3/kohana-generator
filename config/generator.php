@@ -54,10 +54,6 @@ return array(
             "menu" => "menu_language",
             "class" => "Generator_Item_Language",
         ),
-        "allorm" => array(
-            "menu" => "menu_allorm",
-            "class" => "Generator_Item_Allorm",
-        ),
         "orm" => array(
             "menu" => "menu_orm",
             "class" => "Generator_Item_Orm",
