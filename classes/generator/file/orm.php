@@ -56,8 +56,10 @@ class Generator_File_Orm {
         $string = Generator_Util_Text::space(4)."public function rules(){\n";
         $string .= Generator_Util_Text::space(8)."return array(\n";
         foreach ($fields as $field){
-            $string .= Generator_Util_Text::space(12)."\"".$field->getName()."\" => array(".$this->fieldRule($field);
-            $string .= Generator_Util_Text::space(12)."),\n"; 
+            if(!$field->isPrimaryKey()){
+                $string .= Generator_Util_Text::space(12)."\"".$field->getName()."\" => array(".$this->fieldRule($field);
+                $string .= Generator_Util_Text::space(12)."),\n"; 
+            }
         }
         $string .= Generator_Util_Text::space(8).");\n";
         $string .= Generator_Util_Text::space(4)."}\n";
@@ -70,8 +72,10 @@ class Generator_File_Orm {
         $string = Generator_Util_Text::space(4)."public function filters(){\n";
         $string .= Generator_Util_Text::space(8)."return array(\n";
         foreach ($fields as $field){
-            $string .= Generator_Util_Text::space(12)."\"".$field->getName()."\" => array(".$this->fieldFilters($field);
-            $string .= Generator_Util_Text::space(12)."),\n"; 
+            if(!$field->isPrimaryKey()){
+                $string .= Generator_Util_Text::space(12)."\"".$field->getName()."\" => array(".$this->fieldFilters();
+                $string .= Generator_Util_Text::space(12)."),\n"; 
+            }
         }
         $string .= Generator_Util_Text::space(8).");\n";
         $string .= Generator_Util_Text::space(4)."}\n";
@@ -143,12 +147,8 @@ class Generator_File_Orm {
         return $validation;
     }
         
-    private function fieldFilters(Generator_Db_Field $field){
+    private function fieldFilters(){
         $filter = "\n".$validation = Generator_Util_Text::space(16)."array(\"UTF8::trim\"),\n";
-        switch ($field->getType()) {
-            case "varchar" : $filter .= Generator_Util_Text::space(16)."array(\"UTF8::strtolower\"),\n";
-                break;
-        }
         return $filter;
     }
     
@@ -157,18 +157,17 @@ class Generator_File_Orm {
         $config = Generator_Util_Config::load();
         $labels = ""; 
         if($config->support_multilang_in_model){
-            $labels .= "\$lang = I18n::get(\"".$this->db_table->getName()."\");\n";
             $labels .= Generator_Util_Text::space(8)."return array(\n";
             foreach ($fields as $key => $value) {
-                $labels .= Generator_Util_Text::space(12)."\"$key\" => \$lang[\"$key\"],\n";
+                $labels .= Generator_Util_Text::space(12)."\"$key\" => __(\"".$this->db_table->getName().".$key\"),\n";
             }
-            $labels .= Generator_Util_Text::space(12)."\"submit\" => \$lang[\"submit\"],\n";
+            $labels .= Generator_Util_Text::space(12)."\"submit\" => __(\"".$this->db_table->getName().".submit\"),\n";
         }else{
             $labels .= "return array(\n";
             foreach ($fields as $key => $value) {
-                $labels .= Generator_Util_Text::space(12)."\"$key\" => \"$key\",\n";
+                $labels .= Generator_Util_Text::space(12)."\"$key\" => __(\"".$this->db_table->getName().".$key\"),\n";
             }
-            $labels .= Generator_Util_Text::space(12)."\"submit\" => \"submit\",\n";
+            $labels .= Generator_Util_Text::space(12)."\"submit\" => __(\"".$this->db_table->getName().".submit\"),\n";
         }
         
         return $labels;

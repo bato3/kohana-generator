@@ -17,12 +17,13 @@ class Generator_Item_Language extends Generator_Item_Abstract_Item {
                 
                 $tables = Database::instance()->list_tables();
                 foreach($tables as $table){
-                    $fields = Generator_Db_Table::factory($table)->getTableFields();
-                    $file->addLine(Generator_Util_Text::space(4)."\"".$table."\" => array(");
+                    $db_table = Generator_Db_Table::factory($table);
+                    $fields = $db_table->getTableFields();
+
                     foreach ($fields as $field){
-                        $file->addLine(Generator_Util_Text::space(8)."\"".$field->getName()."\" => \"".$field->getName()."\",");
+                        $file->addLine(Generator_Util_Text::space(4)."\"".$db_table->getName().".".$field->getName()."\" => \"".$field->getName()."\",");
                     }
-                    $file->addLine(Generator_Util_Text::space(4)."),");                   
+                    $file->addLine("");
                 }
                 $file->addLine(");");
                 $this->add($file);
