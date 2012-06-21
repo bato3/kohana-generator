@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.') ?>
 <?php
+
 /**
  * Description of table
  *
@@ -42,7 +43,7 @@ class Generator_Db_Field {
     public function getKey() {
         return isset($this->field["key"]) ? $this->field["key"] : "";
     }
-    
+
     public function isPrimaryKey() {
         return $this->getKey() == "PRI" ? true : false;
     }
@@ -50,8 +51,8 @@ class Generator_Db_Field {
     public function isForeignKey() {
         return $this->getKey() == "MUL" ? true : false;
     }
-    
-    public function field(){
+
+    public function field() {
         return $this->field;
     }
 
