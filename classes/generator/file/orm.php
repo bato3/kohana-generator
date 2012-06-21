@@ -165,9 +165,9 @@ class Generator_File_Orm {
         }else{
             $labels .= "return array(\n";
             foreach ($fields as $key => $value) {
-                $labels .= Generator_Util_Text::space(12)."\"$key\" => __(\"".$this->db_table->getName().".$key\"),\n";
+                $labels .= Generator_Util_Text::space(12)."\"$key\" => \"$key\",\n";
             }
-            $labels .= Generator_Util_Text::space(12)."\"submit\" => __(\"".$this->db_table->getName().".submit\"),\n";
+            $labels .= Generator_Util_Text::space(12)."\"submit\" => \"submit\",\n";
         }
         
         return $labels;

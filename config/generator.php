@@ -22,15 +22,15 @@ return array(
     ),
     
     "extend_orm" => array(
-        "parent" => "Baseorm",
-        "generate_base_orm" => true
+        "generate_base_orm" => true,
+        "parent" => "Baseorm"
     ),
     
     "start_php_file" => "<?php defined('SYSPATH') or die('No direct script access.') ?>",
     "open_php" => "<?php",
     "close_php" => "?>",
     "table_names_plural" => true,
-    "support_multilang_in_model" => false,
+    "support_multilang_in_model" => true,
     
     
     "register" => array(
