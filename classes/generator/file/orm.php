@@ -95,7 +95,7 @@ class Generator_File_Orm {
 
     public function getLabels() {
         $string = Generator_Util_Text::space(4) . "public function labels(){\n";
-        $string .= Generator_Util_Text::space(8) . $this->fieldLabels();
+        $string .= $this->fieldLabels();
         $string .= Generator_Util_Text::space(8) . ");\n";
         $string .= Generator_Util_Text::space(4) . "}\n";
 
@@ -168,17 +168,20 @@ class Generator_File_Orm {
     private function fieldLabels() {
         $fields = $this->db_table->listTableFields();
         $config = Generator_Util_Config::load();
-        $labels = "return array(\n";
+        $labels = "";
 
         if ($config->support_multilang_in_model) {
+
+            $labels .= Generator_Util_Text::space(8) . "return array(\n";
 
             foreach ($fields as $key => $value) {
                 $labels .= Generator_Util_Text::space(12) . "\"$key\" => __(\"" . $this->db_table->getName() . ".$key\"),\n";
             }
 
             $labels .= Generator_Util_Text::space(12) . "\"submit\" => __(\"" . $this->db_table->getName() . ".submit\"),\n";
-            
         } else {
+
+            $labels .= "return array(\n";
 
             foreach ($fields as $key => $value) {
                 $labels .= Generator_Util_Text::space(12) . "\"$key\" => \"$key\",\n";

@@ -31,6 +31,7 @@ class Generator_Item_Orm extends Generator_Item_Abstract_Item {
                             ->setFileName(strtolower($table->getName()))
                             ->setDirectory("application" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "model")
                             ->addLine("class Model_" . Generator_Util_Text::upperFirst($table->getName()) . " extends " . $extend_item . " {\n")
+                            ->addLine(Generator_Util_Text::space(4)."protected \$_table_name = "."\"".UTF8::strtolower($table->getName())."\"".";\n")
                             ->addLine($orm->getRelationShips())
                             ->addLine($orm->getRules())
                             ->addLine($orm->getFilters())
