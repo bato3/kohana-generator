@@ -64,7 +64,7 @@ class Generator_Template_Crud {
                         ->addLine(Generator_Util_Text::space(12) . "\$form = View::factory('forms/" . $db_table->getName() . "');");
                         foreach ($db_table->getTableFields() as $field){
                             if($field->isForeignKey()){
-                                $file->addLine(Generator_Util_Text::space(8) . "\$form->".$field->getName()." = ORM::factory('".$db_table->getReferencedTableName($field->getName())."')->find_all()->as_array('".$db_table->getPrimaryKeyName()."', '".$db_table->getPrimaryKeyName()."');");
+                                $file->addLine(Generator_Util_Text::space(12) . "\$form->".$field->getName()." = ORM::factory('".$db_table->getReferencedTableName($field->getName())."')->find_all()->as_array('".$db_table->getPrimaryKeyName()."', '".$db_table->getPrimaryKeyName()."');");
                             }
                         }
                         $file->addLine(Generator_Util_Text::space(12) . "\$form->action = '/" . $db_table->getName() . "/edit/'.\$id;")
