@@ -1,8 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.') ?>
 <?php
-
 /**
- * Description of writer
  *
  * @author burningface
  */
@@ -19,7 +17,8 @@ class Generator_Item_Controller extends Generator_Item_Abstract_Item {
                             ->setFileName(strtolower($controller_name))
                             ->setDirectory("application" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "controller")
                             ->addLine("class Controller_" . Generator_Util_Text::upperFirst($controller_name) . " extends " . $extends . " {\n")
-                            ->addLine(Generator_Util_Text::space(4) . "public function action_index(){")
+                            ->addLine(Generator_Util_Text::space(4) . "public function action_index()")
+                            ->addLine(Generator_Util_Text::space(4) . "{\n")
                             ->addLine(Generator_Util_Text::space(4) . "}\n")
                             ->addLine("}")
             );

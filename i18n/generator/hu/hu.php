@@ -1,8 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.') ?>
 <?php
-
 /**
- * Description of generator
  *
  * @author burningface
  */
@@ -11,8 +9,10 @@ return array(
     "menu_asset" => "Assets generálása",
     "menu_controller" => "Controller generálása",
     "menu_form" => "Form generálása",
+    "menu_list" => "Lista generálása", 
+    "menu_show" => "Elem nézet generálása",    
     "menu_language" => "Nyelvi fájl generálása",
-    "menu_crud" => "CRUD",
+    "menu_crud" => "CRUD generálása",
     "menu_orm" => "ORM generálása",
     "menu_allorm" => "Minden ORM legenerálása",
     "menu_template" => "Template generálása",

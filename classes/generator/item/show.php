@@ -4,19 +4,18 @@
  *
  * @author burningface
  */
-class Generator_Item_Form extends Generator_Item_Abstract_Item {
+class Generator_Item_Show extends Generator_Item_Abstract_Item {
 
     protected function init() {
 
         if (isset($_POST["table"]) && !empty($_POST["table"])) {
 
-            $this->add(Generator_Template_Form::factory($_POST["table"]));
+            $this->add(Generator_Template_Show::factory($_POST["table"]));
             
         } else {
 
             $this->addErrors(Generator_Util_Lang::get("empty_table_name", false));
         }
-        
     }
 
 }

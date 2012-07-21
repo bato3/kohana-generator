@@ -1,7 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.') ?>
 <?php
 /**
- * Description of generator
  *
  * @author burningface
  */
@@ -11,10 +10,11 @@ return array(
     "menu_asset" => "Generate assets",
     "menu_controller" => "Generate a controller",
     "menu_form" => "Generate a form",
+    "menu_list" => "Generate list view", 
+    "menu_show" => "Generate show view",   
     "menu_language" => "Generate language file",
     "menu_crud" => "CRUD",
     "menu_orm" => "Generate an ORM",
-    "menu_allorm" => "Generate ORM",
     "menu_template" => "Generate template",
         
     "generated_files" => "Generated files",

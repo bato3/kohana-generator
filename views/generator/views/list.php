@@ -1,4 +1,4 @@
 <?php
     Generator_Util_Html::select();
-    Generator_Util_Html::button("crud");
+    Generator_Util_Html::button("list");
 ?>

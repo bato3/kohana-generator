@@ -1,7 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.') ?>
 <?php
 /**
- * Description of html
  *
  * @author burningface
  */

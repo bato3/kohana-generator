@@ -13,6 +13,7 @@ return array(
     "author" => "",
     "license" => "",
     "date_format" => "Y-m-d",
+    "datetime_format" => "Y-m-d H:i:s",
     "languages" => array("hu", "en"),
     
     "extend_controller" => array(
@@ -20,17 +21,12 @@ return array(
         "Controller_Template",
         "Controller_Template_Twig",
     ),
-    
-    "extend_orm" => array(
-        "generate_base_orm" => true,
-        "parent" => "Baseorm"
-    ),
-    
+        
     "start_php_file" => "<?php defined('SYSPATH') or die('No direct script access.') ?>",
     "open_php" => "<?php",
     "close_php" => "?>",
     "table_names_plural" => true,
-    "support_multilang_in_model" => true,
+    "support_multilang" => true,
     
     
     "register" => array(
@@ -50,6 +46,14 @@ return array(
             "menu" => "menu_form",
             "class" => "Generator_Item_Form",
         ),
+        "list" => array(
+            "menu" => "menu_list",
+            "class" => "Generator_Item_List",
+        ),
+        "show" => array(
+            "menu" => "menu_show",
+            "class" => "Generator_Item_Show",
+        ),
         "language" => array(
             "menu" => "menu_language",
             "class" => "Generator_Item_Language",
@@ -58,11 +62,10 @@ return array(
             "menu" => "menu_orm",
             "class" => "Generator_Item_Orm",
         ),
-        /*"crud" => array(
+        "crud" => array(
             "menu" => "menu_crud",
             "class" => "Generator_Item_Crud",
-        ),*/
-        
+        ),
         
     ),
     

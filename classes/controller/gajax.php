@@ -1,8 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.') ?>
 <?php
-
 /**
- * Description of generator
  *
  * @author burningface
  */
@@ -64,6 +62,7 @@ class Controller_Gajax extends Controller {
                 break;
 
             default:
+                Session::instance()->regenerate();
                 try{
                     $view = View::factory("generator/views/$template");
                 }  catch (Exception $e){
@@ -79,7 +78,7 @@ class Controller_Gajax extends Controller {
     }
 
     public function action_generate() {
-        
+        Session::instance()->regenerate();
         $array = $this->config->register;
         $class = $array[$_GET["cmd"]]["class"];
         if(class_exists($class)){
