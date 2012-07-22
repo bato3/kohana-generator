@@ -8,21 +8,25 @@ class Generator_Db_Orm {
 
     private $db_table;
 
-    public function __construct(Generator_Db_Table $db_table) {
+    public function __construct(Generator_Db_Table $db_table) 
+    {
         $this->db_table = $db_table;
     }
 
-    public static function factory(Generator_Db_Table $db_table) {
+    public static function factory(Generator_Db_Table $db_table) 
+    {
         return new Generator_Db_Orm($db_table);
     }
 
-    public function getRelationShips() {
-        $has_many = $this->db_table->getHasMany();
-        $has_one = $this->db_table->getHasOne();
-        $belongs_to = $this->db_table->getBelongsTo();
+    public function get_relation_ships() 
+    {
+        $has_many = $this->db_table->get_has_many();
+        $has_one = $this->db_table->get_has_one();
+        $belongs_to = $this->db_table->get_belongs_to();
         $string = "";
 
-        if (!empty($has_many)) {
+        if (!empty($has_many)) 
+        {
             $string .= Generator_Util_Text::space(4) . "protected \$_has_many = array(\n";
 
             foreach ($has_many as $array) {
@@ -32,7 +36,8 @@ class Generator_Db_Orm {
             $string .= Generator_Util_Text::space(4) . ");\n";
         }
 
-        if (!empty($has_one)) {
+        if (!empty($has_one)) 
+        {
             $string .= Generator_Util_Text::space(4) . "protected \$_has_one = array(\n";
 
             foreach ($has_one as $array) {
@@ -42,7 +47,8 @@ class Generator_Db_Orm {
             $string .= Generator_Util_Text::space(4) . ");\n";
         }
 
-        if (!empty($belongs_to)) {
+        if (!empty($belongs_to))
+        {
             $string .= Generator_Util_Text::space(4) . "protected \$_belongs_to = array(\n";
 
             foreach ($belongs_to as $array) {
@@ -55,15 +61,17 @@ class Generator_Db_Orm {
         return $string;
     }
 
-    public function getRules() {
-        $fields = $this->db_table->getTableFields();
+    public function get_rules() 
+    {
+        $fields = $this->db_table->get_table_fields();
         $string = Generator_Util_Text::space(4) . "public function rules()\n";
         $string .= Generator_Util_Text::space(4) . "{\n";
         $string .= Generator_Util_Text::space(8) . "return array(\n";
 
         foreach ($fields as $field) {
-            if (!$field->isPrimaryKey()) {
-                $string .= Generator_Util_Text::space(12) . "'" . $field->getName() . "' => array(" . $this->fieldRule($field);
+            if (!$field->is_primary_key()) 
+            {
+                $string .= Generator_Util_Text::space(12) . "'" . $field->get_name() . "' => array(" . $this->field_rule($field);
                 $string .= Generator_Util_Text::space(12) . "),\n";
             }
         }
@@ -74,15 +82,17 @@ class Generator_Db_Orm {
         return $string;
     }
 
-    public function getFilters() {
-        $fields = $this->db_table->getTableFields();
+    public function get_filters() 
+    {
+        $fields = $this->db_table->get_table_fields();
         $string = Generator_Util_Text::space(4) . "public function filters()\n";
         $string .= Generator_Util_Text::space(4) . "{\n";
         $string .= Generator_Util_Text::space(8) . "return array(\n";
                 
         foreach ($fields as $field) {
-            if (!$field->isPrimaryKey() && !$field->isForeignKey() && in_array($field->getType(), array("varchar", "text"))) {
-                $string .= Generator_Util_Text::space(12) . "'" . $field->getName() . "' => array(\n" . Generator_Util_Text::space(16) . "array('UTF8::trim'),\n";
+            if (!$field->is_primary_key() && !$field->is_foreign_key() && in_array($field->get_type(), array("varchar", "text"))) 
+            {
+                $string .= Generator_Util_Text::space(12) . "'" . $field->get_name() . "' => array(\n" . Generator_Util_Text::space(16) . "array('UTF8::trim'),\n";
                 $string .= Generator_Util_Text::space(12) . "),\n";
             }
         }
@@ -93,26 +103,28 @@ class Generator_Db_Orm {
         return $string;
     }
 
-    public function getLabels() {
+    public function get_labels() 
+    {
         $string = Generator_Util_Text::space(4) . "public function labels()\n";
         $string .= Generator_Util_Text::space(4) . "{\n";
-        $string .= $this->fieldLabels();
+        $string .= $this->field_labels();
         $string .= Generator_Util_Text::space(8) . ");\n";
         $string .= Generator_Util_Text::space(4) . "}\n";
 
         return $string;
     }
 
-    private function fieldRule(Generator_Db_Field $field) {
-        $min = $field->getMin();
-        $max = $field->getMax();
-        $key = $field->getKey();
+    private function field_rule(Generator_Db_Field $field) 
+    {
+        $min = $field->get_min();
+        $max = $field->get_max();
+        $key = $field->get_key();
 
         $config = Generator_Util_Config::load();
 
         $validation = "\n" . Generator_Util_Text::space(16) . "array('not_empty'),\n";
 
-        switch ($field->getType()) {
+        switch ($field->get_type()) {
             case "datetime": $validation .= Generator_Util_Text::space(16) . "array('date',array(':value', '" . $config->datetime_format . "')),\n";
                 break;
             case "date" : $validation .= Generator_Util_Text::space(16) . "array('date',array(':value', '" . $config->date_format . "')),\n";
@@ -147,37 +159,45 @@ class Generator_Db_Orm {
                 break;
         }
 
-        if (!empty($min) && !empty($max)) {
+        if (!empty($min) && !empty($max)) 
+        {
             $validation .= Generator_Util_Text::space(16) . "array('min_length',array(':value', $min)),\n";
             $validation .= Generator_Util_Text::space(16) . "array('max_length',array(':value', $max)),\n";
         }
 
-        if (empty($min) && !empty($max)) {
+        if (empty($min) && !empty($max)) 
+        {
             $validation .= Generator_Util_Text::space(16) . "array('max_length',array(':value', $max)),\n";
         }
 
-        if (!empty($key) && $key == "UNI") {
-            $validation .= Generator_Util_Text::space(16) . "array(array(\$this, 'unique'), array('" . $field->getName() . "', ':value')),\n";
+        if (!empty($key) && $key == "UNI") 
+        {
+            $validation .= Generator_Util_Text::space(16) . "array(array(\$this, 'unique'), array('" . $field->get_name() . "', ':value')),\n";
         }
 
         return $validation;
     }
 
-    private function fieldLabels() {
-        $fields = $this->db_table->listTableFields();
+    private function field_labels() 
+    {
+        $fields = $this->db_table->list_table_fields();
         $config = Generator_Util_Config::load();
         $labels = "";
 
-        if ($config->support_multilang) {
+        if ($config->support_multilang) 
+        {
 
             $labels .= Generator_Util_Text::space(8) . "return array(\n";
 
             foreach ($fields as $key => $value) {
-                $labels .= Generator_Util_Text::space(12) . "'$key' => __('" . $this->db_table->getName() . ".$key'),\n";
+                $labels .= Generator_Util_Text::space(12) . "'$key' => __('" . $this->db_table->get_name() . ".$key'),\n";
             }
 
-            $labels .= Generator_Util_Text::space(12) . "'submit' => __('" . $this->db_table->getName() . ".submit'),\n";
-        } else {
+            $labels .= Generator_Util_Text::space(12) . "'submit' => __('" . $this->db_table->get_name() . ".submit'),\n";
+            
+        } 
+        else 
+        {
 
             $labels .= "return array(\n";
 

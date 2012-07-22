@@ -6,17 +6,17 @@
  */
 class Generator_Item_Language extends Generator_Item_Abstract_Item {
 
-    protected function init() {
-        if (isset($_POST["lang"]) && !empty($_POST["lang"])) {
-
+    protected function init() 
+    {
+        if (isset($_POST["lang"]) && !empty($_POST["lang"])) 
+        {
             foreach ($_POST["lang"] as $lang) {
-
                 $this->add(Generator_Template_Language::factory($lang));
-                
             }
-        } else {
-
-            $this->addErrors(Generator_Util_Lang::get("empty_language_name", false));
+        } 
+        else 
+        {
+            $this->add_errors(Generator_Util_Lang::get("empty_language_name", false));
         }
     }
 

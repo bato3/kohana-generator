@@ -6,7 +6,7 @@
  */
 class Generator_File {
     
-    private $lines;
+    private $rows;
     private $file_name;
     private $ext;
     private $dir;
@@ -16,102 +16,127 @@ class Generator_File {
     public static $JS = "js";
     public static $CSS = "css";
     
-    public function __construct() {
-        $this->lines = array();
+    public function __construct() 
+    {
+        $this->rows = array();
         $this->ext = self::$PHP;
     }
     
-    public function addLine($line, $space=0){
-        $this->lines[] = Generator_Util_Text::space($space).$line;
+    public function add_row($row, $space=0)
+    {
+        $this->rows[] = Generator_Util_Text::space($space).$row;
         return $this;
     }
     
-    public function addLines(array $lines){
-        array_merge($this->lines, $lines);
+    public function add_rows(array $rows)
+    {
+        array_merge($this->rows, $rows);
         return $this;
     }
         
-    public function getLines(){
-        return $this->lines;
+    public function get_rows()
+    {
+        return $this->rows;
     }
     
-    public function count(){
-        return count($this->lines);
+    public function count()
+    {
+        return count($this->rows);
     }
     
-    public function hasLines(){
+    public function has_rows()
+    {
         return 0 < $this->count() ? true : false;
     }
     
-    public function hasFileName(){
+    public function has_file_name()
+    {
         return empty($this->file_name) ? false : true;
     }
     
-    public function hasFileExt(){
+    public function has_file_ext()
+    {
         return empty($this->ext) ? false : true;
     }
     
-    public function hasDirectory(){
+    public function has_directory()
+    {
         return empty($this->dir) ? false : true;
     }
     
-    public function setFileName($file_name){
+    public function set_file_name($file_name)
+    {
         $this->file_name = $file_name;
         return $this;
     }
     
-    public function getFileName(){
+    public function get_file_name()
+    {
         return $this->file_name;
     }
     
-    public function setFileExt($ext){
+    public function set_file_ext($ext)
+    {
         $this->ext = $ext;
         return $this;
     }
     
-    public function getFileExt(){
+    public function get_file_ext()
+    {
         return $this->ext;
     }
 
-    public function setDirectory($dir){
+    public function set_directory($dir)
+    {
         $this->dir = $dir;
         return $this;
     }
     
-    public function getDirectory(){
+    public function get_directory()
+    {
         return $this->dir;
     }
     
-    public static function factory(){
+    public static function factory()
+    {
         return new Generator_File();
     }
     
-    public function getFilePath(){
-        if($this->hasFileExt() && $this->hasFileName()){
-            return $this->getDirectory().DIRECTORY_SEPARATOR.$this->getFileName().".".$this->getFileExt();
-        }else{            
-            return $this->getDirectory();
+    public function get_file_path()
+    {
+        if($this->has_file_ext() && $this->has_file_name())
+        {
+            return $this->get_directory().DIRECTORY_SEPARATOR.$this->get_file_name().".".$this->get_file_ext();
+        }
+        else
+        {            
+            return $this->get_directory();
         }
     }
     
-    public function file_exists(){
-        return file_exists(DOCROOT.DIRECTORY_SEPARATOR.$this->getFilePath());
+    public function file_exists()
+    {
+        return file_exists(DOCROOT.DIRECTORY_SEPARATOR.$this->get_file_path());
     }
     
-    public function dir_exists(){
-        return file_exists(DOCROOT.DIRECTORY_SEPARATOR.$this->getDirectory());
+    public function dir_exists()
+    {
+        return file_exists(DOCROOT.DIRECTORY_SEPARATOR.$this->get_directory());
     }
     
-    public function pathIsWritable(){
-        return is_writable($this->getFilePath());
+    public function path_is_writable()
+    {
+        return is_writable($this->get_file_path());
     }
     
-    public function setDisableCloseTag($boolean){
+    public function set_disable_close_tag($boolean)
+    {
         $this->disable_close_tag = $boolean;
         return $this;
     }
     
-    public function disableCloseTag(){
+    public function get_disable_close_tag()
+    {
         return $this->disable_close_tag;
     }
     

@@ -14,7 +14,8 @@ abstract class Generator_Item_Abstract_Item {
     private $generated_files;
     private $generated_dirs;
 
-    public function __construct() {
+    public function __construct() 
+    {
         $this->items = array();
         $this->errors = array();
         $this->skipped_files = array();
@@ -25,57 +26,69 @@ abstract class Generator_Item_Abstract_Item {
         $this->init();
     }
 
-    public function add(Generator_File $item) {
+    public function add(Generator_File $item) 
+    {
         $this->items[] = $item;
         return $this;
     }
 
-    public function addErrors($string) {
+    public function add_errors($string) 
+    {
         $this->errors[] = $string;
         return $this;
     }
 
-    public function addSkippedFile($string) {
+    public function add_skipped_file($string) 
+    {
         $this->skipped_files[] = $string;
         return $this;
     }
 
-    public function addSkippedDir($string) {
+    public function add_skipped_dir($string) 
+    {
         $this->skipped_dirs[] = $string;
         return $this;
     }
 
-    public function addGeneratedFile($string) {
+    public function add_generated_file($string) 
+    {
         $this->generated_files[] = $string;
         return $this;
     }
 
-    public function addGeneratedDir($string) {
+    public function add_generated_dir($string) 
+    {
         $this->generated_dirs[] = $string;
         return $this;
     }
 
-    public function get() {
+    public function get() 
+    {
         return $this->items;
     }
 
-    public function getErrors() {
+    public function get_errors() 
+    {
         return $this->errors;
     }
 
-    public function getSkippedFiles() {
+    public function get_skipped_files() 
+    {
         return $this->skipped_files;
     }
 
-    public function getSkippedDirs() {
+    public function get_skipped_dirs() 
+    {
         return $this->skipped_dirs;
     }
 
-    public function getGeneratedFiles() {
+    public function get_generated_files() 
+    {
         return $this->generated_files;
     }
 
-    public function getGeneratedDirs() {
+    public function get_generated_dirs() 
+    {
         return $this->generated_dirs;
     }
 
@@ -83,7 +96,8 @@ abstract class Generator_Item_Abstract_Item {
         return (int) count($this->items);
     }
 
-    public function isEmpty() {
+    public function is_empty() 
+    {
         return 0 < $this->count() ? false : true;
     }
 

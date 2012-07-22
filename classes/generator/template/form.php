@@ -9,61 +9,53 @@ class Generator_Template_Form {
     public static function factory($table)
     {
         $db_table = Generator_Db_Table::factory($table);
-        $fields = $db_table->getTableFields();
+        $fields = $db_table->get_table_fields();
             
         $file = Generator_File::factory()
-                    ->setDirectory("application" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "forms")
-                    ->setFileName($db_table->getName())
-                    ->addLine("?>")
-                    ->addLine("\n<h1>" . ucfirst($db_table->getName()) . "</h1>\n")
-                    ->addLine("<?php if(!isset(\$errors)){ \$errors = array(); } ?>")
-                    ->addLine("<?php if(!isset(\$values)){ \$values = array(); } ?>\n")
-                    ->addLine("<?php echo form::open(\$action) ?>");
+                    ->set_directory("application" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "forms")
+                    ->set_file_name($db_table->get_name())
+                    ->add_row("?>")
+                    ->add_row("\n<h1>" . ucfirst($db_table->get_name()) . "</h1>\n")
+                    ->add_row("<?php if(!isset(\$errors)){ \$errors = array(); } ?>")
+                    ->add_row("<?php if(!isset(\$values)){ \$values = array(); } ?>\n")
+                    ->add_row("<?php echo form::open(\$action) ?>");
 
             
 
             foreach ($fields as $field) {
                 
-                if(!$field->isPrimaryKey() && !$field->isForeignKey())
+                if(!$field->is_primary_key() && !$field->is_foreign_key())
                 {
-                    
-                    $file->addLine("<div>")
-                            ->addLine(Generator_Util_Text::space(4) . "<?php echo form::label('" . $field->getName() . "', '" . $field->getName() . "') ?>")
-                            ->addLine(Generator_Util_Text::space(4) . "<?php echo form::input('" . $field->getName() . "', Arr::get(\$values, '".$field->getName()."')) ?>")
-                            ->addLine(Generator_Util_Text::space(4) . "<?php echo Arr::get(\$errors, '".$field->getName()."') ?>")
-                            ->addLine("</div>");
-                    
+                    $file->add_row("<div>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::label('" . $field->get_name() . "', '" . $field->get_name() . "') ?>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::input('" . $field->get_name() . "', Arr::get(\$values, '".$field->get_name()."')) ?>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo Arr::get(\$errors, '".$field->get_name()."') ?>")
+                         ->add_row("</div>");
                 }
                 
-                if($field->isForeignKey())
-                {
-                    
-                    $file->addLine("<div>")
-                            ->addLine(Generator_Util_Text::space(4) . "<?php echo form::label('" . $field->getName() . "', '" . $field->getName() . "') ?>")
-                            ->addLine(Generator_Util_Text::space(4) . "<?php echo form::select('" . $field->getName() . "', \$".$field->getName().", Arr::get(\$values, '".$field->getName()."')) ?>")
-                            ->addLine(Generator_Util_Text::space(4) . "<?php echo Arr::get(\$errors, '".$field->getName()."') ?>")
-                            ->addLine("</div>");
-                    
+                if($field->is_foreign_key())
+                {   
+                    $file->add_row("<div>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::label('" . $field->get_name() . "', '" . $field->get_name() . "') ?>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::select('" . $field->get_name() . "', \$".$field->get_name().", Arr::get(\$values, '".$field->get_name()."')) ?>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo Arr::get(\$errors, '".$field->get_name()."') ?>")
+                         ->add_row("</div>");   
                 }
                 
             }
 
-            $file->addLine("<div>")
-                    ->addLine(Generator_Util_Text::space(4) . "<?php echo form::submit('submit', 'Submit') ?>")
-                    ->addLine("</div>")
-                    ->addLine("<?php echo form::close() ?>")->setDisableCloseTag(true);
+            $file->add_row("<div>")
+                 ->add_row(Generator_Util_Text::space(4) . "<?php echo form::submit('submit', 'Submit') ?>")
+                 ->add_row("</div>")
+                 ->add_row("<?php echo form::close() ?>")->set_disable_close_tag(true);
             
             if (Generator_Util_Config::load()->support_multilang) 
             {
-                
-                $file->addLine("\n<p><?php echo html::anchor('/".$db_table->getName()."', __('action.back_to_the_list')) ?></p>");
-                
+                $file->add_row("\n<p><?php echo html::anchor('/".$db_table->get_name()."', __('action.back_to_the_list')) ?></p>");   
             }
             else 
             {
-                
-                $file->addLine("\n<p><?php echo html::anchor('/".$db_table->getName()."', 'Back to the list') ?></p>");
-                
+                $file->add_row("\n<p><?php echo html::anchor('/".$db_table->get_name()."', 'Back to the list') ?></p>");   
             }
             
             return $file;

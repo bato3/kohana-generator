@@ -6,32 +6,34 @@
  */
 class Generator_Template_Language {
 
-    public static function factory($lang) {
+    public static function factory($lang) 
+    {
         $file = Generator_File::factory()
-                ->setDirectory("application" . DIRECTORY_SEPARATOR . "i18n")
-                ->setFileName($lang)
-                ->addLine("return array(\n")
-                ->addLine(Generator_Util_Text::space(4) . "'action.actions' => 'Actions',")
-                ->addLine(Generator_Util_Text::space(4) . "'action.edit' => 'Edit',")
-                ->addLine(Generator_Util_Text::space(4) . "'action.show' => 'Show',")
-                ->addLine(Generator_Util_Text::space(4) . "'action.delete' => 'Delete',")
-                ->addLine(Generator_Util_Text::space(4) . "'action.back_to_the_list' => 'Back to the list',")
-                ->addLine(Generator_Util_Text::space(4) . "'action.create_new' => 'Create new',\n");
+                ->set_directory("application" . DIRECTORY_SEPARATOR . "i18n")
+                ->set_file_name($lang)
+                ->add_row("return array(\n")
+                ->add_row(Generator_Util_Text::space(4) . "'action.actions' => 'Actions',")
+                ->add_row(Generator_Util_Text::space(4) . "'action.edit' => 'Edit',")
+                ->add_row(Generator_Util_Text::space(4) . "'action.show' => 'Show',")
+                ->add_row(Generator_Util_Text::space(4) . "'action.delete' => 'Delete',")
+                ->add_row(Generator_Util_Text::space(4) . "'action.back_to_the_list' => 'Back to the list',")
+                ->add_row(Generator_Util_Text::space(4) . "'action.create_new' => 'Create new',\n");
 
         $tables = Database::instance()->list_tables();
 
         foreach ($tables as $table) {
 
             $db_table = Generator_Db_Table::factory($table);
-            $fields = $db_table->getTableFields();
+            $fields = $db_table->get_table_fields();
 
             foreach ($fields as $field) {
-                $file->addLine(Generator_Util_Text::space(4) . "'" . $db_table->getName() . "." . $field->getName() . "' => '" . $field->getName() . "',");
+                $file->add_row(Generator_Util_Text::space(4) . "'" . $db_table->get_name() . "." . $field->get_name() . "' => '" . $field->get_name() . "',");
             }
-            $file->addLine("");
+            
+            $file->add_row("");
         }
 
-        $file->addLine(");");
+        $file->add_row(");");
 
         return $file;
     }
