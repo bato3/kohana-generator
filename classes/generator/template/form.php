@@ -24,21 +24,28 @@ class Generator_Template_Form {
 
             foreach ($fields as $field) {
                 
+                $label = "'".$field->get_name().":'";
+                
+                if(Generator_Util_Config::load()->support_multilang)
+                {
+                    $label = "__('" . $db_table->get_name() . "." . $field->get_name() . "') . ':'";
+                }
+                                
                 if(!$field->is_primary_key() && !$field->is_foreign_key())
                 {
                     $file->add_row("<div>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::label('" . $field->get_name() . "', '" . $field->get_name() . "') ?>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::input('" . $field->get_name() . "', Arr::get(\$values, '".$field->get_name()."')) ?>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo Arr::get(\$errors, '".$field->get_name()."') ?>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::label('" . $field->get_name() . "', " . $label . ") ?>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::input('" . $field->get_name() . "', Arr::get(\$values, '" . $field->get_name() . "'), array('id' => '" . $field->get_name() . "')) ?>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo Arr::get(\$errors, '" . $field->get_name() . "') ?>")
                          ->add_row("</div>");
                 }
                 
                 if($field->is_foreign_key())
                 {   
                     $file->add_row("<div>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::label('" . $field->get_name() . "', '" . $field->get_name() . "') ?>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::select('" . $field->get_name() . "', \$".$field->get_name().", Arr::get(\$values, '".$field->get_name()."')) ?>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo Arr::get(\$errors, '".$field->get_name()."') ?>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::label('" . $field->get_name() . "', " . $label . ") ?>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::select('" . $field->get_name() . "', \$" . $field->get_name() . ", Arr::get(\$values, '" . $field->get_name() . "'), array('id' => '" . $field->get_name() . "')) ?>")
+                         ->add_row(Generator_Util_Text::space(4) . "<?php echo Arr::get(\$errors, '" . $field->get_name() . "') ?>")
                          ->add_row("</div>");   
                 }
                 
@@ -51,11 +58,11 @@ class Generator_Template_Form {
             
             if (Generator_Util_Config::load()->support_multilang) 
             {
-                $file->add_row("\n<p><?php echo html::anchor('/".$db_table->get_name()."', __('action.back_to_the_list')) ?></p>");   
+                $file->add_row("\n<p><?php echo html::anchor('/" . $db_table->get_name() . "', __('action.back_to_the_list')) ?></p>");   
             }
             else 
             {
-                $file->add_row("\n<p><?php echo html::anchor('/".$db_table->get_name()."', 'Back to the list') ?></p>");   
+                $file->add_row("\n<p><?php echo html::anchor('/" . $db_table->get_name() . "', 'Back to the list') ?></p>");   
             }
             
             return $file;
