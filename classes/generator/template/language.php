@@ -32,8 +32,17 @@ class Generator_Template_Language {
             
             $file->add_row("");
         }
+        
+        if(Generator_Util_Config::load()->support_multilang)
+        {
+            $array = Generator_Util_Config::load()->validation;
+            
+            foreach ($array as $key => $val){
+               $file->add_row(Generator_Util_Text::space(4) . "'" . $key . "' => '" . $val . "',");
+            }
+        }
 
-        $file->add_row(");");
+        $file->add_row("\n);");
 
         return $file;
     }

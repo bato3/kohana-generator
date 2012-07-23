@@ -13,6 +13,11 @@ class Generator_Item_Language extends Generator_Item_Abstract_Item {
             foreach ($_POST["lang"] as $lang) {
                 $this->add(Generator_Template_Language::factory($lang));
             }
+            
+            if($this->config->support_multilang)
+            {
+                $this->add(Generator_Template_Message::factory());
+            }
         } 
         else 
         {

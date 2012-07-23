@@ -22,6 +22,11 @@ class Generator_Item_Crud extends Generator_Item_Abstract_Item {
             
             $this->add(Generator_Template_Template::factory());
             
+            if($this->config->support_multilang)
+            {
+                $this->add(Generator_Template_Message::factory());
+            }
+            
         } 
         else 
         {
