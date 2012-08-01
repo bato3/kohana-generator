@@ -37,12 +37,12 @@ class Generator_Writer {
         $this->rows[] = $this->config->start_php_file;
         $this->rows[] = $this->config->open_php;
         $this->rows[] = "/**";
-        $this->rows[] = "* @package";
-        $this->rows[] = "* @author " . $this->config->author;
-        $this->rows[] = "* @license " . $this->config->license;
-        $this->rows[] = "* @copyright (c) " . date("Y") . " ".$this->config->author;
-        $this->rows[] = "*";
-        $this->rows[] = "*/";
+        $this->rows[] = " * @package";
+        $this->rows[] = " * @author " . $this->config->author;
+        $this->rows[] = " * @license " . $this->config->license;
+        $this->rows[] = " * @copyright (c) " . date("Y") . " ".$this->config->author;
+        $this->rows[] = " *";
+        $this->rows[] = " */";
         $this->rows = array_merge($this->rows, $file->get_rows());
     }
 

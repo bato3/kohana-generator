@@ -24,14 +24,14 @@ class Generator_Template_Show {
                 }
                 
                 $file->add_row("\n<ul>")
-                     ->add_row(Generator_Util_Text::space(4)."<li><?php echo html::anchor('/".$db_table->get_name()."', __('action.back_to_the_list')) ?></li>")
-                     ->add_row(Generator_Util_Text::space(4)."<li><?php echo html::anchor('/".$db_table->get_name()."/edit/'.\$model->".$db_table->get_primary_key_name().", __('action.edit')) ?></li>")
-                     ->add_row(Generator_Util_Text::space(4)."<li>")
-                     ->add_row(Generator_Util_Text::space(8)."<?php echo form::open('/".$db_table->get_name()."/delete') ?>")
-                     ->add_row(Generator_Util_Text::space(8)."<?php echo form::hidden('id', \$model->".$db_table->get_primary_key_name().") ?>")
-                     ->add_row(Generator_Util_Text::space(8)."<?php echo form::submit('submit', __('action.delete')) ?>")
-                     ->add_row(Generator_Util_Text::space(8)."<?php echo form::close() ?>")
-                     ->add_row(Generator_Util_Text::space(4)."</li>")
+                     ->add_row("<li><?php echo html::anchor('/".$db_table->get_name()."', __('action.back_to_the_list')) ?></li>", 4)
+                     ->add_row("<li><?php echo html::anchor('/".$db_table->get_name()."/edit/'.\$model->".$db_table->get_primary_key_name().", __('action.edit')) ?></li>", 4)
+                     ->add_row("<li>", 4)
+                     ->add_row("<?php echo form::open('/".$db_table->get_name()."/delete') ?>", 8)
+                     ->add_row("<?php echo form::hidden('id', \$model->".$db_table->get_primary_key_name().") ?>", 8)
+                     ->add_row("<?php echo form::submit('submit', __('action.delete')) ?>", 8)
+                     ->add_row("<?php echo form::close() ?>", 8)
+                     ->add_row("</li>", 4)
                      ->add_row("</ul>");   
             } 
             else 
@@ -41,14 +41,14 @@ class Generator_Template_Show {
                 }
                 
                 $file->add_row("\n<ul>")
-                     ->add_row(Generator_Util_Text::space(4)."<li><?php echo html::anchor('/".$db_table->get_name()."', 'Back to the list') ?></li>")
-                     ->add_row(Generator_Util_Text::space(4)."<li><?php echo html::anchor('/".$db_table->get_name()."/edit/'.\$model->".$db_table->get_primary_key_name().",'Edit') ?></li>")
-                     ->add_row(Generator_Util_Text::space(4)."<li>")
-                     ->add_row(Generator_Util_Text::space(8)."<?php echo form::open('/".$db_table->get_name()."/delete') ?>")
-                     ->add_row(Generator_Util_Text::space(8)."<?php echo form::hidden('id', \$model->".$db_table->get_primary_key_name().") ?>")
-                     ->add_row(Generator_Util_Text::space(8)."<?php echo form::submit('submit', 'Delete') ?>")
-                     ->add_row(Generator_Util_Text::space(8)."<?php echo form::close() ?>")
-                     ->add_row(Generator_Util_Text::space(4)."</li>")
+                     ->add_row("<li><?php echo html::anchor('/".$db_table->get_name()."', 'Back to the list') ?></li>", 4)
+                     ->add_row("<li><?php echo html::anchor('/".$db_table->get_name()."/edit/'.\$model->".$db_table->get_primary_key_name().",'Edit') ?></li>", 4)
+                     ->add_row("<li>", 4)
+                     ->add_row("<?php echo form::open('/".$db_table->get_name()."/delete') ?>", 8)
+                     ->add_row("<?php echo form::hidden('id', \$model->".$db_table->get_primary_key_name().") ?>", 8)
+                     ->add_row("<?php echo form::submit('submit', 'Delete') ?>", 8)
+                     ->add_row("<?php echo form::close() ?>", 8)
+                     ->add_row("</li>", 4)
                      ->add_row("</ul>");
             }
             

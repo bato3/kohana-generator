@@ -18,7 +18,7 @@ class Generator_Template_Message {
             $array = Generator_Util_Config::load()->validation;
             
             foreach ($array as $key => $val){
-               $file->add_row(Generator_Util_Text::space(4) . "'" . $key . "' => '" . $key . "',");
+               $file->add_row("'" . $key . "' => '" . $key . "',", 4);
             }
         }
         

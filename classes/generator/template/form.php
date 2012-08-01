@@ -34,25 +34,25 @@ class Generator_Template_Form {
                 if(!$field->is_primary_key() && !$field->is_foreign_key())
                 {
                     $file->add_row("<div>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::label('" . $field->get_name() . "', " . $label . ") ?>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::input('" . $field->get_name() . "', Arr::get(\$values, '" . $field->get_name() . "'), array('id' => '" . $field->get_name() . "')) ?>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo Arr::get(\$errors, '" . $field->get_name() . "') ?>")
+                         ->add_row("<?php echo form::label('" . $field->get_name() . "', " . $label . ") ?>", 4)
+                         ->add_row("<?php echo form::input('" . $field->get_name() . "', Arr::get(\$values, '" . $field->get_name() . "'), array('id' => '" . $field->get_name() . "')) ?>", 4)
+                         ->add_row("<?php echo Arr::get(\$errors, '" . $field->get_name() . "') ?>", 4)
                          ->add_row("</div>");
                 }
                 
                 if($field->is_foreign_key())
                 {   
                     $file->add_row("<div>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::label('" . $field->get_name() . "', " . $label . ") ?>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo form::select('" . $field->get_name() . "', \$" . $field->get_name() . ", Arr::get(\$values, '" . $field->get_name() . "'), array('id' => '" . $field->get_name() . "')) ?>")
-                         ->add_row(Generator_Util_Text::space(4) . "<?php echo Arr::get(\$errors, '" . $field->get_name() . "') ?>")
+                         ->add_row("<?php echo form::label('" . $field->get_name() . "', " . $label . ") ?>", 4)
+                         ->add_row("<?php echo form::select('" . $field->get_name() . "', \$" . $field->get_name() . ", Arr::get(\$values, '" . $field->get_name() . "'), array('id' => '" . $field->get_name() . "')) ?>", 4)
+                         ->add_row("<?php echo Arr::get(\$errors, '" . $field->get_name() . "') ?>", 4)
                          ->add_row("</div>");   
                 }
                 
             }
 
             $file->add_row("<div>")
-                 ->add_row(Generator_Util_Text::space(4) . "<?php echo form::submit('submit', 'Submit') ?>")
+                 ->add_row("<?php echo form::submit('submit', 'Submit') ?>", 4)
                  ->add_row("</div>")
                  ->add_row("<?php echo form::close() ?>")->set_disable_close_tag(true);
             

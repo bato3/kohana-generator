@@ -18,9 +18,9 @@ class Generator_Item_Controller extends Generator_Item_Abstract_Item {
                             ->set_file_name(strtolower($controller_name))
                             ->set_directory("application" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "controller")
                             ->add_row("class Controller_" . Generator_Util_Text::upper_first($controller_name) . " extends " . $extends . " {\n")
-                            ->add_row(Generator_Util_Text::space(4) . "public function action_index()")
-                            ->add_row(Generator_Util_Text::space(4) . "{\n")
-                            ->add_row(Generator_Util_Text::space(4) . "}\n")
+                            ->add_row("public function action_index()", 4)
+                            ->add_row("{\n", 4)
+                            ->add_row("}\n", 4)
                             ->add_row("}")
             );
  

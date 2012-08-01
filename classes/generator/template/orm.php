@@ -18,7 +18,7 @@ class Generator_Template_Orm {
         
         if(!Generator_Util_Config::load()->table_names_plural)
         {
-            $file->add_row(Generator_Util_Text::space(4)."protected \$_table_name = "."'".UTF8::strtolower($db_table->get_name())."'".";\n");
+            $file->add_row("protected \$_table_name = "."'".UTF8::strtolower($db_table->get_name())."'".";\n", 4);
         }
        
         $file->add_row($orm->get_relation_ships())

@@ -17,63 +17,63 @@ class Generator_Template_List {
                 ->add_row("?>")
                 ->add_row("\n<h1>" . ucfirst($db_table->get_name()) . "</h1>\n")
                 ->add_row("<table>")
-                ->add_row(Generator_Util_Text::space(4) . "<thead>")
-                ->add_row(Generator_Util_Text::space(8) . "<tr>");
+                ->add_row("<thead>", 4)
+                ->add_row("<tr>", 8);
 
         
 
         if (Generator_Util_Config::load()->support_multilang) 
         {
             foreach ($fields as $field) {
-                $file->add_row(Generator_Util_Text::space(12) . "<th><?php echo __('" . $db_table->get_name() . "." . $field->get_name() . "') ?></th>");
+                $file->add_row("<th><?php echo __('" . $db_table->get_name() . "." . $field->get_name() . "') ?></th>", 12);
             }
             
-            $file->add_row(Generator_Util_Text::space(12) . "<th><?php echo __('action.actions') ?></th>");
+            $file->add_row("<th><?php echo __('action.actions') ?></th>", 12);
         } 
         else 
         {
             foreach ($fields as $field) {
-                $file->add_row(Generator_Util_Text::space(12) . "<th>" . $field->get_name() . "</th>");
+                $file->add_row("<th>" . $field->get_name() . "</th>", 12);
             }
             
-            $file->add_row(Generator_Util_Text::space(12) . "<th>Actions</th>");
+            $file->add_row("<th>Actions</th>", 12);
         }
 
 
-        $file->add_row(Generator_Util_Text::space(4) . "</thead>")
-             ->add_row(Generator_Util_Text::space(4) . "<tbody>")
-             ->add_row(Generator_Util_Text::space(4) . "<?php foreach(\$result as \$item): ?>")
-             ->add_row(Generator_Util_Text::space(8) . "<tr>");
+        $file->add_row("</thead>", 4)
+             ->add_row("<tbody>", 4)
+             ->add_row("<?php foreach(\$result as \$item): ?>", 4)
+             ->add_row("<tr>", 8);
 
         foreach ($fields as $field) {
-            $file->add_row(Generator_Util_Text::space(12) . "<td><?php echo html::chars(\$item->" . $field->get_name() . ") ?></td>");
+            $file->add_row("<td><?php echo html::chars(\$item->" . $field->get_name() . ") ?></td>", 12);
         }
 
-        $file->add_row(Generator_Util_Text::space(12) . "<td>")
-             ->add_row(Generator_Util_Text::space(16) . "<ul>")
-             ->add_row(Generator_Util_Text::space(20) . "<li>");
+        $file->add_row("<td>", 12)
+             ->add_row("<ul>", 16)
+             ->add_row("<li>", 20);
 
         if (Generator_Util_Config::load()->support_multilang) 
         {
-            $file->add_row(Generator_Util_Text::space(24) . "<?php echo html::anchor('/".$db_table->get_name()."/show/'.\$item->".$db_table->get_primary_key_name().", __('action.show')) ?>")
-                 ->add_row(Generator_Util_Text::space(20) . "</li>")
-                 ->add_row(Generator_Util_Text::space(20) . "<li>")
-                 ->add_row(Generator_Util_Text::space(24) . "<?php echo html::anchor('/".$db_table->get_name()."/edit/'.\$item->".$db_table->get_primary_key_name().", __('action.edit')) ?>");
+            $file->add_row("<?php echo html::anchor('/".$db_table->get_name()."/show/'.\$item->".$db_table->get_primary_key_name().", __('action.show')) ?>", 24)
+                 ->add_row("</li>", 20)
+                 ->add_row("<li>", 20)
+                 ->add_row("<?php echo html::anchor('/".$db_table->get_name()."/edit/'.\$item->".$db_table->get_primary_key_name().", __('action.edit')) ?>", 24);
         } 
         else 
         {
-            $file->add_row(Generator_Util_Text::space(24) . "<?php echo html::anchor(\"\", 'show') ?>")
-                 ->add_row(Generator_Util_Text::space(20) . "</li>")
-                 ->add_row(Generator_Util_Text::space(20) . "<li>")
-                 ->add_row(Generator_Util_Text::space(24) . "<?php echo html::anchor(\"\", 'edit') ?>");
+            $file->add_row("<?php echo html::anchor(\"\", 'show') ?>", 24)
+                 ->add_row("</li>", 20)
+                 ->add_row("<li>", 20)
+                 ->add_row("<?php echo html::anchor(\"\", 'edit') ?>", 24);
         }
 
-        $file->add_row(Generator_Util_Text::space(20) . "</li>")
-             ->add_row(Generator_Util_Text::space(16) . "</ul>")
-             ->add_row(Generator_Util_Text::space(12) . "</td>")
-             ->add_row(Generator_Util_Text::space(8) . "</tr>")
-             ->add_row(Generator_Util_Text::space(4) . "<?php endforeach; ?>")
-             ->add_row(Generator_Util_Text::space(4) . "</tbody>")
+        $file->add_row("</li>", 20)
+             ->add_row("</ul>", 16)
+             ->add_row("</td>", 12)
+             ->add_row("</tr>", 8)
+             ->add_row("<?php endforeach; ?>", 4)
+             ->add_row("</tbody>", 4)
              ->add_row("</table>");
 
         if (Generator_Util_Config::load()->support_multilang) 
