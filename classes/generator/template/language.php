@@ -17,7 +17,8 @@ class Generator_Template_Language {
                 ->add_row("'action.show' => 'Show',", 4)
                 ->add_row("'action.delete' => 'Delete',", 4)
                 ->add_row("'action.back_to_the_list' => 'Back to the list',", 4)
-                ->add_row("'action.create_new' => 'Create new',\n", 4);
+                ->add_row("'action.create_new' => 'Create new',", 4)
+                ->add_row("'not_found' => 'Model id : :id was not found in database!',\n", 4);
 
         $tables = Database::instance()->list_tables();
 

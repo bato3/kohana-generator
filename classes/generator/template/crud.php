@@ -16,12 +16,20 @@ class Generator_Template_Crud {
                 ->add_row("class Controller_" . Generator_Util_Text::upper_first($db_table->get_name()) . " extends Controller_Template {\n")
                 ->add_row("public \$template = 'templates/template';\n", 4)
                 
+                ->add_row("protected \$_model = '" . $db_table->get_name() . "';", 4)
+                ->add_row("protected \$_form_view = 'forms/" . $db_table->get_name() . "';", 4)
+                ->add_row("protected \$_show_view = 'shows/" . $db_table->get_name() . "';", 4)
+                ->add_row("protected \$_list_view = 'lists/" . $db_table->get_name() . "';", 4)
+                ->add_row("protected \$_action_index = '/" . $db_table->get_name() . "';", 4)
+                ->add_row("protected \$_action_new = '/" . $db_table->get_name() . "/new';", 4)
+                ->add_row("protected \$_action_edit = '/" . $db_table->get_name() . "/edit';\n", 4)
+                
                 // action_index
                 ->add_row(self::meta("action_index"))
                 ->add_row("public function action_index()", 4)
                 ->add_row("{", 4)
-                ->add_row("\$view = View::factory('lists/" . $db_table->get_name() . "');", 8)
-                ->add_row("\$view->result = ORM::factory('" . $db_table->get_name() . "')->find_all();", 8)
+                ->add_row("\$view = View::factory(\$this->_list_view);", 8)
+                ->add_row("\$view->result = ORM::factory(\$this->_model)->find_all();", 8)
                 ->add_row("\$this->template->content = \$view;", 8)
                 ->add_row("}\n", 4)
                 
@@ -29,8 +37,8 @@ class Generator_Template_Crud {
                 ->add_row(self::meta("action_new"))
                 ->add_row("public function action_new()", 4)
                 ->add_row("{", 4)
-                ->add_row("\$model = ORM::factory('" . $db_table->get_name() . "');\n", 8)
-                ->add_row("\$form = View::factory('forms/" . $db_table->get_name() . "');", 8);
+                ->add_row("\$model = ORM::factory(\$this->_model);\n", 8)
+                ->add_row("\$form = View::factory(\$this->_form_view);", 8);
                 
                 foreach ($db_table->get_table_fields() as $field){
                     
@@ -40,7 +48,7 @@ class Generator_Template_Crud {
                     }
                 }
                 
-                $file->add_row("\$form->action = '/" . $db_table->get_name() . "/new';\n", 8)
+                $file->add_row("\$form->action = \$this->_action_new;", 8)
                      ->add_row("if (isset(\$_POST['submit']))", 8)
                      ->add_row("{", 8)
                      ->add_row("\$model->values(\$_POST);\n", 12)
@@ -62,10 +70,10 @@ class Generator_Template_Crud {
                 ->add_row("public function action_edit()", 4)
                 ->add_row("{", 4)
                 ->add_row("\$id = \$this->request->param('id');", 8)
-                ->add_row("\$model = ORM::factory('" . $db_table->get_name() . "', \$id);\n", 8)
+                ->add_row("\$model = ORM::factory(\$this->_model, \$id);\n", 8)
                 ->add_row("if(\$model->loaded())", 8)
                 ->add_row("{", 8)
-                ->add_row("\$form = View::factory('forms/" . $db_table->get_name() . "');", 12);
+                ->add_row("\$form = View::factory(\$this->_form_view);", 12);
                 
                 foreach ($db_table->get_table_fields() as $field){
                     
@@ -75,7 +83,7 @@ class Generator_Template_Crud {
                     }
                 }
                         
-                $file->add_row("\$form->action = '/" . $db_table->get_name() . "/edit/'.\$id;", 12)
+                $file->add_row("\$form->action = \$this->_action_edit.'/'.\$id;", 12)
                      ->add_row("\$form->values = \$model->as_array();\n", 12)
                      ->add_row("if (isset(\$_POST['submit']))", 12)
                      ->add_row("{", 12)
@@ -95,9 +103,18 @@ class Generator_Template_Crud {
                      ->add_row("\$this->template->content = \$form;\n", 12)
                      ->add_row("}", 8)
                      ->add_row("else", 8)
-                     ->add_row("{", 8)
-                     ->add_row("throw new HTTP_Exception_404('Model id : '.\$id.' was not found in database!');", 12)
-                     ->add_row("}", 8)
+                     ->add_row("{", 8);
+                     
+                     if(Generator_Util_Config::load()->support_multilang)
+                     {   
+                        $file->add_row("throw new HTTP_Exception_404(__('not_found', array(':id' => \$id)));", 12);
+                     }
+                     else
+                     {
+                         $file->add_row("throw new HTTP_Exception_404('Model id : '.\$id.' was not found in database!');", 12);
+                     }
+                     
+                     $file->add_row("}", 8)
                      ->add_row("}\n", 4)
                 
                 // action_show
@@ -105,17 +122,26 @@ class Generator_Template_Crud {
                 ->add_row("public function action_show()", 4)
                 ->add_row("{", 4)
                 ->add_row("\$id = \$this->request->param('id');", 8)
-                ->add_row("\$model = ORM::factory('" . $db_table->get_name() . "', \$id);\n", 8)
+                ->add_row("\$model = ORM::factory(\$this->_model, \$id);\n", 8)
                 ->add_row("if(\$model->loaded())", 8)
                 ->add_row("{", 8)
-                ->add_row("\$view = View::factory('shows/" . $db_table->get_name() . "')", 12)
+                ->add_row("\$view = View::factory(\$this->_show_view)", 12)
                 ->add_row("->bind('model', \$model);\n", 20)
                 ->add_row("\$this->template->content = \$view;", 12)
                 ->add_row("}", 8)
                 ->add_row("else", 8)
-                ->add_row("{", 8)
-                ->add_row("throw new HTTP_Exception_404('Model id : '.\$id.' was not found in database!');", 12)
-                ->add_row("}", 8)
+                ->add_row("{", 8);
+                
+                if(Generator_Util_Config::load()->support_multilang)
+                {   
+                    $file->add_row("throw new HTTP_Exception_404(__('not_found', array(':id' => \$id)));", 12);
+                }
+                else
+                {
+                    $file->add_row("throw new HTTP_Exception_404('Model id : '.\$id.' was not found in database!');", 12);
+                }
+                             
+                $file->add_row("}", 8)
                 ->add_row("}\n", 4)
                 
                 // action_delete
@@ -124,9 +150,9 @@ class Generator_Template_Crud {
                 ->add_row("{", 4)
                 ->add_row("if(isset(\$_POST['id']))", 8)
                 ->add_row("{", 8)
-                ->add_row("ORM::factory('" . $db_table->get_name() . "', \$_POST['id'])->delete();", 12)
+                ->add_row("ORM::factory(\$this->_model, \$_POST['id'])->delete();", 12)
                 ->add_row("}\n", 8)
-                ->add_row("\$this->request->redirect('/" . $db_table->get_name() . "');", 8)
+                ->add_row("\$this->request->redirect(\$this->_index_view);", 8)
                 ->add_row("}\n", 4)
                 ->add_row("}");
                         
