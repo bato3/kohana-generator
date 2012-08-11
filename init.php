@@ -5,9 +5,14 @@
             'controller' => 'gmedia',
             'file'       => NULL,
     ));
-    Route::set('generator', '(<controller>(/<action>(/<id>)))')
+    Route::set('generator', 'generator(/<action>(/<id>))')
 	->defaults(array(
-		'controller' => 'welcome',
+		'controller' => 'generator',
+		'action'     => 'index',
+	));
+    Route::set('gajax', 'gajax(/<action>(/<id>))')
+	->defaults(array(
+		'controller' => 'gajax',
 		'action'     => 'index',
 	));
 ?>
