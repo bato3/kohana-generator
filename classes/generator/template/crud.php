@@ -152,7 +152,7 @@ class Generator_Template_Crud {
                 ->add_row("{", 8)
                 ->add_row("ORM::factory(\$this->_model, \$_POST['id'])->delete();", 12)
                 ->add_row("}\n", 8)
-                ->add_row("\$this->request->redirect(\$this->_index_view);", 8)
+                ->add_row("\$this->request->redirect(\$this->_action_index);", 8)
                 ->add_row("}\n", 4)
                 ->add_row("}");
                         
