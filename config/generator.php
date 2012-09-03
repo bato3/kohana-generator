@@ -5,10 +5,10 @@ return array(
     "password" => "admin",
     
     "jquery_url" => "http://code.jquery.com/jquery-latest.min.js",
-    "jquery_name" => "jquery.min",
     
     "reset_css_url" => "http://meyerweb.com/eric/tools/css/reset/reset.css",
-    "reset_css_name" => "reset",
+    
+    "kube_css_framework_url" => "http://kubeframework.com/webdownload/kube/get",
     
     "author" => "",
     "license" => "",
