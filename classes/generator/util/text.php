@@ -11,15 +11,13 @@ class Generator_Util_Text {
         return ucfirst(strtolower($string));
     }
     
+    /**
+     * patched by alrusdi
+     * thanks!
+     */
     public static function space($num=0)
-    {
-        $space = "";
-        
-        for($i=1; $i<=$num; ++$i){
-            $space .= " ";
-        }
-        
-        return $space;
+    {        
+        return str_repeat(" ", $num);
     }
 }
 

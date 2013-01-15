@@ -8,11 +8,7 @@ return array(
     
     "reset_css_url" => "http://meyerweb.com/eric/tools/css/reset/reset.css",
     
-    "kube_css_framework_url" => "http://imperavi.com/webdownload/kube/get/",
-    
-    "kube_min_css_zip_path" => "kube101/css/kube.min.css",
-    "kube_master_zip_path" => "kube101/css/master.css",
-    "cache_clean" => true,
+    "kube_css_framework_url" => "http://kubeframework.com/webdownload/kube/get",
     
     "author" => "",
     "license" => "",

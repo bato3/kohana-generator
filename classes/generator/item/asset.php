@@ -34,16 +34,29 @@ class Generator_Item_Asset extends Generator_Item_Abstract_Item {
         
         //kube css framework
         $file = Kohana::$cache_dir.DIRECTORY_SEPARATOR."kube.zip";
+        $min_css = $this->config->get("kube101/css/kube.min.css");
+        $master_css = $this->config->get("kube101/css/master.css");
+        
+        $css_dir = Kohana::$cache_dir.DIRECTORY_SEPARATOR."css";
+        if(!file_exists($css_dir)){
+            @mkdir($css_dir);
+        }
                 
         if(!file_exists($file)){
             file_put_contents($file, file_get_contents($this->config->get("kube_css_framework_url")));
-            chmod($file, 0766);
         }
         
         $zip = new ZipArchive();
         if($zip->open($file) == TRUE){
-            $zip->extractTo(Kohana::$cache_dir, array("css/kube.min.css", "css/master.css"));
+            $zip->extractTo(Kohana::$cache_dir, array($min_css, $master_css));
             $zip->close();
+        }
+        
+        if(file_exists(Kohana::$cache_dir.DIRECTORY_SEPARATOR.$min_css)){
+            @copy(Kohana::$cache_dir.DIRECTORY_SEPARATOR.$min_css, $css_dir.DIRECTORY_SEPARATOR.$min_css);
+        }
+        if(file_exists(Kohana::$cache_dir.DIRECTORY_SEPARATOR.$master_css)){
+            @copy(Kohana::$cache_dir.DIRECTORY_SEPARATOR.$master_css, $css_dir.DIRECTORY_SEPARATOR.$master_css);
         }
                 
         $file4 = Generator_File::factory()
@@ -57,11 +70,15 @@ class Generator_Item_Asset extends Generator_Item_Abstract_Item {
                 ->set_directory("assets" . DIRECTORY_SEPARATOR . "css");
         
         if(!$file4->file_exists()){
-            $file4->add_row(file_get_contents(Kohana::$cache_dir.DIRECTORY_SEPARATOR."css".DIRECTORY_SEPARATOR."kube.min.css"));
+            $file4->add_row(file_get_contents($css_dir.DIRECTORY_SEPARATOR."kube.min.css"));
         }
         
         if(!$file5->file_exists()){
-            $file5->add_row(file_get_contents(Kohana::$cache_dir.DIRECTORY_SEPARATOR."css".DIRECTORY_SEPARATOR."master.css"));
+            $file5->add_row(file_get_contents($css_dir.DIRECTORY_SEPARATOR."master.css"));
+        }
+        
+        if($this->config->get("cache_clean")){
+            Generator_Util_Cache::clean();
         }
         
         $this->add($file1);
@@ -70,7 +87,8 @@ class Generator_Item_Asset extends Generator_Item_Abstract_Item {
         $this->add($file4);
         $this->add($file5);
     }
-
+    
+    
 }
 
 ?>
