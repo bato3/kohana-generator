@@ -34,16 +34,17 @@ class Generator_Item_Asset extends Generator_Item_Abstract_Item {
         
         //kube css framework
         $file = Kohana::$cache_dir.DIRECTORY_SEPARATOR."kube.zip";
-        $min_css = $this->config->get("kube101/css/kube.min.css");
-        $master_css = $this->config->get("kube101/css/master.css");
+        $min_css = $this->config->get("kube_min_css_zip_path");
+        $master_css = $this->config->get("kube_master_zip_path");
         
         $css_dir = Kohana::$cache_dir.DIRECTORY_SEPARATOR."css";
         if(!file_exists($css_dir)){
-            @mkdir($css_dir);
+            @mkdir($css_dir, 0777);
         }
                 
         if(!file_exists($file)){
             file_put_contents($file, file_get_contents($this->config->get("kube_css_framework_url")));
+            @chmod($file, 0777);
         }
         
         $zip = new ZipArchive();
@@ -53,10 +54,10 @@ class Generator_Item_Asset extends Generator_Item_Abstract_Item {
         }
         
         if(file_exists(Kohana::$cache_dir.DIRECTORY_SEPARATOR.$min_css)){
-            @copy(Kohana::$cache_dir.DIRECTORY_SEPARATOR.$min_css, $css_dir.DIRECTORY_SEPARATOR.$min_css);
+            @copy(Kohana::$cache_dir.DIRECTORY_SEPARATOR.$min_css, $css_dir.DIRECTORY_SEPARATOR."kube.min.css");
         }
         if(file_exists(Kohana::$cache_dir.DIRECTORY_SEPARATOR.$master_css)){
-            @copy(Kohana::$cache_dir.DIRECTORY_SEPARATOR.$master_css, $css_dir.DIRECTORY_SEPARATOR.$master_css);
+            @copy(Kohana::$cache_dir.DIRECTORY_SEPARATOR.$master_css, $css_dir.DIRECTORY_SEPARATOR."master.css");
         }
                 
         $file4 = Generator_File::factory()
