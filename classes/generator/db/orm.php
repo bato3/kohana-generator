@@ -17,7 +17,12 @@ class Generator_Db_Orm {
     {
         return new Generator_Db_Orm($db_table);
     }
-
+	
+    public function get_pk() {
+    	$pk = $this->db_table->get_primary_key_name();
+    	return Generator_Util_Text::space(4)."protected \$_primary_key = '$pk'; \n";
+    }
+    
     public function get_relation_ships() 
     {
         $has_many = $this->db_table->get_has_many();
@@ -30,7 +35,7 @@ class Generator_Db_Orm {
             $string .= Generator_Util_Text::space(4) . "protected \$_has_many = array(\n";
 
             foreach ($has_many as $array) {
-                $string .= Generator_Util_Text::space(8) . "'" . $array["name"] . "'" . "=> array('model' => '" . $array["name"] . "', 'foreign_key' => '" . $array["foreign_key"] . "'),\n";
+                $string .= Generator_Util_Text::space(8) . "'" . $array["name"] . "'" . "=> array('model' => '" . ucfirst($array["name"]) . "', 'foreign_key' => '" . $array["foreign_key"] . "'),\n";
             }
 
             $string .= Generator_Util_Text::space(4) . ");\n";
@@ -41,7 +46,7 @@ class Generator_Db_Orm {
             $string .= Generator_Util_Text::space(4) . "protected \$_has_one = array(\n";
 
             foreach ($has_one as $array) {
-                $string .= Generator_Util_Text::space(8) . "'" . $array["name"] . "'" . "=> array('model' => '" . $array["name"] . "', 'foreign_key' => '" . $array["foreign_key"] . "'),\n";
+                $string .= Generator_Util_Text::space(8) . "'" . $array["name"] . "'" . "=> array('model' => '" . ucfirst($array["name"]) . "', 'foreign_key' => '" . $array["foreign_key"] . "'),\n";
             }
 
             $string .= Generator_Util_Text::space(4) . ");\n";
@@ -52,7 +57,7 @@ class Generator_Db_Orm {
             $string .= Generator_Util_Text::space(4) . "protected \$_belongs_to = array(\n";
 
             foreach ($belongs_to as $array) {
-                $string .= Generator_Util_Text::space(8) . "'" . $array["name"] . "'" . "=> array('model' => '" . $array["name"] . "', 'foreign_key' => '" . $array["foreign_key"] . "'),\n";
+                $string .= Generator_Util_Text::space(8) . "'" . $array["name"] . "'" . "=> array('model' => '" . ucfirst($array["name"]) . "', 'foreign_key' => '" . $array["foreign_key"] . "'),\n";
             }
 
             $string .= Generator_Util_Text::space(4) . ");\n";
@@ -113,17 +118,31 @@ class Generator_Db_Orm {
 
         return $string;
     }
+    
+    public function get_columns()
+    {
+    	$string = Generator_Util_Text::space(4) . 'protected $_table_columns = ';
+    	$string .= $this->field_columns();
+    	$string .= Generator_Util_Text::space(4) . ");\n";
+    
+    	return $string;
+    }
 
     private function field_rule(Generator_Db_Field $field) 
     {
+        //_D($field);die();
+        $ffield = $field->field();
         $min = $field->get_min();
         $max = $field->get_max();
         $key = $field->get_key();
 
         $config = Generator_Util_Config::load();
+        
+        $validation = "\n";
+        if(Arr::get($ffield,'is_nullable',null)==null)
+            $validation .= Generator_Util_Text::space(16) . "array('not_empty'),\n";
 
-        $validation = "\n" . Generator_Util_Text::space(16) . "array('not_empty'),\n";
-
+        $is_number = FALSE;
         switch ($field->get_type()) {
             case "datetime": $validation .= Generator_Util_Text::space(16) . "array('date',array(':value', '" . $config->datetime_format . "')),\n";
                 break;
@@ -132,28 +151,40 @@ class Generator_Db_Orm {
             case "year" : $validation .= Generator_Util_Text::space(16) . "array('date',array(':value', 'Y')),\n";
                 break;
             case "smallint" : $validation .= Generator_Util_Text::space(16) . "array('digit'),\n";
+                $is_number = TRUE;
                 break;
             case "smallint unsigned" : $validation .= Generator_Util_Text::space(16) . "array('digit'),\n";
+                $is_number = TRUE;
                 break;
             case "int" : $validation .= Generator_Util_Text::space(16) . "array('digit'),\n";
+                $is_number = TRUE;
                 break;
             case "int unsigned" : $validation .= Generator_Util_Text::space(16) . "array('digit'),\n";
+                $is_number = TRUE;
                 break;
             case "bigint" : $validation .= Generator_Util_Text::space(16) . "array('digit'),\n";
+                $is_number = TRUE;
                 break;
             case "bigint unsigned" : $validation .= Generator_Util_Text::space(16) . "array('digit'),\n";
+                $is_number = TRUE;
                 break;
             case "float" : $validation .= Generator_Util_Text::space(16) . "array('numeric'),\n";
+                $is_number = TRUE;
                 break;
             case "float unsigned" : $validation .= Generator_Util_Text::space(16) . "array('numeric'),\n";
+                $is_number = TRUE;
                 break;
             case "double" : $validation .= Generator_Util_Text::space(16) . "array('numeric'),\n";
+                $is_number = TRUE;
                 break;
             case "double unsigned" : $validation .= Generator_Util_Text::space(16) . "array('numeric'),\n";
+                $is_number = TRUE;
                 break;
             case "decimal" : $validation .= Generator_Util_Text::space(16) . "array('numeric'),\n";
+                $is_number = TRUE;
                 break;
             case "decimal unsigned" : $validation .= Generator_Util_Text::space(16) . "array('numeric'),\n";
+                $is_number = TRUE;
                 break;
             case "" : $validation .= "";
                 break;
@@ -161,8 +192,12 @@ class Generator_Db_Orm {
 
         if (!empty($min) && !empty($max)) 
         {
-            $validation .= Generator_Util_Text::space(16) . "array('min_length',array(':value', $min)),\n";
-            $validation .= Generator_Util_Text::space(16) . "array('max_length',array(':value', $max)),\n";
+            if($is_number){
+                $validation .= Generator_Util_Text::space(16) . "array('range',array(':value', $min, $max)),\n";
+            } else {
+                $validation .= Generator_Util_Text::space(16) . "array('min_length',array(':value', $min)),\n";
+                $validation .= Generator_Util_Text::space(16) . "array('max_length',array(':value', $max)),\n";
+            }
         }
 
         if (empty($min) && !empty($max)) 
@@ -209,6 +244,18 @@ class Generator_Db_Orm {
         }
 
         return $labels;
+    }
+    
+    private function field_columns()
+    {
+    	$columns = "";
+    	$fields = $this->db_table->list_table_fields();
+    	
+    	$columns .=  "Array(\n";
+    	foreach ($fields as $key => $value) {
+    		$columns .= Generator_Util_Text::space(8) . "'$key' => FALSE,\n";
+    	}
+    	return $columns;
     }
 
 }
